@@ -5,11 +5,29 @@
 	<title>Bio workflow</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </head>
 <body>
 	<div class="container">
-		<h1>Hi</h1>
+		<h1><a href="{{ url_for('index') }}">Bio workflow</a></h1>
+        <form method="POST" action="{{ url_for('add_clone') }}">
+            Name <input type="text" class="form-control" name="clone_name" placeholder="Enter Clone Name">
+            AA changes <input type="text" class="form-control" name="clone_aa" placeholder="Enter Amino Acid Changes">
+            Date <input type="date" data-format="MM-dd-yyyy" class="form-control" name="clone_date" placeholder="Enter Clone Date">
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <form method="POST" action="{{ url_for('clear_db') }}">
+            <button type="submit" class="btn btn-danger">Clear database</button>
+        </form>
 	</div>
+
+    <div class="container">
+        {% for clone in r %}
+            <p>{{ clone }}</p>
+        {% endfor %}
+    </div>
 	
 </body>
 </html>
