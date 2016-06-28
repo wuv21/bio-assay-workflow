@@ -1,8 +1,12 @@
 from flask import Flask, render_template, g, request, redirect, url_for
 import sqlite3
 import os
+import json
+# from flask_cors import CORS
 
 app = Flask(__name__)
+# CORS(app)
+
 DATABASE = os.path.join(os.path.curdir, 'sql', 'hiv2_drug_assay.db')
 
 
@@ -36,6 +40,17 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
+def format_resp(resp, tbl_name):
+    fields = [x[1] for x in query_db("PRAGMA table_info(" + tbl_name + ")")]
+
+    formatted_resp = []
+    for x in resp:
+        obj = {fields[i]: val for (i, val) in enumerate(x)}
+        formatted_resp.append(obj)
+
+    return formatted_resp
+
+
 def insert_db(query, args=()):
     conn = get_db()
     cur = conn.cursor()
@@ -56,24 +71,27 @@ def clear_db():
 
 @app.route('/')
 def index():
-    test = query_db("SELECT * FROM Clone")
-    print(test)
-    return render_template('index.html', r=query_db("SELECT * FROM Clone"))
+    return render_template('index.html', c=query_db("SELECT * FROM Clone"))
 
 
 @app.route('/add_clone', methods=["POST"])
 def add_clone():
-    clone = (request.form.get('clone_name'),
-             request.form.get('clone_aa'),
-             request.form.get('clone_date'))
+    clone = (request.form.get('nameInp'),
+             request.form.get('cloneInp'),
+             request.form.get('dateInp'))
 
     insert_db("INSERT INTO Clone(name, aa_changes, purify_date) VALUES(?, ?, ?)", args=clone)
 
     return redirect(url_for('index'))
 
 
+@app.route('/test', methods=["GET"])
+def test():
+    return json.dumps(format_resp(query_db("SELECT * FROM Clone"), "Clone"))
+
+
 if __name__ == "__main__":
     create_db()
     app.debug = True
-    app.run()
+    app.run(host="127.0.0.1", port=8080, threaded=True)
 

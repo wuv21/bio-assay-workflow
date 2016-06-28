@@ -4,29 +4,92 @@
 	<meta charset="UTF-8">
 	<title>Bio workflow</title>
 
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+{#    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">#}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular.min.js"></script>
+{#    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>#}
+{#    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-aria.min.js"></script>#}
+{#    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-messages.min.js"></script>#}
+
+    <!-- Angular Material Library -->
+{#    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>#}
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </head>
-<body>
+
+<body ng-app="bioApp" ng-controller="MainController">
 	<div class="container">
 		<h1><a href="{{ url_for('index') }}">Bio workflow</a></h1>
-        <form method="POST" action="{{ url_for('add_clone') }}">
-            Name <input type="text" class="form-control" name="clone_name" placeholder="Enter Clone Name">
-            AA changes <input type="text" class="form-control" name="clone_aa" placeholder="Enter Amino Acid Changes">
-            Date <input type="date" data-format="MM-dd-yyyy" class="form-control" name="clone_date" placeholder="Enter Clone Date">
 
-            <button type="submit" class="btn btn-primary">Submit</button>
+        <h3>Clone form</h3>
+        <form method="POST" action="{{ url_for('add_clone') }}" ng-model="clone" class="form-horizontal" name="cloneForm">
+            <div class="form-group">
+                <label for="nameInp" class="control-label col-md-2">Clone Name</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" name="nameInp" placeholder="Enter Clone Name" ng-model="clone.name" required>
+                </div>
+
+                <div class="col-md-offset-2 col-md-10">
+                    <p class="validation-error" ng-if="cloneForm.nameInp.$dirty && cloneForm.nameInp.$error.required" id="cloneNameAlert">
+                        Please enter a clone name
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="aaChangesInp" class="control-label col-md-2">AA changes</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" name="aaChangesInp" placeholder="Enter Amino Acid Changes" ng-model="clone.aaChanges">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label for="dateInp" class="control-label col-md-2">Maxiprep date</label>
+{#                <md-datepicker name="dateInp" ng-model="clone.date" md-placeholder="MM/DD/YYYY" required></md-datepicker>#}
+                <div class="col-md-10">
+                    <input type="text" class="form-control" ng-model="clone.date"
+                           name="dateInp" placeholder="MM/DD/YYYY (01/31/2016)"
+                           ng-pattern="^(\d{2}\/){2}(\d{2}|\d{4})$" check-date required>
+                </div>
+
+                <div class="col-md-offset-2 col-md-10">
+                    <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && cloneForm.dateInp.$error.required">Date is required</p>
+                    <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && !cloneForm.dateInp.$valid">Date input is incorrect. Please input as MM/DD/YYYY (01/10/2016)</p>
+                    <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && !cloneForm.dateInp.checkDate">Date input is incorrect. Please input as MM/DD/YYYY (01/10/2016)</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <button type="reset" class="btn btn-danger">Reset</button>
+                    <button type="submit" ng-disabled="cloneForm.$invalid" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
         </form>
 
+        <hr>
         <form method="POST" action="{{ url_for('clear_db') }}">
             <button type="submit" class="btn btn-danger">Clear database</button>
         </form>
 	</div>
 
     <div class="container">
-        {% for clone in r %}
-            <p>{{ clone }}</p>
-        {% endfor %}
+        <select name="" id="">
+            <option value="" disabled selected>Select a clone:</option>
+            {% for clone in c %}
+                <option value="{{ clone.name }}">{{ clone }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+
+
+    <div class="container">
+        {a test a}
     </div>
 	
 </body>

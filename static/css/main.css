@@ -15,9 +15,21 @@ header {
 
 h1, h2, h3 {
     font-weight: 300;
-    color: #007CC2;
+    /*color: #007CC2;*/
 }
 
-input {
-    margin-bottom: 1em;
+
+.validation-error {
+    color: #dd1531;
+    font-size: 1em;
+}
+
+form .ng-dirty.ng-invalid {
+    border: 1px solid #dd1531;
+    border-radius: 5px;
+}
+
+form .ng-dirty.ng-valid {
+    border: 1px solid #00DD00;
+    border-radius: 5px;
 }
