@@ -71,7 +71,7 @@ def clear_db():
 
 @app.route('/')
 def index():
-    return render_template('index.html', c=query_db("SELECT * FROM Clone"))
+    return render_template('index.html')
 
 
 @app.route('/add_clone', methods=["POST"])
@@ -83,6 +83,16 @@ def add_clone():
     insert_db("INSERT INTO Clone(name, aa_changes, purify_date) VALUES(?, ?, ?)", args=clone)
 
     return redirect(url_for('index'))
+
+
+@app.route('/edit')
+def edit():
+    return render_template('edit.html', c=query_db("SELECT * FROM Clone"))
+
+
+@app.route('/viz')
+def viz():
+    return render_template('viz.html')
 
 
 @app.route('/test', methods=["GET"])
