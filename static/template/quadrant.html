@@ -1,40 +1,50 @@
-<div class="col-md-6 quadrant">
-	<h3>Virus Stock</h3>
-	<span>
-		<button class="btn btn-success">Use existing</button>
-		<button class="btn btn-primary">New virus stock</button>
-	</span>
-	<p>
-		Selected stock: 3/15/16
-		<br>
-		Clone: 26-1 | 2/1/15 | G140S+Q148H
-	</p>
+<div class="quadrant">
+	<div class="text-center">
+		<span>
+			<button class="btn btn-success">Old virus stock</button>
+			<button class="btn btn-primary">New virus stock</button>
+		</span>
+		<p>
+			<strong>Selected stock:</strong> 3/15/16
+			<br>
+			<strong>Clone: </strong> 26-1 | 2/1/15 | G140S+Q148H
+		</p>
+	</div>
+
+
+	<hr>
 
 	<div class="form-group row">
-		<label class="control-label col-md-2">Min [drug]</label>
-		<div class="col-md-10">
-			<input type="number" name="" placeholder="Enter minimum concentration" class="form-control">
+		<label class="control-label col-md-3">Min [drug]</label>
+		<div class="col-md-9">
+			<input type="number" step="any" min=0 name="" placeholder="Enter minimum concentration" class="form-control">
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="control-label col-md-2">Max [drug]</label>
-		<div class="col-md-10">
+		<label class="control-label col-md-3">Max [drug]</label>
+		<div class="col-md-9">
 			<input type="number" name="" placeholder="Enter maximum concentration" class="form-control">
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="control-label col-md-2">Increment</label>
-		<div class="col-md-10">
+		<label class="control-label col-md-3">Increment</label>
+		<div class="col-md-9">
 			<input type="number" name="" placeholder="Enter concentration increment" class="form-control">
 		</div>
 	</div>	
+	
+	<div class="form-group row">
+		<label for="" class="control-label col-md-3">Drug</label>
+		<div class="col-md-9">
+			<select name="" id="">
+				<option value="" selected disabled>Please select a drug</option>
+				<option value="">DTG</option>
+				<option value="">CTG</option>
+			</select>
+		</div>
+	</div>
 
-	<h3>Drug</h3>
-	<select name="" id="">
-		<option value="" selected disabled>Please select a drug</option>
-		<option value="">DTG</option>
-		<option value="">CTG</option>
-	</select>
+
 </div>

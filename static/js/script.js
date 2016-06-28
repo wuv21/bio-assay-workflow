@@ -10,8 +10,8 @@ bioApp.directive('quadrant', function() {
         restrict: "E",
         scope: false,
         templateUrl: "/static/template/quadrant.html",
-        link: function(scope, elem) {
-            console.log('i was made');
+        link: function(scope, elem, attrs) {
+            
         }
     }
 });
@@ -47,6 +47,8 @@ bioApp.controller('MainController', function($scope, $http) {
         date: '06/25/2016'
     };
 
+
+    $scope.quadrants = [];
 
     $http.get('http://localhost:8080/test')
         .success(function(resp) {

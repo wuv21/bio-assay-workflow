@@ -7,22 +7,31 @@
 	<div class="container" ng-controller="MainController">
 		<h2>Enter assay data</h2>
 		<form action="">
-			<label for="">Plate name</label>
-			<input type="text" name="plate_name" class="form-control" placeholder="Enter plate name">
+			<div class="row">
+				<label for="" class="col-xs-1">Plate name</label>
+				<div class="col-xs-3">
+					<input type="text" name="plate_name" class="form-control" placeholder="Enter plate name">
+				</div>
 
-			<label for="">Read Date</label>
-			<input type="text" name="plate_name" class="form-control" placeholder="Enter read date">
+				<label for="" class="col-xs-1">Read Date</label>
+				<div class="col-xs-3">
+					<input type="text" name="plate_name" class="form-control" placeholder="Enter read date">
+				</div>
 
-			<label for="">Letter</label>
-			<input type="text" name="plate_name" class="form-control" placeholder="Enter plate letter">			
+				<label for="" class="col-xs-1">Letter</label>
+				<div class="col-xs-3">
+					<input type="text" name="plate_name" class="form-control" placeholder="Enter plate letter">	
+				</div>
+				
+			</div>
 
 			<div class="row">
-				<quadrant></quadrant>
-				<quadrant></quadrant>
+				<quadrant quad='1' class="col-md-6"></quadrant>
+				<quadrant quad='2' class="col-md-6"></quadrant>
 			</div>
 			<div class="row">
-				<quadrant></quadrant>
-				<quadrant></quadrant>
+				<quadrant quad='3' class="col-md-6"></quadrant>
+				<quadrant quad='4' class="col-md-6"></quadrant>
 			</div>	
 		</form>
 	
