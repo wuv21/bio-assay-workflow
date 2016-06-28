@@ -5,6 +5,17 @@ bioApp.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.endSymbol('a}');
 }]);
 
+bioApp.directive('quadrant', function() {
+    return {
+        restrict: "E",
+        scope: false,
+        templateUrl: "/static/template/quadrant.html",
+        link: function(scope, elem) {
+            console.log('i was made');
+        }
+    }
+});
+
 bioApp.directive('checkDate', function() {
     return {
         require: 'ngModel',

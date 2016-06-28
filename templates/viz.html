@@ -1,8 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %} - Edit {% endblock %}
+{% block title %} - Visualize {% endblock %}
 {% set active_page = "viz" %}
 
 {% block content %}
+	<div class="container" ng-controller="MainController">
+		<h2>Enter assay data</h2>
+		<form action="">
+			<label for="">Plate name</label>
+			<input type="text" name="plate_name" class="form-control" placeholder="Enter plate name">
 
+			<label for="">Read Date</label>
+			<input type="text" name="plate_name" class="form-control" placeholder="Enter read date">
+
+			<label for="">Letter</label>
+			<input type="text" name="plate_name" class="form-control" placeholder="Enter plate letter">			
+
+			<div class="row">
+				<quadrant></quadrant>
+				<quadrant></quadrant>
+			</div>
+			<div class="row">
+				<quadrant></quadrant>
+				<quadrant></quadrant>
+			</div>	
+		</form>
+	
+	</div>
 {% endblock %}
