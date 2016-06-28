@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %} - Edit {% endblock %}
+{% set active_page = "edit" %}
+
+{% block content %}
+<div class="container" ng-controller="MainController">
+    <h3>Clone form</h3>
+    <form method="POST" action="{{ url_for('add_clone') }}" ng-model="clone" class="form-horizontal cloneForm" name="cloneForm">
+        <div class="form-group">
+            <label for="nameInp" class="control-label col-md-2">Clone Name</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" name="nameInp" placeholder="Enter Clone Name" ng-model="clone.name" required>
+            </div>
+
+            <div class="col-md-offset-2 col-md-10">
+                <p class="validation-error" ng-if="cloneForm.nameInp.$dirty && cloneForm.nameInp.$error.required" id="cloneNameAlert">
+                    Please enter a clone name
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="aaChangesInp" class="control-label col-md-2">AA changes</label>
+            <div class="col-md-10">
+                <input type="text" class="form-control" name="aaChangesInp" placeholder="Enter Amino Acid Changes" ng-model="clone.aaChanges">
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <label for="dateInp" class="control-label col-md-2">Maxiprep date</label>
+{#                <md-datepicker name="dateInp" ng-model="clone.date" md-placeholder="MM/DD/YYYY" required></md-datepicker>#}
+            <div class="col-md-10">
+                <input type="text" class="form-control" ng-model="clone.date"
+                       name="dateInp" placeholder="MM/DD/YYYY (01/31/2016)"
+                       ng-pattern="^(\d{2}\/){2}(\d{2}|\d{4})$" check-date required>
+            </div>
+
+            <div class="col-md-offset-2 col-md-10">
+                <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && cloneForm.dateInp.$error.required">Date is required</p>
+                <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && !cloneForm.dateInp.$valid">Please input date as MM/DD/YYYY (01/10/2016)</p>
+                <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && !cloneForm.dateInp.checkDate">Please input date as MM/DD/YYYY (01/10/2016)</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="reset" class="btn btn-danger">Reset</button>
+                <button type="submit" ng-disabled="cloneForm.$invalid" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+
+    <hr>
+    <form method="POST" action="{{ url_for('clear_db') }}">
+        <button type="submit" class="btn btn-danger">Clear database</button>
+    </form>
+</div>
+
+<div class="container">
+    <select name="" id="" class="form-control">
+        <option value="" disabled selected>Select a clone:</option>
+        {% for clone in c %}
+            <option value="{{ clone.name }}">{{ clone }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="container">
+    {a test a}
+</div>
+{% endblock %}

@@ -33,3 +33,7 @@ form .ng-dirty.ng-valid {
     border: 1px solid #00DD00;
     border-radius: 5px;
 }
+
+.cloneForm input {
+    width: 30%;
+}

@@ -38,9 +38,7 @@ bioApp.controller('MainController', function($scope, $http) {
 
 
     $http.get('http://localhost:8080/test')
-        .success(function(resp, status) {
-            console.log('here');
+        .success(function(resp) {
             console.log(resp);
-            console.log(status);
         });
 });
