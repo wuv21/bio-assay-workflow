@@ -1,43 +1,91 @@
 <div class="quadrant">
-	<div class="text-center">
+	<div class="">
 		<span>
-			<button class="btn btn-success">Old virus stock</button>
-			<button class="btn btn-primary">New virus stock</button>
+			<p class="btn btn-success" ng-click="oldCloneOpen()">Old virus stock</p>
+			<p class="btn btn-primary" ng-click="newCloneOpen()">New virus stock</p>		
 		</span>
-		<p>
-			<strong>Selected stock:</strong> 3/15/16
-			<br>
-			<strong>Clone: </strong> 26-1 | 2/1/15 | G140S+Q148H
-		</p>
 	</div>
 
+	<div ng-show="oldCloneToggle[{a ::$id a}]">
+		<div class="form-group row">
+			<label for="" class="control-label col-md-4">Old clone date</label>
+			<div class="col-md-8">
+				<input type="text" placeholder="Enter date" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="" class="control-lable col-md-4">Select clone</label>
+			<div class="col-md-8">
+			    <select name="" id="" class="form-control">
+			        <option value="" disabled selected>Select a clone:</option>
+			        {% for clone in c %}
+			            <option value="{{ clone.name }}">{{ clone.name }} | {{ clone.aaChanges }}</option>
+			        {% endfor %}
+    </select>
+			</div>			
+		</div>
+
+	</div>
+		<div ng-show="newCloneToggle[{a ::$id a}]">
+		<div class="form-group row">
+			<label for="" class="control-label col-md-4">New clone name</label>
+			<div class="col-md-8">
+				<input type="text" placeholder="Enter name" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="" class="control-label col-md-4">New clone date</label>
+			<div class="col-md-8">
+				<input type="text" placeholder="Enter date" class="form-control">
+			</div>			
+		</div>
+
+		<div class="form-group row">
+			<label for="" class="control-label col-md-4">AA changes</label>
+			<div class="col-md-8">
+				<input type="text" placeholder="Enter AA changes" class="form-control">
+			</div>
+		</div>
+
+		<p class="btn btn-info">Create clone</p>
+	</div>
+
+	<hr>
+
+	<p>
+		<strong>Selected virus stock:</strong> 3/15/16
+		<br>
+		<strong>Selected clone: </strong> 26-1 | 2/1/15 | G140S+Q148H
+	</p>	
 
 	<hr>
 
 	<div class="form-group row">
-		<label class="control-label col-md-3">Min [drug]</label>
-		<div class="col-md-9">
+		<label class="control-label col-md-4">Min [drug]</label>
+		<div class="col-md-8">
 			<input type="number" step="any" min=0 name="" placeholder="Enter minimum concentration" class="form-control">
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="control-label col-md-3">Max [drug]</label>
-		<div class="col-md-9">
-			<input type="number" name="" placeholder="Enter maximum concentration" class="form-control">
+		<label class="control-label col-md-4">Max [drug]</label>
+		<div class="col-md-8">
+			<input type="number" step="any" min=0 name="" placeholder="Enter maximum concentration" class="form-control">
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="control-label col-md-3">Increment</label>
-		<div class="col-md-9">
-			<input type="number" name="" placeholder="Enter concentration increment" class="form-control">
+		<label class="control-label col-md-4">Increment</label>
+		<div class="col-md-8">
+			<input type="number" step="any" min=0 name="" placeholder="Enter concentration increment" class="form-control">
 		</div>
 	</div>	
 	
 	<div class="form-group row">
-		<label for="" class="control-label col-md-3">Drug</label>
-		<div class="col-md-9">
+		<label for="" class="control-label col-md-4">Drug</label>
+		<div class="col-md-8">
 			<select name="" id="">
 				<option value="" selected disabled>Please select a drug</option>
 				<option value="">DTG</option>
