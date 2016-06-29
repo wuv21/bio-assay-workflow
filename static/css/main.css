@@ -18,6 +18,10 @@ h1, h2, h3 {
     /*color: #007CC2;*/
 }
 
+h3 {
+    color: #B64926;
+}
+
 
 .validation-error {
     color: #dd1531;
@@ -36,4 +40,12 @@ form .ng-dirty.ng-valid {
 
 .cloneForm input {
     width: 30%;
+}
+
+.quadrant {
+    padding: 1.5em;
+    /*margin: 1em;*/
+    border: 1px #EEE solid;
+    border-radius: 10px;
+    margin-top: 1em;
 }

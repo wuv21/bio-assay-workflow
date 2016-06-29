@@ -34,12 +34,11 @@
             <div class="col-md-10">
                 <input type="text" class="form-control" ng-model="clone.date"
                        name="dateInp" placeholder="MM/DD/YYYY (01/31/2016)"
-                       ng-pattern="^(\d{2}\/){2}(\d{2}|\d{4})$" check-date required>
+                       check-date required>
             </div>
 
             <div class="col-md-offset-2 col-md-10">
                 <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && cloneForm.dateInp.$error.required">Date is required</p>
-                <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && !cloneForm.dateInp.$valid">Please input date as MM/DD/YYYY (01/10/2016)</p>
                 <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && !cloneForm.dateInp.checkDate">Please input date as MM/DD/YYYY (01/10/2016)</p>
             </div>
         </div>

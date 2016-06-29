@@ -5,6 +5,17 @@ bioApp.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.endSymbol('a}');
 }]);
 
+bioApp.directive('quadrant', function() {
+    return {
+        restrict: "E",
+        scope: false,
+        templateUrl: "/static/template/quadrant.html",
+        link: function(scope, elem, attrs) {
+            
+        }
+    }
+});
+
 bioApp.directive('checkDate', function() {
     return {
         require: 'ngModel',
@@ -36,6 +47,8 @@ bioApp.controller('MainController', function($scope, $http) {
         date: '06/25/2016'
     };
 
+
+    $scope.quadrants = [];
 
     $http.get('http://localhost:8080/test')
         .success(function(resp) {
