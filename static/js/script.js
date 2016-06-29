@@ -60,6 +60,8 @@ bioApp.controller('MainController', function($scope, $http) {
 
     $scope.newCloneToggle = {};
     $scope.oldCloneToggle = {};
+    $scope.selectedClones = {};
+    
     $scope.quadrants = [];
 
     $http.get('http://localhost:8080/test')
