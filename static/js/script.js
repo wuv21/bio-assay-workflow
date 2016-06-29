@@ -1,4 +1,4 @@
-var bioApp = angular.module('bioApp', []);
+var bioApp = angular.module('bioApp', ['ui.bootstrap']);
 
 bioApp.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('{a');
@@ -8,10 +8,21 @@ bioApp.config(['$interpolateProvider', function($interpolateProvider) {
 bioApp.directive('quadrant', function() {
     return {
         restrict: "E",
-        scope: false,
+        scope: true,
         templateUrl: "/static/template/quadrant.html",
         link: function(scope, elem, attrs) {
-            
+            scope.oldCloneToggle[scope.$id] = false;
+            scope.newCloneToggle[scope.$id] = false;
+
+            scope.oldCloneOpen = function() {
+                scope.newCloneToggle[scope.$id] = false;
+                scope.oldCloneToggle[scope.$id] = !scope.oldCloneToggle[scope.$id];
+            }
+
+            scope.newCloneOpen = function() {
+                scope.oldCloneToggle[scope.$id] = false;
+                scope.newCloneToggle[scope.$id] = !scope.newCloneToggle[scope.$id];
+            }
         }
     }
 });
@@ -47,7 +58,8 @@ bioApp.controller('MainController', function($scope, $http) {
         date: '06/25/2016'
     };
 
-
+    $scope.newCloneToggle = {};
+    $scope.oldCloneToggle = {};
     $scope.quadrants = [];
 
     $http.get('http://localhost:8080/test')
