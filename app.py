@@ -93,9 +93,9 @@ def edit():
     return render_template('edit.html', c=query_db("SELECT * FROM Clone"))
 
 
-@app.route('/viz')
-def viz():
-    return render_template('viz.html')
+@app.route('/enter_assay')
+def enter_assay():
+    return render_template('enter_assay.html')
 
 
 @app.route('/test', methods=['GET'])

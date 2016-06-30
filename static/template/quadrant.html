@@ -1,23 +1,25 @@
 <div class="quadrant">
-	<div class="">
+	<h3>Quadrant {a $id - 2 a}</h3>
+	<div class="quad-stock-btns">
 		<span>
-			<p class="btn btn-success" ng-click="oldCloneOpen()">Old virus stock</p>
-			<p class="btn btn-primary" ng-click="newCloneOpen()">New virus stock</p>		
+			<p class="btn btn-success btn-sm" ng-click="oldStockOpen()">Old stock</p>
+			<p class="btn btn-primary btn-sm" ng-click="newStockOldOpen()">New stock (from old clone)</p>		
+			<p class="btn btn-info btn-sm" ng-click="newStockNewOpen()">New stock (from new clone)</p>		
 		</span>
 	</div>
 
-	<div ng-show="quads[$id].oldCloneToggle">
+	<div ng-show="quads[$id].oldStockToggle">
 		<div class="form-group row">
-			<label for="" class="control-label col-md-4">Old stock harvest date</label>
+			<label for="oldStockDateInp" class="control-label col-md-4">Old stock harvest date</label>
 			<div class="col-md-8">
-				<input type="text" placeholder="Enter date" class="form-control" ng-model="quads[$id].oldCloneFilter">
+				<input type="text" name="oldStockDateInp" placeholder="Enter date" class="form-control" ng-model="quads[$id].oldCloneFilter">
 			</div>
 		</div>
 
 		<div class="form-group row">
-			<label for="" class="control-label col-md-4">Select clone</label>
+			<label for="oldCloneSelect" class="control-label col-md-4">Select clone</label>
 			<div class="col-md-8">
-			    <select name="" id="test" class="form-control"
+			    <select name="oldCloneSelect" class="form-control"
 						ng-options="clone.name + ' | ' + clone.aa_changes + ' | ' + clone.purify_date group by clone.harvest_date for clone in clones
 						 | filter: {harvest_date: quads[$id].oldCloneFilter}
 						 | orderBy: 'name'" ng-model="quads[$id].selectedClone">
@@ -26,29 +28,77 @@
 		</div>
 
 	</div>
-		<div ng-show="quads[$id].newCloneToggle">
+
+	<div ng-show="quads[$id].newStockOldToggle">
 		<div class="form-group row">
-			<label for="" class="control-label col-md-4">New clone name</label>
+			<label for="newCloneAAInp" class="control-label col-md-4">Old clone date</label>
 			<div class="col-md-8">
-				<input type="text" placeholder="Enter name" class="form-control">
+				<input type="text" name="newCloneAAInp" placeholder="Enter AA changes" class="form-control">
 			</div>
 		</div>
 
 		<div class="form-group row">
-			<label for="" class="control-label col-md-4">New clone date</label>
+			<label for="" class="control-label col-md-4">Select clone</label>
 			<div class="col-md-8">
-				<input type="text" placeholder="Enter date" class="form-control">
+			    <select name="" class="form-control">
+    			</select>
+			</div>			
+		</div>		
+
+		<div class="form-group row">
+			<label for="newHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
+			<div class="col-md-8">
+				<input type="text" name="newHarvestDateInp" placeholder="Enter harvest date" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="newFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
+			<div class="col-md-8">
+				<input type="number" min=0 name="newFFUInp" placeholder="Enter FFU/ml" class="form-control">
+			</div>
+		</div>						
+
+		<p class="btn btn-primary btn-sm">Create stock</p>
+	</div>
+
+	<div ng-show="quads[$id].newStockNewToggle">
+		<div class="form-group row">
+			<label for="newCloneNameInp" class="control-label col-md-4">New clone name</label>
+			<div class="col-md-8">
+				<input type="text" name="newCloneNameInp" placeholder="Enter name" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="newCloneDateInp" class="control-label col-md-4">New clone date</label>
+			<div class="col-md-8">
+				<input type="text" name="newCloneDateInp" placeholder="Enter date" class="form-control">
 			</div>			
 		</div>
 
 		<div class="form-group row">
-			<label for="" class="control-label col-md-4">AA changes</label>
+			<label for="newCloneAAInp" class="control-label col-md-4">AA changes</label>
 			<div class="col-md-8">
-				<input type="text" placeholder="Enter AA changes" class="form-control">
+				<input type="text" name="newCloneAAInp" placeholder="Enter AA changes" class="form-control">
 			</div>
 		</div>
 
-		<p class="btn btn-info">Create clone</p>
+		<div class="form-group row">
+			<label for="newHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
+			<div class="col-md-8">
+				<input type="text" name="newHarvestDateInp" placeholder="Enter harvest date" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="newFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
+			<div class="col-md-8">
+				<input type="number" min=0 name="newFFUInp" placeholder="Enter FFU/ml" class="form-control">
+			</div>
+		</div>						
+
+		<p class="btn btn-info btn-sm">Create clone and stock</p>
 	</div>
 
 	<hr>
@@ -86,7 +136,14 @@
 		<div class="col-md-8">
 			<input type="number" step="any" min=0 name="" placeholder="Enter concentration increment" class="form-control">
 		</div>
-	</div>	
+	</div>
+
+	<div class="form-group row">
+		<label class="control-label col-md-4"># of controls</label>
+		<div class="col-md-8">
+			<input type="number" min=0 name="" placeholder="Enter # of controls" class="form-control">
+		</div>
+	</div>		
 	
 	<div class="form-group row">
 		<label for="" class="control-label col-md-4">Drug</label>
@@ -98,6 +155,4 @@
 			</select>
 		</div>
 	</div>
-
-
 </div>

@@ -49,3 +49,7 @@ form .ng-dirty.ng-valid {
     border-radius: 10px;
     margin-top: 1em;
 }
+
+.quad-stock-btns {
+    margin-bottom: 1em;
+}

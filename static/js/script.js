@@ -13,20 +13,34 @@ bioApp.directive('quadrant', function() {
         link: function(scope, elem, attrs) {
             scope.quads[scope.$id] = {
                 oldCloneFilter: '07/25/2016',
-                oldCloneToggle: false,
-                newCloneToggle: false,
+                oldStockToggle: false,
+                newStockOldToggle: false,
+                newStockNewToggle: false,
                 virusStockDate: null,
-                selectedClone: null
+                selectedClone: null,
+                minDrug: null,
+                maxDrug: null,
+                inc: null,
+                numControls: null,
+                drug: null,
             };
 
-            scope.oldCloneOpen = function() {
-                scope.quads[scope.$id].newCloneToggle = false;
-                scope.quads[scope.$id].oldCloneToggle = !scope.quads[scope.$id].oldCloneToggle;
+            scope.oldStockOpen = function() {
+                scope.quads[scope.$id].newStockOldToggle = false;
+                scope.quads[scope.$id].newStockNewToggle = false;
+                scope.quads[scope.$id].oldStockToggle = !scope.quads[scope.$id].oldStockToggle;
             };
 
-            scope.newCloneOpen = function() {
-                scope.quads[scope.$id].oldCloneToggle = false;
-                scope.quads[scope.$id].newCloneToggle = !scope.quads[scope.$id].newCloneToggle;
+            scope.newStockOldOpen = function() {
+                scope.quads[scope.$id].oldStockToggle = false;
+                scope.quads[scope.$id].newStockNewToggle = false;
+                scope.quads[scope.$id].newStockOldToggle = !scope.quads[scope.$id].newStockOldToggle;
+            };
+
+            scope.newStockNewOpen = function() {
+                scope.quads[scope.$id].oldStockToggle = false;
+                scope.quads[scope.$id].newStockOldToggle = false;
+                scope.quads[scope.$id].newStockNewToggle = !scope.quads[scope.$id].newStockNewToggle;
             };
         }
     }
@@ -62,15 +76,8 @@ bioApp.controller('MainController', function($scope, $http) {
         aaChanges: 'G140S+Q148H',
         date: '06/25/2016'
     };
-
-    $scope.newCloneToggle = {};
-    $scope.oldCloneToggle = {};
-    $scope.selectedClones = {};
     
     $scope.quads = {};
-
-    $scope.oldCloneFilter = "06/25/2016";
-
 
     $http.get('http://localhost:8080/get_all_clones')
         .success(function(resp) {
