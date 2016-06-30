@@ -6,28 +6,27 @@
 		</span>
 	</div>
 
-	<div ng-show="oldCloneToggle[{a ::$id a}]">
+	<div ng-show="quads[$id].oldCloneToggle">
 		<div class="form-group row">
-			<label for="" class="control-label col-md-4">Old clone date</label>
+			<label for="" class="control-label col-md-4">Old stock harvest date</label>
 			<div class="col-md-8">
-				<input type="text" placeholder="Enter date" class="form-control">
+				<input type="text" placeholder="Enter date" class="form-control" ng-model="quads[$id].oldCloneFilter">
 			</div>
 		</div>
 
 		<div class="form-group row">
-			<label for="" class="control-lable col-md-4">Select clone</label>
+			<label for="" class="control-label col-md-4">Select clone</label>
 			<div class="col-md-8">
-			    <select name="" id="" class="form-control">
-			        <option value="" disabled selected>Select a clone:</option>
-			        {% for clone in c %}
-			            <option value="{{ clone.name }}">{{ clone.name }} | {{ clone.aaChanges }}</option>
-			        {% endfor %}
-    </select>
+			    <select name="" id="test" class="form-control"
+						ng-options="clone.name + ' | ' + clone.aa_changes + ' | ' + clone.purify_date group by clone.harvest_date for clone in clones
+						 | filter: {harvest_date: quads[$id].oldCloneFilter}
+						 | orderBy: 'name'" ng-model="quads[$id].selectedClone">
+    			</select>
 			</div>			
 		</div>
 
 	</div>
-		<div ng-show="newCloneToggle[{a ::$id a}]">
+		<div ng-show="quads[$id].newCloneToggle">
 		<div class="form-group row">
 			<label for="" class="control-label col-md-4">New clone name</label>
 			<div class="col-md-8">
@@ -54,11 +53,17 @@
 
 	<hr>
 
-	<p>
-		<strong>Selected virus stock:</strong> 3/15/16
-		<br>
-		<strong>Selected clone: </strong> 26-1 | 2/1/15 | G140S+Q148H
-	</p>	
+	<div>
+        <p ng-show="quads[$id].oldCloneFilter">
+            <strong>Selected harvest date:</strong> {a quads[$id].oldCloneFilter a}
+        </p>
+
+		<span ng-show="quads[$id].selectedClone">
+            <strong>Virus stock from: </strong>
+            {a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
+            purified on {a quads[$id].selectedClone.purify_date a}
+        </span>
+	</div>
 
 	<hr>
 

@@ -11,18 +11,23 @@ bioApp.directive('quadrant', function() {
         scope: true,
         templateUrl: "/static/template/quadrant.html",
         link: function(scope, elem, attrs) {
-            scope.oldCloneToggle[scope.$id] = false;
-            scope.newCloneToggle[scope.$id] = false;
+            scope.quads[scope.$id] = {
+                oldCloneFilter: '07/25/2016',
+                oldCloneToggle: false,
+                newCloneToggle: false,
+                virusStockDate: null,
+                selectedClone: null
+            };
 
             scope.oldCloneOpen = function() {
-                scope.newCloneToggle[scope.$id] = false;
-                scope.oldCloneToggle[scope.$id] = !scope.oldCloneToggle[scope.$id];
-            }
+                scope.quads[scope.$id].newCloneToggle = false;
+                scope.quads[scope.$id].oldCloneToggle = !scope.quads[scope.$id].oldCloneToggle;
+            };
 
             scope.newCloneOpen = function() {
-                scope.oldCloneToggle[scope.$id] = false;
-                scope.newCloneToggle[scope.$id] = !scope.newCloneToggle[scope.$id];
-            }
+                scope.quads[scope.$id].oldCloneToggle = false;
+                scope.quads[scope.$id].newCloneToggle = !scope.quads[scope.$id].newCloneToggle;
+            };
         }
     }
 });
@@ -62,10 +67,14 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.oldCloneToggle = {};
     $scope.selectedClones = {};
     
-    $scope.quadrants = [];
+    $scope.quads = {};
 
-    $http.get('http://localhost:8080/test')
+    $scope.oldCloneFilter = "06/25/2016";
+
+
+    $http.get('http://localhost:8080/get_all_clones')
         .success(function(resp) {
+            $scope.clones = resp;
             console.log(resp);
         });
 });

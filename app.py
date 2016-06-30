@@ -41,7 +41,10 @@ def query_db(query, args=(), one=False):
 
 
 def format_resp(resp, tbl_name):
-    fields = [x[1] for x in query_db("PRAGMA table_info(" + tbl_name + ")")]
+    fields = []
+    for name in tbl_name:
+        for x in query_db("PRAGMA table_info(" + name + ")"):
+            fields.append(x[1])
 
     formatted_resp = []
     for x in resp:
@@ -59,7 +62,7 @@ def insert_db(query, args=()):
     conn.commit()
 
 
-@app.route('/clear_db', methods=["POST"])
+@app.route('/clear_db', methods=["GET"])
 def clear_db():
     conn = get_db()
     cur = conn.cursor()
@@ -77,7 +80,7 @@ def index():
 @app.route('/add_clone', methods=["POST"])
 def add_clone():
     clone = (request.form.get('nameInp'),
-             request.form.get('cloneInp'),
+             request.form.get('aaChangesInp'),
              request.form.get('dateInp'))
 
     insert_db("INSERT INTO Clone(name, aa_changes, purify_date) VALUES(?, ?, ?)", args=clone)
@@ -95,9 +98,24 @@ def viz():
     return render_template('viz.html')
 
 
-@app.route('/test', methods=["GET"])
+@app.route('/test', methods=['GET'])
 def test():
-    return json.dumps(format_resp(query_db("SELECT * FROM Clone"), "Clone"))
+    clone_id = query_db("SELECT id FROM Clone WHERE name='2-2'")[0][0]
+
+    # insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=['07/25/2016', clone_id, 500000])
+
+    # example join
+    return str(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"))
+
+
+@app.route('/get_all_clones', methods=["GET"])
+def get_clones(date=''):
+    if date == '':
+        return json.dumps(format_resp(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"),
+                                      ["Virus_Stock", "Clone"]))
+
+    return json.dumps(format_resp(query_db("SELECT * FROM Clone WHERE DATE >= ?", args=[date]),
+                                  ["Virus_Stock", "Clone"]))
 
 
 if __name__ == "__main__":
