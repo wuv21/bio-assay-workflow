@@ -6,21 +6,21 @@
 {% block content %}
 	<div class="container" ng-controller="MainController">
 		<h2>Enter assay data</h2>
-		<form action="">
+		<form action="" name="plateForm">
 			<div class="row">
-				<label for="" class="col-xs-1">Plate name</label>
+				<label for="plateNameInp" class="col-xs-1">Plate name</label>
 				<div class="col-xs-3">
-					<input type="text" name="plate_name" class="form-control" placeholder="Enter plate name">
+					<input type="text" name="plateNameInp" id="plateNameInp" class="form-control" placeholder="Enter plate name" ng-model="plate.name" required>
 				</div>
 
-				<label for="" class="col-xs-1">Read Date</label>
+				<label for="plateDateInp" class="col-xs-1">Read Date</label>
 				<div class="col-xs-3">
-					<input type="text" name="plate_name" class="form-control" placeholder="Enter read date">
+					<input type="text" name="plateDateInp" id="plateDateInp" class="form-control" placeholder="MM/DD/YYYY (01/02/2016)" ng-model="plate.date" check-date required>
 				</div>
 
-				<label for="" class="col-xs-1">Letter</label>
+				<label for="plateLetterInp" class="col-xs-1">Letter</label>
 				<div class="col-xs-3">
-					<input type="text" name="plate_name" class="form-control" placeholder="Enter plate letter">	
+					<input type="text" name="plateLetterInp" id="plateLetterInp" class="form-control" placeholder="Enter plate letter" ng-model="plate.letter" required>
 				</div>
 				
 			</div>
@@ -42,9 +42,9 @@
 			</div>
 			
 			<span>
-			<!-- todo form validations -->
+				<p class="btn btn-warning" ng-click="test()">Test response</p>
 				<button class="btn btn-danger">Reset</button>
-				<button class="btn btn-primary">Submit</button>
+				<button class="btn btn-primary" ng-disabled="plateForm.$invalid">Submit</button>
 			</span>
 			
 		</form>

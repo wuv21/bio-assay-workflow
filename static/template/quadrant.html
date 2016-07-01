@@ -12,16 +12,16 @@
 		<div class="form-group row">
 			<label for="oldStockDateInp" class="control-label col-md-4">Old stock harvest date</label>
 			<div class="col-md-8">
-				<input type="text" name="oldStockDateInp" placeholder="Enter date" class="form-control" ng-model="quads[$id].oldCloneFilter">
+				<input type="text" name="oldStockDateInp" id="oldStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldStockDateFilter" check-date>
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="oldCloneSelect" class="control-label col-md-4">Select clone</label>
 			<div class="col-md-8">
-			    <select name="oldCloneSelect" class="form-control"
-						ng-options="clone.name + ' | ' + clone.aa_changes + ' | ' + clone.purify_date group by clone.harvest_date for clone in clones
-						 | filter: {harvest_date: quads[$id].oldCloneFilter}
+			    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control"
+						ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.harvest_date for c in stockClones
+						 | filter: {harvest_date: quads[$id].oldStockDateFilter}
 						 | orderBy: 'name'" ng-model="quads[$id].selectedClone">
     			</select>
 			</div>			
@@ -31,74 +31,77 @@
 
 	<div ng-show="quads[$id].newStockOldToggle">
 		<div class="form-group row">
-			<label for="newCloneAAInp" class="control-label col-md-4">Old clone date</label>
+			<label for="oldCloneDateInp" class="control-label col-md-4">Old clone date</label>
 			<div class="col-md-8">
-				<input type="text" name="newCloneAAInp" placeholder="Enter AA changes" class="form-control">
+				<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldCloneDateFilter" check-date>
 			</div>
 		</div>
 
 		<div class="form-group row">
-			<label for="" class="control-label col-md-4">Select clone</label>
+			<label for="oldCloneSelect_newStock" class="control-label col-md-4">Select clone</label>
 			<div class="col-md-8">
-			    <select name="" class="form-control">
+			    <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control"
+						ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date for c in clones
+						| filter: {purify_date: quads[$id].oldCloneFilter}"
+						ng-model="quads[$id].selectedClone">
     			</select>
 			</div>			
 		</div>		
 
 		<div class="form-group row">
-			<label for="newHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
+			<label for="newOldHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
 			<div class="col-md-8">
-				<input type="text" name="newHarvestDateInp" placeholder="Enter harvest date" class="form-control">
+				<input type="text" name="newOldHarvestDateInp" id="newOldHarvestDateInp" placeholder="Enter harvest date" class="form-control">
 			</div>
 		</div>
 
 		<div class="form-group row">
-			<label for="newFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
+			<label for="newOldFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
 			<div class="col-md-8">
-				<input type="number" min=0 name="newFFUInp" placeholder="Enter FFU/ml" class="form-control">
+				<input type="number" min=0 name="newOldFFUInp" id="newOldFFUInp" placeholder="Enter FFU/ml" class="form-control">
 			</div>
 		</div>						
 
-		<p class="btn btn-primary btn-sm">Create stock</p>
+		<p class="btn btn-primary btn-sm" ng-click="createStock()">Create stock</p>
 	</div>
 
 	<div ng-show="quads[$id].newStockNewToggle">
 		<div class="form-group row">
 			<label for="newCloneNameInp" class="control-label col-md-4">New clone name</label>
 			<div class="col-md-8">
-				<input type="text" name="newCloneNameInp" placeholder="Enter name" class="form-control">
+				<input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter name" class="form-control">
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="newCloneDateInp" class="control-label col-md-4">New clone date</label>
 			<div class="col-md-8">
-				<input type="text" name="newCloneDateInp" placeholder="Enter date" class="form-control">
+				<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter date" class="form-control">
 			</div>			
 		</div>
 
 		<div class="form-group row">
 			<label for="newCloneAAInp" class="control-label col-md-4">AA changes</label>
 			<div class="col-md-8">
-				<input type="text" name="newCloneAAInp" placeholder="Enter AA changes" class="form-control">
+				<input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes" class="form-control">
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="newHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
 			<div class="col-md-8">
-				<input type="text" name="newHarvestDateInp" placeholder="Enter harvest date" class="form-control">
+				<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date" class="form-control">
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="newFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
 			<div class="col-md-8">
-				<input type="number" min=0 name="newFFUInp" placeholder="Enter FFU/ml" class="form-control">
+				<input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control">
 			</div>
 		</div>						
 
-		<p class="btn btn-info btn-sm">Create clone and stock</p>
+		<p class="btn btn-info btn-sm" ng-click="createStockAndClone()">Create clone and stock</p>
 	</div>
 
 	<hr>
@@ -117,38 +120,39 @@
 
 	<hr>
 
+	<!--Quadrant layout questions-->
 	<div class="form-group row">
 		<label class="control-label col-md-4">Min [drug]</label>
 		<div class="col-md-8">
-			<input type="number" step="any" min=0 name="" placeholder="Enter minimum concentration" class="form-control">
+			<input type="number" step="any" min=0 name="" placeholder="Enter minimum concentration" class="form-control" ng-model="quads[$id].minDrug">
 		</div>
 	</div>
 
 	<div class="form-group row">
 		<label class="control-label col-md-4">Max [drug]</label>
 		<div class="col-md-8">
-			<input type="number" step="any" min=0 name="" placeholder="Enter maximum concentration" class="form-control">
+			<input type="number" step="any" min=0 name="" placeholder="Enter maximum concentration" class="form-control" ng-model="quads[$id].maxDrug">
 		</div>
 	</div>
 
 	<div class="form-group row">
 		<label class="control-label col-md-4">Increment</label>
 		<div class="col-md-8">
-			<input type="number" step="any" min=0 name="" placeholder="Enter concentration increment" class="form-control">
+			<input type="number" step="any" min=0 name="" placeholder="Enter concentration increment" class="form-control" ng-model="quads[$id].inc">
 		</div>
 	</div>
 
 	<div class="form-group row">
 		<label class="control-label col-md-4"># of controls</label>
 		<div class="col-md-8">
-			<input type="number" min=0 name="" placeholder="Enter # of controls" class="form-control">
+			<input type="number" min=0 name="" placeholder="Enter # of controls" class="form-control" ng-model="quads[$id].numControls">
 		</div>
 	</div>		
 	
 	<div class="form-group row">
-		<label for="" class="control-label col-md-4">Drug</label>
+		<label for="drugInp" class="control-label col-md-4">Drug</label>
 		<div class="col-md-8">
-			<select name="" id="">
+			<select name="drugInp" id="drugInp" class="form-control" ng-model="quads[$id].drug">
 				<option value="" selected disabled>Please select a drug</option>
 				<option value="">DTG</option>
 				<option value="">CTG</option>
