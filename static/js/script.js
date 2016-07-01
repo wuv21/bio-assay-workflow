@@ -12,17 +12,18 @@ bioApp.directive('quadrant', function() {
         templateUrl: "/static/template/quadrant.html",
         link: function(scope, elem, attrs) {
             scope.quads[scope.$id] = {
-                oldCloneFilter: '07/25/2016',
+                oldStockDateFilter: '07/25/2016',
                 oldStockToggle: false,
                 newStockOldToggle: false,
                 newStockNewToggle: false,
+                oldCloneDateFilter: '06/25/2016',
                 virusStockDate: null,
                 selectedClone: null,
                 minDrug: null,
                 maxDrug: null,
                 inc: null,
                 numControls: null,
-                drug: null,
+                drug: null
             };
 
             scope.oldStockOpen = function() {
@@ -42,6 +43,15 @@ bioApp.directive('quadrant', function() {
                 scope.quads[scope.$id].newStockOldToggle = false;
                 scope.quads[scope.$id].newStockNewToggle = !scope.quads[scope.$id].newStockNewToggle;
             };
+
+            scope.createStockAndClone = function() {
+
+            };
+
+            scope.createStock = function() {
+
+            };
+
         }
     }
 });
@@ -56,9 +66,9 @@ bioApp.directive('checkDate', function() {
                 var day = splitDate[1];
                 var year = splitDate[2];
 
-                if (month.length != 2 && Number(month) < 0 && Number(month) > 13) {
+                if (month.length != 2 || Number(month) < 0 || Number(month) > 13) {
                     return false;
-                } else if (day.length != 2 && Number(day) < 0 && Number(day) > 31) {
+                } else if (day.length != 2 || Number(day) < 0 || Number(day) > 31) {
                     return false;
                 } else if (year.length != 4) {
                     return false;
@@ -76,12 +86,21 @@ bioApp.controller('MainController', function($scope, $http) {
         aaChanges: 'G140S+Q148H',
         date: '06/25/2016'
     };
-    
+
+    $scope.plate = {};
     $scope.quads = {};
+
+    $http.get('http://localhost:8080/get_all_stocks')
+        .success(function(resp) {
+            $scope.stockClones = resp;
+        });
 
     $http.get('http://localhost:8080/get_all_clones')
         .success(function(resp) {
             $scope.clones = resp;
-            console.log(resp);
         });
+
+    $scope.test = function() {
+        console.log($scope.quads);
+    };
 });

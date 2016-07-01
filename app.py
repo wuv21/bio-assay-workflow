@@ -108,8 +108,8 @@ def test():
     return str(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"))
 
 
-@app.route('/get_all_clones', methods=["GET"])
-def get_clones(date=''):
+@app.route('/get_all_stocks', methods=["GET"])
+def get_all_stocks(date=''):
     if date == '':
         return json.dumps(format_resp(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"),
                                       ["Virus_Stock", "Clone"]))
@@ -117,6 +117,10 @@ def get_clones(date=''):
     return json.dumps(format_resp(query_db("SELECT * FROM Clone WHERE DATE >= ?", args=[date]),
                                   ["Virus_Stock", "Clone"]))
 
+
+@app.route('/get_all_clones', methods=["GET"])
+def get_all_clones():
+    return json.dumps(format_resp(query_db("SELECT * FROM Clone"), ["Clone"]))
 
 if __name__ == "__main__":
     create_db()
