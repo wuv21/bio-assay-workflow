@@ -107,15 +107,15 @@
 	<hr>
 
 	<div>
-        <p ng-show="quads[$id].oldCloneFilter">
-            <strong>Selected harvest date:</strong> {a quads[$id].oldCloneFilter a}
-        </p>
-
-		<span ng-show="quads[$id].selectedClone">
-            <strong>Virus stock from: </strong>
-            {a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
-            purified on {a quads[$id].selectedClone.purify_date a}
-        </span>
+        <p><strong>Selected harvest date:</strong> <span ng-show="quads[$id].oldStockDateFilter">{a quads[$id].oldStockDateFilter a}</span></p>
+		
+		<p>
+			<strong>Virus stock from: </strong>
+			<span ng-show="quads[$id].selectedClone">
+            	{a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
+            	purified on {a quads[$id].selectedClone.purify_date a}
+			</span>
+		</p>
 	</div>
 
 	<hr>
