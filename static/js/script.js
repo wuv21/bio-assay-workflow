@@ -1,11 +1,12 @@
 var bioApp = angular.module('bioApp', []);
+var baseAddress = 'http://localhost:8080';
 
 bioApp.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('{a');
     $interpolateProvider.endSymbol('a}');
 }]);
 
-bioApp.directive('quadrant', function() {
+bioApp.directive('quadrant', function($http) {
     return {
         restrict: "E",
         scope: true,
@@ -17,12 +18,17 @@ bioApp.directive('quadrant', function() {
                 newStockOldToggle: false,
                 newStockNewToggle: false,
                 oldCloneDateFilter: '06/25/2016',
-                virusStockDate: null,
+                virusStockDate: '08/01/2016',
+                virusStockFFU : 55555,
                 selectedClone: null,
-                minDrug: null,
-                maxDrug: null,
-                inc: null,
-                numControls: null,
+                newCName: null,
+                newCDate: null,
+                newCAA: null,
+                newCType: null,
+                minDrug: 5,
+                maxDrug: 10,
+                inc: 1,
+                numControls: 4,
                 drug: null
             };
 
@@ -45,10 +51,39 @@ bioApp.directive('quadrant', function() {
             };
 
             scope.createStockAndClone = function() {
+                var data = {
+                    cName: scope.quads[scope.$id].newCName,
+                    cDate: scope.quads[scope.$id].newCDate,
+                    cAA: scope.quads[scope.$id].newCAA,
+                    cType: scope.quads[scope.$id].newCType,
+                    stockDate: scope.quads[scope.$id].virusStockDate,
+                    stockFFU: scope.quads[scope.$id].virusStockFFU
+                };
 
+                if (data.stockDate && data.stockFFU) {
+                    $http.post(baseAddress + '/create_clone_and_stock', data)
+                        .success(function(resp) {
+                        });
+                } else {
+                    console.log('form not inputted');
+                }
             };
 
             scope.createStock = function() {
+                var data = {
+                    stockDate: scope.quads[scope.$id].virusStockDate,
+                    stockFFU: scope.quads[scope.$id].virusStockFFU,
+                    clone: scope.quads[scope.$id].selectedClone
+                };
+
+                if (data.stockDate && data.stockFFU && data.clone) {
+                    $http.post(baseAddress + '/create_stock', data)
+                        .success(function(resp) {
+                        });
+                } else {
+                    console.log('stock form not inputted');
+                }
+
 
             };
 
@@ -91,12 +126,12 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.plate = {};
     $scope.quads = {};
 
-    $http.get('http://localhost:8080/get_all_stocks')
+    $http.get(baseAddress + '/get_all_stocks')
         .success(function(resp) {
             $scope.stockClones = resp;
         });
 
-    $http.get('http://localhost:8080/get_all_clones')
+    $http.get(baseAddress + '/get_all_clones')
         .success(function(resp) {
             $scope.clones = resp;
         });
@@ -104,19 +139,4 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.test = function() {
         console.log($scope.quads);
     };
-
-    $scope.testSubmission = function() {
-        console.log('here');
-
-        var data = {
-            details: $scope.plate,
-            quads: $scope.quads
-        };
-
-        $http.post('http://localhost:8080/test_post', data)
-            .success(function(resp) {
-                console.log('here');
-        });
-    }
-
 });
