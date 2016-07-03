@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS Clone  (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   aa_changes TEXT,
+  type TEXT NOT NULL,
   purify_date DATE NOT NULL
 );
 

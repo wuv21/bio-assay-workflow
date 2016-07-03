@@ -1,4 +1,4 @@
-var bioApp = angular.module('bioApp', ['ui.bootstrap']);
+var bioApp = angular.module('bioApp', []);
 
 bioApp.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.startSymbol('{a');
@@ -10,7 +10,7 @@ bioApp.directive('quadrant', function() {
         restrict: "E",
         scope: true,
         templateUrl: "/static/template/quadrant.html",
-        link: function(scope, elem, attrs) {
+        link: function(scope) {
             scope.quads[scope.$id] = {
                 oldStockDateFilter: '07/25/2016',
                 oldStockToggle: false,
@@ -84,6 +84,7 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.clone = {
         name: '2-2',
         aaChanges: 'G140S+Q148H',
+        type: "ROD9",
         date: '06/25/2016'
     };
 
@@ -103,4 +104,19 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.test = function() {
         console.log($scope.quads);
     };
+
+    $scope.testSubmission = function() {
+        console.log('here');
+
+        var data = {
+            details: $scope.plate,
+            quads: $scope.quads
+        };
+
+        $http.post('http://localhost:8080/test_post', data)
+            .success(function(resp) {
+                console.log('here');
+        });
+    }
+
 });

@@ -2,9 +2,11 @@ from flask import Flask, render_template, g, request, redirect, url_for
 import sqlite3
 import os
 import json
+import pprint
 # from flask_cors import CORS
 
 app = Flask(__name__)
+pp = pprint.PrettyPrinter(indent=4)
 # CORS(app)
 
 DATABASE = os.path.join(os.path.curdir, 'sql', 'hiv2_drug_assay.db')
@@ -81,9 +83,10 @@ def index():
 def add_clone():
     clone = (request.form.get('nameInp'),
              request.form.get('aaChangesInp'),
+             request.form.get('typeInp'),
              request.form.get('dateInp'))
 
-    insert_db("INSERT INTO Clone(name, aa_changes, purify_date) VALUES(?, ?, ?)", args=clone)
+    insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=clone)
 
     return redirect(url_for('index'))
 
@@ -98,14 +101,18 @@ def enter_assay():
     return render_template('enter_assay.html')
 
 
-@app.route('/test', methods=['GET'])
-def test():
-    clone_id = query_db("SELECT id FROM Clone WHERE name='2-2'")[0][0]
-
+@app.route('/test_post', methods=['POST'])
+def test_post():
+    # clone_id = query_db("SELECT id FROM Clone WHERE name='2-2'")[0][0]
     # insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=['07/25/2016', clone_id, 500000])
+    #
+    # # example join
+    # return str(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"))
 
-    # example join
-    return str(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"))
+    item = request.get_json(force=True)
+    pp.pprint(item)
+
+    return "HELLO"
 
 
 @app.route('/get_all_stocks', methods=["GET"])

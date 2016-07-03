@@ -88,6 +88,13 @@
 		</div>
 
 		<div class="form-group row">
+			<label for="newCloneTypeInp" class="control-label col-md-4">Plasmid Type</label>
+			<div class="col-md-8">
+				<input type="text" name="newCloneTypeInp" id="newCloneTypeInp" placeholder="Enter vector type" class="form-control">
+			</div>
+		</div>
+
+		<div class="form-group row">
 			<label for="newHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
 			<div class="col-md-8">
 				<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date" class="form-control">
@@ -107,8 +114,8 @@
 	<hr>
 
 	<div>
-        <p ng-show="quads[$id].oldCloneFilter">
-            <strong>Selected harvest date:</strong> {a quads[$id].oldCloneFilter a}
+        <p ng-show="quads[$id].oldStockDateFilter">
+            <strong>Selected harvest date:</strong> {a quads[$id].oldStockDateFilter a}
         </p>
 
 		<span ng-show="quads[$id].selectedClone">
