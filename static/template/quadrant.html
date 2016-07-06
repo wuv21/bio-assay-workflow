@@ -114,6 +114,7 @@
 	<hr>
 
 	<div>
+<<<<<<< HEAD
         <p ng-show="quads[$id].oldStockDateFilter">
             <strong>Selected harvest date:</strong> {a quads[$id].oldStockDateFilter a}
         </p>
@@ -123,6 +124,17 @@
             {a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
             purified on {a quads[$id].selectedClone.purify_date a}
         </span>
+=======
+        <p><strong>Selected harvest date:</strong> <span ng-show="quads[$id].oldStockDateFilter">{a quads[$id].oldStockDateFilter a}</span></p>
+		
+		<p>
+			<strong>Virus stock from: </strong>
+			<span ng-show="quads[$id].selectedClone">
+            	{a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
+            	purified on {a quads[$id].selectedClone.purify_date a}
+			</span>
+		</p>
+>>>>>>> master
 	</div>
 
 	<hr>
