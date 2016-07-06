@@ -51,14 +51,14 @@
 		<div class="form-group row">
 			<label for="newOldHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
 			<div class="col-md-8">
-				<input type="text" name="newOldHarvestDateInp" id="newOldHarvestDateInp" placeholder="Enter harvest date" class="form-control">
+				<input type="text" name="newOldHarvestDateInp" id="newOldHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="quads[$id].virusStockDate">
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="newOldFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
 			<div class="col-md-8">
-				<input type="number" min=0 name="newOldFFUInp" id="newOldFFUInp" placeholder="Enter FFU/ml" class="form-control">
+				<input type="number" min=0 name="newOldFFUInp" id="newOldFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
 			</div>
 		</div>						
 
@@ -69,35 +69,42 @@
 		<div class="form-group row">
 			<label for="newCloneNameInp" class="control-label col-md-4">New clone name</label>
 			<div class="col-md-8">
-				<input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter name" class="form-control">
+				<input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter name" class="form-control" ng-model="quads[$id].newCName">
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="newCloneDateInp" class="control-label col-md-4">New clone date</label>
 			<div class="col-md-8">
-				<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter date" class="form-control">
+				<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter date" class="form-control" ng-model="quads[$id].newCDate">
 			</div>			
 		</div>
 
 		<div class="form-group row">
 			<label for="newCloneAAInp" class="control-label col-md-4">AA changes</label>
 			<div class="col-md-8">
-				<input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes" class="form-control">
+				<input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes" class="form-control" ng-model="quads[$id].newCAA">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label for="newCloneTypeInp" class="control-label col-md-4">Plasmid Type</label>
+			<div class="col-md-8">
+				<input type="text" name="newCloneTypeInp" id="newCloneTypeInp" placeholder="Enter vector type" class="form-control" ng-model="quads[$id].newCType">
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="newHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
 			<div class="col-md-8">
-				<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date" class="form-control">
+				<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="quads[$id].virusStockDate">
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label for="newFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
 			<div class="col-md-8">
-				<input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control">
+				<input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
 			</div>
 		</div>						
 
@@ -107,6 +114,17 @@
 	<hr>
 
 	<div>
+<<<<<<< HEAD
+        <p ng-show="quads[$id].oldStockDateFilter">
+            <strong>Selected harvest date:</strong> {a quads[$id].oldStockDateFilter a}
+        </p>
+
+		<span ng-show="quads[$id].selectedClone">
+            <strong>Virus stock from: </strong>
+            {a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
+            purified on {a quads[$id].selectedClone.purify_date a}
+        </span>
+=======
         <p><strong>Selected harvest date:</strong> <span ng-show="quads[$id].oldStockDateFilter">{a quads[$id].oldStockDateFilter a}</span></p>
 		
 		<p>
@@ -116,6 +134,7 @@
             	purified on {a quads[$id].selectedClone.purify_date a}
 			</span>
 		</p>
+>>>>>>> master
 	</div>
 
 	<hr>

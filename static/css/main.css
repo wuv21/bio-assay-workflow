@@ -15,7 +15,6 @@ header {
 
 h1, h2, h3 {
     font-weight: 300;
-    /*color: #007CC2;*/
 }
 
 h3 {
@@ -44,7 +43,6 @@ form .ng-dirty.ng-valid {
 
 .quadrant {
     padding: 1.5em;
-    /*margin: 1em;*/
     border: 1px #EEE solid;
     border-radius: 10px;
     margin-top: 1em;

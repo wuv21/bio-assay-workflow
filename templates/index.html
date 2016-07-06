@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container">
+    <div class="container" ng-controller="MainController">
         <h1>Welcome to Bio Workflow</h1>
         <span>
             <a href="#" class="btn btn-lg btn-primary">View assays</a>
             <a href="#" class="btn btn-lg btn-success">Enter assay</a>
+            <p ng-click="test()" class="btn btn-lg btn-warning">Test</p>
         </span>
     </div>
 {% endblock %}
