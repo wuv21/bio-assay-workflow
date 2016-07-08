@@ -121,10 +121,19 @@ def create_clone_and_stock():
     return "Successful"
 
 
-@app.route('/test', methods=['GET'])
-def test():
+@app.route('/testGet', methods=['GET'])
+def testGet():
     return str(query_db("SELECT * FROM Clone"))
 
+
+@app.route('/testPost', methods=['POST'])
+def testPost():
+    data = request.get_json(force=True)
+
+    if data:
+        return "success"
+    else:
+        return "no data"
 
 @app.route('/get_all_stocks', methods=["GET"])
 def get_all_stocks(date=''):

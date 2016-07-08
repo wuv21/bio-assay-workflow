@@ -96,6 +96,10 @@ bioApp.directive('checkDate', function() {
         require: 'ngModel',
         link: function(scope, elem, attrs, controller) {
             controller.$validators.checkDate = function(inp) {
+                if (inp == undefined) {
+                    return false;
+                }
+
                 var splitDate = inp.split('/');
                 var month = splitDate[0];
                 var day = splitDate[1];
@@ -126,6 +130,13 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.plate = {};
     $scope.quads = {};
 
+    // alert settings
+    $scope.alertVisible = false;
+    $scope.alertMessage = "Hello";
+    $scope.closeAlert = function() {
+        $scope.alertVisible = false;
+    }
+
     $http.get(baseAddress + '/get_all_stocks')
         .success(function(resp) {
             $scope.stockClones = resp;
@@ -136,7 +147,11 @@ bioApp.controller('MainController', function($scope, $http) {
             $scope.clones = resp;
         });
 
-    $scope.test = function() {
-        console.log($scope.quads);
-    };
+    $http.post(baseAddress + '/testPost', $scope.plate)
+        .success(function(resp) {
+            if (resp == "no data") {
+                $scope.alertMessage = "ALERT: " + resp;
+                $scope.alertVisible = true;
+            }
+        });
 });

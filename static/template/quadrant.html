@@ -12,7 +12,7 @@
 		<div class="form-group row">
 			<label for="oldStockDateInp" class="control-label col-md-4">Old stock harvest date</label>
 			<div class="col-md-8">
-				<input type="text" name="oldStockDateInp" id="oldStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldStockDateFilter" check-date>
+				<input type="text" name="oldStockDateInp" id="oldStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldStockDateFilter">
 			</div>
 		</div>
 
@@ -33,7 +33,7 @@
 		<div class="form-group row">
 			<label for="oldCloneDateInp" class="control-label col-md-4">Old clone date</label>
 			<div class="col-md-8">
-				<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldCloneDateFilter" check-date>
+				<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldCloneDateFilter">
 			</div>
 		</div>
 
@@ -114,7 +114,6 @@
 	<hr>
 
 	<div>
-<<<<<<< HEAD
         <p ng-show="quads[$id].oldStockDateFilter">
             <strong>Selected harvest date:</strong> {a quads[$id].oldStockDateFilter a}
         </p>
@@ -124,17 +123,6 @@
             {a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
             purified on {a quads[$id].selectedClone.purify_date a}
         </span>
-=======
-        <p><strong>Selected harvest date:</strong> <span ng-show="quads[$id].oldStockDateFilter">{a quads[$id].oldStockDateFilter a}</span></p>
-		
-		<p>
-			<strong>Virus stock from: </strong>
-			<span ng-show="quads[$id].selectedClone">
-            	{a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
-            	purified on {a quads[$id].selectedClone.purify_date a}
-			</span>
-		</p>
->>>>>>> master
 	</div>
 
 	<hr>
@@ -157,7 +145,10 @@
 	<div class="form-group row">
 		<label class="control-label col-md-4">Increment</label>
 		<div class="col-md-8">
-			<input type="number" step="any" min=0 name="" placeholder="Enter concentration increment" class="form-control" ng-model="quads[$id].inc">
+			<div class="radio">
+				<label><input type="radio" name="inc" value="log10" ng-model="quads[$id].inc">log10</label>
+				<label><input type="radio" name="inc" value="halfLog10" ng-model="quads[$id].inc">Half log10</label>					
+			</div>
 		</div>
 	</div>
 
