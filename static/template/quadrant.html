@@ -33,7 +33,7 @@
 		<div class="form-group row">
 			<label for="oldCloneDateInp" class="control-label col-md-4">Old clone date</label>
 			<div class="col-md-8">
-				<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldCloneDateFilter" check-date>
+				<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldCloneDateFilter">
 			</div>
 		</div>
 
@@ -145,7 +145,10 @@
 	<div class="form-group row">
 		<label class="control-label col-md-4">Increment</label>
 		<div class="col-md-8">
-			<input type="number" step="any" min=0 name="" placeholder="Enter concentration increment" class="form-control" ng-model="quads[$id].inc">
+			<div class="radio">
+				<label><input type="radio" name="inc" value="log10" ng-model="quads[$id].inc">log10</label>
+				<label><input type="radio" name="inc" value="halfLog10" ng-model="quads[$id].inc">Half log10</label>					
+			</div>
 		</div>
 	</div>
 

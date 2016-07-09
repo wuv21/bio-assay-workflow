@@ -1,5 +1,6 @@
 @import url(https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic);
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
 
 body {
     font-family: "Open Sans", Helvetica, sans-serif;
@@ -50,4 +51,18 @@ form .ng-dirty.ng-valid {
 
 .quad-stock-btns {
     margin-bottom: 1em;
+}
+
+.radio {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.radio label {
+    padding-right: 1em;
+}
+
+.alert i {
+    float: right;
+    cursor: pointer;
 }

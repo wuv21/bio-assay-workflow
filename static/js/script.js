@@ -62,6 +62,10 @@ bioApp.directive('quadrant', function($http) {
                 if (data.stockDate && data.stockFFU) {
                     $http.post(baseAddress + '/create_clone_and_stock', data)
                         .success(function(resp) {
+                            alert('Clone and stock successfully created.');
+                        })
+                        .error(function(resp) {
+                            alert('Error in creating clone and stock - please ensure data is inputted correctly');
                         });
                 } else {
                     console.log('form not inputted');
@@ -78,6 +82,10 @@ bioApp.directive('quadrant', function($http) {
                 if (data.stockDate && data.stockFFU && data.clone) {
                     $http.post(baseAddress + '/create_stock', data)
                         .success(function(resp) {
+                            alert('Stock successfully created');
+                        })
+                        .error(function(resp) {
+                            alert('Error in creating stock - please ensure data is inputted correctly');
                         });
                 } else {
                     console.log('stock form not inputted');
@@ -95,6 +103,10 @@ bioApp.directive('checkDate', function() {
         require: 'ngModel',
         link: function(scope, elem, attrs, controller) {
             controller.$validators.checkDate = function(inp) {
+                if (inp == undefined) {
+                    return false;
+                }
+
                 var splitDate = inp.split('/');
                 var month = splitDate[0];
                 var day = splitDate[1];
@@ -125,6 +137,13 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.plate = {};
     $scope.quads = {};
 
+    // alert settings
+    $scope.alertVisible = false;
+    $scope.alertMessage = "Hello";
+    $scope.closeAlert = function() {
+        $scope.alertVisible = false;
+    }
+
     $http.get(baseAddress + '/get_all_stocks')
         .success(function(resp) {
             $scope.stockClones = resp;
@@ -135,7 +154,16 @@ bioApp.controller('MainController', function($scope, $http) {
             $scope.clones = resp;
         });
 
-    $scope.test = function() {
-        console.log($scope.quads);
-    };
+    $http.post(baseAddress + '/testPost', $scope.plate)
+        .success(function(resp) {
+            console.log(resp);
+            if (resp == "no data") {
+                $scope.alertMessage = "ALERT: " + resp;
+                $scope.alertVisible = false;
+            }
+        })
+        .error(function(resp) {
+            if (resp == "no data") {
+            }
+        });
 });
