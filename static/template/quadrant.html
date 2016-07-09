@@ -12,7 +12,7 @@
 		<div class="form-group row">
 			<label for="oldStockDateInp" class="control-label col-md-4">Old stock harvest date</label>
 			<div class="col-md-8">
-				<input type="text" name="oldStockDateInp" id="oldStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldStockDateFilter" check-date>
+				<input type="text" name="oldStockDateInp" id="oldStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate" check-date>
 			</div>
 		</div>
 
@@ -21,7 +21,7 @@
 			<div class="col-md-8">
 			    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control"
 						ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.harvest_date for c in stockClones
-						 | filter: {harvest_date: quads[$id].oldStockDateFilter}
+						 | filter: {harvest_date: quads[$id].virusStockDate}
 						 | orderBy: 'name'" ng-model="quads[$id].selectedClone">
     			</select>
 			</div>			
@@ -41,8 +41,8 @@
 			<label for="oldCloneSelect_newStock" class="control-label col-md-4">Select clone</label>
 			<div class="col-md-8">
 			    <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control"
-						ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date for c in clones
-						| filter: {purify_date: quads[$id].oldCloneFilter}"
+						ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.type for c in clones
+						| filter: {purify_date: quads[$id].oldCloneDateFilter}"
 						ng-model="quads[$id].selectedClone">
     			</select>
 			</div>			
@@ -115,7 +115,7 @@
 
 	<div>
         <p ng-show="quads[$id].oldStockDateFilter">
-            <strong>Selected harvest date:</strong> {a quads[$id].oldStockDateFilter a}
+            <strong>Selected harvest date:</strong> {a quads[$id].virusStockDate a}
         </p>
 
 		<span ng-show="quads[$id].selectedClone">

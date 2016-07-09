@@ -3,6 +3,7 @@ import sqlite3
 import os
 import json
 import pprint
+import datetime
 # from flask_cors import CORS
 
 app = Flask(__name__)
@@ -42,10 +43,22 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
+def format_date(date_str):
+    # provided param is in MM/DD/YYYY. Correct format will be in datetime.date(YYYY, MM, DD)
+    date_sep = date_str.split('/')
+
+    month = int(date_sep[0])
+    day = int(date_sep[1])
+    year = int(date_sep[2])
+
+    return datetime.date(year, month, day)
+
+
 def format_resp(resp, tbl_name):
     fields = []
     for name in tbl_name:
-        for x in query_db("PRAGMA table_info(" + name + ")"):
+        field = query_db("PRAGMA table_info(" + name + ")")
+        for x in field:
             fields.append(x[1])
 
     formatted_resp = []
@@ -64,6 +77,18 @@ def insert_db(query, args=()):
     conn.commit()
 
 
+def add_clone(args):
+    insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
+
+    return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)[0][0]
+
+
+def add_stock(args):
+    insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
+
+    return "success"
+
+
 @app.route('/clear_db', methods=["GET"])
 def clear_db():
     conn = get_db()
@@ -79,18 +104,6 @@ def index():
     return render_template('index.html')
 
 
-def add_clone(args):
-    insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
-
-    return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
-
-
-def add_stock(args):
-    insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
-
-    return "success"
-
-
 @app.route('/edit')
 def edit():
     return render_template('edit.html', c=query_db("SELECT * FROM Clone"))
@@ -104,9 +117,10 @@ def enter_assay():
 @app.route('/create_stock', methods=['POST'])
 def create_stock():
     stock = request.get_json(force=True)
-    clone_id = query_db("SELECT id FROM Clone WHERE name=? AND purify_date=?", args=[stock['clone']['name'], stock['clone']['purify_date']])[0][0]
+    clone_id = query_db("SELECT id FROM Clone WHERE name=? AND purify_date=?",
+                        args=[stock['clone']['name'], format_date(stock['clone']['purify_date'])])[0][0]
 
-    add_stock([stock['stockDate'], clone_id, stock['stockFFU']])
+    add_stock([format_date(stock['stockDate']), clone_id, stock['stockFFU']])
 
     return "success"
 
@@ -115,8 +129,9 @@ def create_stock():
 def create_clone_and_stock():
     data = request.get_json(force=True)
 
-    clone_id = add_clone([data["cName"], data["cAA"], data["cType"], data["cDate"]])
-    add_stock([data['stockDate'], clone_id, data['stockFFU']])
+    clone_id = add_clone([data["cName"], data["cAA"], data["cType"], format_date(data["cDate"])])
+    print(clone_id)
+    add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
 
     return "Successful"
 
@@ -126,19 +141,31 @@ def test():
     return str(query_db("SELECT * FROM Clone"))
 
 
-@app.route('/get_all_stocks', methods=["GET"])
-def get_all_stocks(date=''):
-    if date == '':
-        return json.dumps(format_resp(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"),
-                                      ["Virus_Stock", "Clone"]))
+def convert_date(date):
+    d = date.split('-')
+    return d[1] + '/' + d[2] + '/' + d[0]
 
-    return json.dumps(format_resp(query_db("SELECT * FROM Clone WHERE DATE >= ?", args=[date]),
-                                  ["Virus_Stock", "Clone"]))
+
+@app.route('/get_all_stocks', methods=["GET"])
+def get_all_stocks():
+    resp = format_resp(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"),
+                                  ["Virus_Stock", "Clone"])
+
+    for i in range(0, len(resp)):
+        resp[i]['harvest_date'] = convert_date(resp[i]['harvest_date'])
+        resp[i]['purify_date'] = convert_date(resp[i]['purify_date'])
+
+    return json.dumps(resp)
 
 
 @app.route('/get_all_clones', methods=["GET"])
 def get_all_clones():
-    return json.dumps(format_resp(query_db("SELECT * FROM Clone"), ["Clone"]))
+    resp = format_resp(query_db("SELECT * FROM Clone"), ["Clone"])
+
+    for i in range(0, len(resp)):
+        resp[i]['purify_date'] = convert_date(resp[i]['purify_date'])
+
+    return json.dumps(resp)
 
 if __name__ == "__main__":
     create_db()
