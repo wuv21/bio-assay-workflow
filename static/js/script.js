@@ -13,11 +13,10 @@ bioApp.directive('quadrant', function($http) {
         templateUrl: "/static/template/quadrant.html",
         link: function(scope) {
             scope.quads[scope.$id] = {
-                oldStockDateFilter: '07/25/2016',
                 oldStockToggle: false,
                 newStockOldToggle: false,
                 newStockNewToggle: false,
-                oldCloneDateFilter: '06/25/2016',
+                oldCloneDateFilter: '06/26/2016',
                 virusStockDate: '08/01/2016',
                 virusStockFFU : 55555,
                 selectedClone: null,
