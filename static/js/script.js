@@ -63,6 +63,10 @@ bioApp.directive('quadrant', function($http) {
                 if (data.stockDate && data.stockFFU) {
                     $http.post(baseAddress + '/create_clone_and_stock', data)
                         .success(function(resp) {
+                            alert('Clone and stock successfully created.');
+                        })
+                        .error(function(resp) {
+                            alert('Error in creating clone and stock - please ensure data is inputted correctly');
                         });
                 } else {
                     console.log('form not inputted');
@@ -79,6 +83,10 @@ bioApp.directive('quadrant', function($http) {
                 if (data.stockDate && data.stockFFU && data.clone) {
                     $http.post(baseAddress + '/create_stock', data)
                         .success(function(resp) {
+                            alert('Stock successfully created');
+                        })
+                        .error(function(resp) {
+                            alert('Error in creating stock - please ensure data is inputted correctly');
                         });
                 } else {
                     console.log('stock form not inputted');
@@ -149,9 +157,14 @@ bioApp.controller('MainController', function($scope, $http) {
 
     $http.post(baseAddress + '/testPost', $scope.plate)
         .success(function(resp) {
+            console.log(resp);
             if (resp == "no data") {
                 $scope.alertMessage = "ALERT: " + resp;
-                $scope.alertVisible = true;
+                $scope.alertVisible = false;
+            }
+        })
+        .error(function(resp) {
+            if (resp == "no data") {
             }
         });
 });
