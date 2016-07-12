@@ -26,7 +26,7 @@ bioApp.directive('quadrant', function($http) {
                 newCType: null,
                 minDrug: 5,
                 maxDrug: 10,
-                inc: 1,
+                inc: null,
                 numControls: 4,
                 drug: null
             };
@@ -98,6 +98,25 @@ bioApp.directive('quadrant', function($http) {
     }
 });
 
+bioApp.directive("fileread", [function () {
+    return {
+        scope: {
+            fileread: "="
+        },
+        link: function (scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                var reader = new FileReader();
+                reader.onload = function (loadEvent) {
+                    scope.$apply(function () {
+                        scope.fileread = loadEvent.target.result;
+                    });
+                };
+                reader.readAsText(changeEvent.target.files[0]);
+            });
+        }
+    }
+}]);
+
 bioApp.directive('checkDate', function() {
     return {
         require: 'ngModel',
@@ -127,14 +146,11 @@ bioApp.directive('checkDate', function() {
 });
 
 bioApp.controller('MainController', function($scope, $http) {
-    $scope.clone = {
-        name: '2-2',
-        aaChanges: 'G140S+Q148H',
-        type: "ROD9",
-        date: '06/25/2016'
+    $scope.plate = {
+        name: "Plate Name",
+        date: "01/02/1661",
+        letter: "A"
     };
-
-    $scope.plate = {};
     $scope.quads = {};
 
     // alert settings
@@ -142,7 +158,7 @@ bioApp.controller('MainController', function($scope, $http) {
     $scope.alertMessage = "Hello";
     $scope.closeAlert = function() {
         $scope.alertVisible = false;
-    }
+    };
 
     $http.get(baseAddress + '/get_all_stocks')
         .success(function(resp) {
@@ -154,16 +170,21 @@ bioApp.controller('MainController', function($scope, $http) {
             $scope.clones = resp;
         });
 
-    $http.post(baseAddress + '/testPost', $scope.plate)
-        .success(function(resp) {
-            console.log(resp);
-            if (resp == "no data") {
-                $scope.alertMessage = "ALERT: " + resp;
-                $scope.alertVisible = false;
-            }
-        })
-        .error(function(resp) {
-            if (resp == "no data") {
-            }
-        });
+
+
+    $scope.testSubmission = function() {
+        console.log($scope.plate);
+
+        $http.post(baseAddress + '/testPost', $scope.plate)
+            .success(function(resp) {
+                console.log(resp);
+                if (resp == "no data") {
+                    $scope.alertMessage = "ALERT: " + resp;
+                    $scope.alertVisible = false;
+                }
+            })
+            .error(function(resp) {
+                console.log("error");
+            });
+    }
 });

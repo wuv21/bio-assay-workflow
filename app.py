@@ -2,8 +2,8 @@ from flask import Flask, render_template, g, request, redirect, url_for, abort
 import sqlite3
 import os
 import json
-import pprint
 import datetime
+import base64
 # from flask_cors import CORS
 
 from werkzeug.exceptions import BadRequest
@@ -123,7 +123,7 @@ def index():
 
 
 # edit.html
-# todo decomission this endpoint
+# todo decommission this endpoint
 @app.route('/edit')
 def edit():
     return render_template('edit.html', c=query_db("SELECT * FROM Clone"))
@@ -180,6 +180,16 @@ def testPost():
     data = request.get_json(force=True)
 
     if data:
+        file = data['file'].split('\r\n')
+        header = file[0]
+
+        # todo parse file
+        # q1 is A01 to D06
+        # q2 is A07 to D12
+        # q3 is E01 to H06
+        # q4 is E07 to H12
+
+        for i in range(0, 12):
         return "success"
     else:
         raise BadRequest("OH NO")
