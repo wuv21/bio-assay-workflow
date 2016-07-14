@@ -147,7 +147,7 @@ bioApp.directive('checkDate', function() {
 
 bioApp.controller('MainController', function($scope, $http) {
     $scope.plate = {
-        name: "Plate Name",
+        name: "Sample Plate Name",
         date: "01/02/1661",
         letter: "A"
     };
@@ -173,6 +173,7 @@ bioApp.controller('MainController', function($scope, $http) {
 
 
     $scope.testSubmission = function() {
+        $scope.plate.quads = $scope.quads;
         console.log($scope.plate);
 
         $http.post(baseAddress + '/testPost', $scope.plate)
