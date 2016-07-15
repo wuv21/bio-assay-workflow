@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from __future__ import division
 import math
-
+import pprint as pp
 
 class Quadrant(object):
 	variables = 12
@@ -18,15 +18,15 @@ class Quadrant(object):
 		return self.abs_val
 
 	def calc_conc_range(self):
-		n = int(round((self.variables - self.num_controls - 1) / 2))
+		n = int((self.variables - self.num_controls - 2) / 2)
 		conc_range = [math.pow(10, x) for x in range(-1 * n, n + 1)]
 
 		return conc_range
 
 	def format_abs_vals(self):
 		x = []
-		for i in range(0, len(self.abs_val)):
-			for j in range(0, len(self.abs_val[i]) - 1, 2):
+		for j in range(0, 5, 2):
+			for i in range(0, len(self.abs_val)):
 				x1 = self.abs_val[i][j]
 				x2 = self.abs_val[i][j + 1]
 
@@ -36,7 +36,6 @@ class Quadrant(object):
 
 	def parse_vals(self):
 		vals = self.format_abs_vals()
-		print(vals)
 
 		no_virus_control = 0.0
 		for i in range(0, self.num_controls):
@@ -46,6 +45,7 @@ class Quadrant(object):
 			vals.pop()
 
 		no_virus_control = float(no_virus_control / (self.num_controls * 2))
+
 		for i in range(0, len(vals)):
 			for j in range(0, 2):
 				vals[i][j] = vals[i][j] - no_virus_control
@@ -53,7 +53,6 @@ class Quadrant(object):
 		no_drug_control = float((vals[0][0] + vals[0][1]) / 2)
 		vals.pop(0)
 
-		print(no_drug_control)
 		for i in range(0, len(vals)):
 			vals[i][0] = vals[i][0] / no_drug_control * 100
 			vals[i][1] = vals[i][1] / no_drug_control * 100
@@ -98,7 +97,7 @@ def main():
 	for i in range(0, num_quads):
 		min_c = input("Step 3 for Quadrant " + str(i + 1) + ": Please input minimum concentration: ")
 		max_c = input("Step 4 for Quadrant " + str(i + 1) + ": Please input maximum concentration: ")
-		num_controls = input("Step 5 for Quadrant " + str(i + 1) + ": Please input number of controls: ")
+		num_controls = input("Step 5 for Quadrant " + str(i + 1) + ": Please input how many rows of controls: ")
 
 		half_log_prompt = raw_input("Step 6 for Quadrant " + str(i + 1) + ": Are you using log (input y) or half-log (input n): ")
 		half_log = half_log_prompt.upper() == "Y"
@@ -107,7 +106,12 @@ def main():
 		quadrants.append(q)
 
 	for q in quadrants:
-		print(q.parse_vals())
+		conc = q.calc_conc_range()
+		p_vals = q.parse_vals()
+
+		print("For Quadrant" + str(q.q_id + 1))
+		for i in range(0, len(conc)):
+			print(str(conc[i]) + '\t' + str(p_vals[i][0]) + '\t' + str(p_vals[i][1]))
 
 if __name__ == "__main__":
 	main()
