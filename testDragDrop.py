@@ -18,6 +18,7 @@ class Quadrant(object):
 		return self.abs_val
 
 	def calc_conc_range(self):
+		# todo fix range calculation
 		n = int((self.variables - self.num_controls - 2) / 2)
 		conc_range = [math.pow(10, x) for x in range(-1 * n, n + 1)]
 
@@ -102,16 +103,20 @@ def main():
 		half_log_prompt = raw_input("Step 6 for Quadrant " + str(i + 1) + ": Are you using log (input y) or half-log (input n): ")
 		half_log = half_log_prompt.upper() == "Y"
 
-		q = Quadrant(i, min_c, max_c, num_controls, num_controls, abs_by_quadrants[i])
+		q = Quadrant(i, min_c, max_c, num_controls, half_log, abs_by_quadrants[i])
 		quadrants.append(q)
+
+		print('')
 
 	for q in quadrants:
 		conc = q.calc_conc_range()
 		p_vals = q.parse_vals()
 
-		print("For Quadrant" + str(q.q_id + 1))
+		print("For Quadrant " + str(q.q_id + 1))
 		for i in range(0, len(conc)):
 			print(str(conc[i]) + '\t' + str(p_vals[i][0]) + '\t' + str(p_vals[i][1]))
+
+		print('')
 
 if __name__ == "__main__":
 	main()
