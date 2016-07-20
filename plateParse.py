@@ -60,6 +60,79 @@ class Quadrant(object):
 
 		return vals
 
+
+def file_prompt():
+	error_message = "Error in processing input. Please drag and drop a csv file."
+
+	inp = ""
+	while not inp:
+		try:
+			inp = raw_input("Step 1: Please drag and drop plate file (csv): ")
+
+			if inp[len(inp) - 1] == " ":
+				inp = inp[0:len(inp) - 1]
+
+			if inp[-3:] != "csv":
+				print(error_message)
+				inp = ""
+		except:
+			print(error_message)
+			inp = ""
+
+	return inp
+
+
+def num_quadrant_prompt():
+	error_message = "Error in processing input. Please use a number between 1 and 4, inclusive."
+
+	inp = ""
+	while not inp:
+		try:
+			inp = input("Step 2: How many quadrants are in use?: ")
+
+			if not isinstance(inp, int) or inp > 4 or inp < 1:
+				print(error_message)
+				inp = ""
+
+		except (NameError, SyntaxError) as e:
+			print(error_message)
+			inp = ""
+
+	return inp
+
+
+def num_prompt(string, quadrant):
+	error_message = "Error in processing input. Please check that a number was used."
+
+	inp = ""
+	while not inp:
+		try:
+			inp = input(string % quadrant)
+
+		except (NameError, SyntaxError) as e:
+			print(error_message)
+			inp = ""
+
+	return inp
+
+def int_prompt(string, quadrant):
+	error_message = "Error in processing input. Please check that an integer was used."
+	
+	inp = ""
+	while not inp:
+		try:
+			inp = input(string % quadrant)
+
+			if not isinstance(inp, int):
+				print(error_message)
+				inp = ""			
+
+		except (NameError, SyntaxError) as e:
+			print(error_message)
+			inp = ""
+
+	return inp
+
 def main():
 	print("""
 	-----
@@ -69,12 +142,8 @@ def main():
 
 	-----""")
 
-	file_name = raw_input("Step 1: Please drag and drop plate file (csv): ")
-	num_quads = input("Step 2: How many quadrants are in use?: ")
-
-
-	if file_name[len(file_name) - 1] == " ":
-		file_name = file_name[0:len(file_name) - 1]
+	file_name = file_prompt()
+	num_quads = num_quadrant_prompt()
 
 	abs_by_quadrants = [[] for x in range(0, 4)]
 	with open(file_name, 'r') as file:
@@ -96,9 +165,11 @@ def main():
 
 	quadrants = []
 	for i in range(0, num_quads):
-		min_c = input("Step 3 for Quadrant " + str(i + 1) + ": Please input minimum concentration: ")
-		max_c = input("Step 4 for Quadrant " + str(i + 1) + ": Please input maximum concentration: ")
-		num_controls = input("Step 5 for Quadrant " + str(i + 1) + ": Please input how many rows of controls: ")
+		min_c = num_prompt("Step 3 for Quadrant %s: Please input minimum concentration: ", i+1)
+		max_c = num_prompt("Step 4 for Quadrant %s: Please input maximum concentration: ", i+1)
+
+
+		num_controls = int_prompt("Step 5 for Quadrant %s: Please input how many rows of controls: ", i+1)
 
 		half_log_prompt = raw_input("Step 6 for Quadrant " + str(i + 1) + ": Are you using log (input y) or half-log (input n): ")
 		half_log = half_log_prompt.upper() == "Y"
@@ -108,6 +179,7 @@ def main():
 
 		print('')
 
+	print("--- RESULTS ---")
 	for q in quadrants:
 		conc = q.calc_conc_range()
 		p_vals = q.parse_vals()
