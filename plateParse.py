@@ -72,7 +72,7 @@ def file_prompt():
 	inp = ""
 	while not inp:
 		try:
-			inp = raw_input("Step 1: Please drag and drop plate file (csv). Type 'quit' to exit program: ")
+			inp = raw_input("Step 1: Please drag and drop plate file (CSV file only). For this step only, type 'quit' to exit program: ")
 
 			if inp == "quit":
 				sys.exit("Good bye")
@@ -209,6 +209,9 @@ def main():
 			print(str(conc[i]) + '\t' + str(p_vals[i][0]) + '\t' + str(p_vals[i][1]))
 
 		print('')
+
+	raw_input('\nPress enter to quit: ')
+	sys.exit(0)
 
 if __name__ == "__main__":
 	main()
