@@ -2,6 +2,7 @@
 from __future__ import division
 import math
 import pprint as pp
+import sys
 
 class Quadrant(object):
 	variables = 12
@@ -19,8 +20,12 @@ class Quadrant(object):
 
 	def calc_conc_range(self):
 		# todo fix range calculation
-		n = int((self.variables - self.num_controls - 2) / 2)
-		conc_range = [math.pow(10, x) for x in range(-1 * n, n + 1)]
+		minimum = int(round(math.log(self.min_c, 10)))
+		maximum = int(round(math.log(self.max_c, 10)))
+
+		conc_range = [math.pow(10, x) for x in range(minimum, maximum + 1)]
+		if len(conc_range) != self.variables - self.num_controls - 1:
+			print("WARNING: Range of concentration does not match space allotted on wells. Please double check that values are entered correctly.")
 
 		return conc_range
 
@@ -67,7 +72,10 @@ def file_prompt():
 	inp = ""
 	while not inp:
 		try:
-			inp = raw_input("Step 1: Please drag and drop plate file (csv): ")
+			inp = raw_input("Step 1: Please drag and drop plate file (csv). Type 'quit' to exit program: ")
+
+			if inp == "quit":
+				sys.exit("Good bye")
 
 			if inp[len(inp) - 1] == " ":
 				inp = inp[0:len(inp) - 1]
@@ -75,8 +83,10 @@ def file_prompt():
 			if inp[-3:] != "csv":
 				print(error_message)
 				inp = ""
-		except:
-			print(error_message)
+
+
+		except (SyntaxError) as e:
+			print(e)
 			inp = ""
 
 	return inp
@@ -135,12 +145,22 @@ def int_prompt(string, quadrant):
 
 def main():
 	print("""
-	-----
+	
+
 	Welcome to Assay Plate Parser (v1.0).
 
-	For each step, please press the return (or enter key) to confirm input.
+	- For each step, please press the return (or enter key) to confirm input.
+	- To exit the program, press ctrl-c.
+	- Current version supports 96 well plate design with drug sensitivity assay.
+	- Quadrant layout for a 96 well plate is as follows:
+				---------
+				| 1 | 2 |
+				|-------|
+				| 3 | 4 |
+				---------
+	
 
-	-----""")
+	""")
 
 	file_name = file_prompt()
 	num_quads = num_quadrant_prompt()
@@ -192,5 +212,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
-
