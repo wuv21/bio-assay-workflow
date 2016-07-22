@@ -68,7 +68,7 @@ def file_prompt():
 	inp = ""
 	while not inp:
 		try:
-			inp = raw_input("Step 1: Please drag and drop plate file (CSV file only). For this step only, type 'quit' to exit program: ")
+			inp = input("Step 1: Please drag and drop plate file (CSV file only). For this step only, type 'quit' to exit program: ")
 
 			if inp == "quit":
 				sys.exit("Good bye")
@@ -82,7 +82,7 @@ def file_prompt():
 
 
 		except (SyntaxError) as e:
-			print(e)
+			print(error_message)
 			inp = ""
 
 	return inp
@@ -94,13 +94,13 @@ def num_quadrant_prompt():
 	inp = ""
 	while not inp:
 		try:
-			inp = input("Step 2: How many quadrants are in use?: ")
+			inp = int(input("Step 2: How many quadrants are in use?: "))
 
-			if not isinstance(inp, int) or inp > 4 or inp < 1:
+			if inp > 4 or inp < 1:
 				print(error_message)
 				inp = ""
 
-		except (NameError, SyntaxError) as e:
+		except (NameError, SyntaxError, ValueError) as e:
 			print(error_message)
 			inp = ""
 
@@ -113,9 +113,9 @@ def num_prompt(string, quadrant):
 	inp = ""
 	while not inp:
 		try:
-			inp = input(string % quadrant)
+			inp = float(input(string % quadrant))
 
-		except (NameError, SyntaxError) as e:
+		except (NameError, SyntaxError, ValueError) as e:
 			print(error_message)
 			inp = ""
 
@@ -127,13 +127,9 @@ def int_prompt(string, quadrant):
 	inp = ""
 	while not inp:
 		try:
-			inp = input(string % quadrant)
+			inp = int(input(string % quadrant))
 
-			if not isinstance(inp, int):
-				print(error_message)
-				inp = ""			
-
-		except (NameError, SyntaxError) as e:
+		except (NameError, SyntaxError, ValueError) as e:
 			print(error_message)
 			inp = ""
 
@@ -163,7 +159,7 @@ def main():
 
 	abs_by_quadrants = [[] for x in range(0, 4)]
 	with open(file_name, 'r') as file:
-		data = file.read().split('\r\n')
+		data = file.read().split('\n')
 
 		header = data[0]
 		abs_values = [float(x.split(',')[5]) for x in data[1:]]
@@ -179,16 +175,18 @@ def main():
 
 			marker += 12
 
+
 	quadrants = []
 	for i in range(0, num_quads):
 		min_c = num_prompt("Step 3 for Quadrant %s: Please input minimum concentration: ", i+1)
 		num_controls = int_prompt("Step 4 for Quadrant %s: Please input how many rows of controls: ", i+1)
-		half_log_prompt = raw_input("Step 5 for Quadrant " + str(i + 1) + ": Are you using log (input y) or half-log (input n): ")
+		half_log_prompt = input("Step 5 for Quadrant " + str(i + 1) + ": Are you using log (input y) or half-log (input n): ")
 
 		half_log = half_log_prompt.upper() == "Y"
 
 		q = Quadrant(i, min_c, num_controls, half_log, abs_by_quadrants[i])
 		quadrants.append(q)
+		q.showAbs()
 
 		print('')
 
@@ -203,7 +201,7 @@ def main():
 
 		print('')
 
-	raw_input('\nPress enter to quit: ')
+	input('\nPress enter to quit: ')
 	sys.exit(0)
 
 if __name__ == "__main__":
