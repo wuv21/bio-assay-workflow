@@ -184,12 +184,27 @@ def testPost():
         header = file[0]
 
         # todo parse file
-        # q1 is A01 to D06
+        # q1 is A01 to D06...0:6, 12:18
         # q2 is A07 to D12
         # q3 is E01 to H06
         # q4 is E07 to H12
 
-        for i in range(0, 12):
+        abs_values = [float(x.split(',')[5]) for x in file[1:]]
+
+        quadrants = [[] for x in range(0, 4)]
+        marker = 0
+        for i in range(0, 4):
+            quadrants[0].append(abs_values[marker : marker+6])
+            quadrants[1].append(abs_values[marker + 6: marker+12])
+
+            b_half = marker + 48;
+            quadrants[2].append(abs_values[b_half: b_half+6])
+            quadrants[3].append(abs_values[b_half + 6: b_half+12])
+
+            marker += 12
+
+        pp.pprint(quadrants)    
+
         return "success"
     else:
         raise BadRequest("OH NO")
