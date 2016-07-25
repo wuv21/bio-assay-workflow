@@ -3,9 +3,14 @@ import pytest
 
 # import plateParse_3
 
-def test_fx():
-	assert(3==3)
+class TestInputs:
+	def test_input(self, monkeypatch):
+		monkeypatch.setitem(__builtins__, 'input', lambda x: "test")
 
-def test_fx_two():
-	assert("hi"=="hi")
+		i = input('insert stuff: ')
+
+		assert i == "test"
+
+	def test_other(self):
+		assert 3 == 3
 

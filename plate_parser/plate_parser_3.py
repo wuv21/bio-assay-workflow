@@ -4,6 +4,17 @@ import math
 import pprint as pp
 import sys
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 class Quadrant(object):
 	variables = 12
 
@@ -62,6 +73,7 @@ class Quadrant(object):
 		return vals
 
 
+# module functions
 def file_prompt():
 	error_message = "Error in processing input. Please drag and drop a csv file.\n"
 
@@ -123,6 +135,7 @@ def num_prompt(string, quadrant):
 
 	return inp
 
+
 def int_prompt(string, quadrant):
 	error_message = "Error in processing input. Please check that an integer was used.\n"
 	
@@ -138,7 +151,7 @@ def int_prompt(string, quadrant):
 	return inp
 
 def main():
-	print("""
+	print(bcolors.HEADER + """
 	
 
 	Welcome to Assay Plate Parser (v1.0).
@@ -154,7 +167,7 @@ def main():
 				---------
 	
 
-	""")
+	""" + bcolors.ENDC)
 
 	file_name = file_prompt()
 	num_quads = num_quadrant_prompt()
