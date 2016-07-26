@@ -4,6 +4,17 @@ import math
 import pprint as pp
 import sys
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 class Quadrant(object):
 	variables = 12
 
@@ -62,8 +73,9 @@ class Quadrant(object):
 		return vals
 
 
+# module functions
 def file_prompt():
-	error_message = "Error in processing input. Please drag and drop a csv file."
+	error_message = "Error in processing input. Please drag and drop a csv file.\n"
 
 	inp = ""
 	while not inp:
@@ -73,13 +85,15 @@ def file_prompt():
 			if inp == "quit":
 				sys.exit("Good bye")
 
-			if inp[len(inp) - 1] == " ":
+			elif inp == "":
+				print(error_message)
+
+			elif inp[len(inp) - 1] == " ":
 				inp = inp[0:len(inp) - 1]
 
 			if inp[-3:] != "csv":
 				print(error_message)
 				inp = ""
-
 
 		except (SyntaxError) as e:
 			print(error_message)
@@ -89,7 +103,7 @@ def file_prompt():
 
 
 def num_quadrant_prompt():
-	error_message = "Error in processing input. Please use a number between 1 and 4, inclusive."
+	error_message = "Error in processing input. Please use a number between 1 and 4, inclusive.\n"
 
 	inp = ""
 	while not inp:
@@ -108,7 +122,7 @@ def num_quadrant_prompt():
 
 
 def num_prompt(string, quadrant):
-	error_message = "Error in processing input. Please check that a number was used."
+	error_message = "Error in processing input. Please check that a number was used.\n"
 
 	inp = ""
 	while not inp:
@@ -121,8 +135,9 @@ def num_prompt(string, quadrant):
 
 	return inp
 
+
 def int_prompt(string, quadrant):
-	error_message = "Error in processing input. Please check that an integer was used."
+	error_message = "Error in processing input. Please check that an integer was used.\n"
 	
 	inp = ""
 	while not inp:
@@ -136,7 +151,7 @@ def int_prompt(string, quadrant):
 	return inp
 
 def main():
-	print("""
+	print(bcolors.HEADER + """
 	
 
 	Welcome to Assay Plate Parser (v1.0).
@@ -152,7 +167,7 @@ def main():
 				---------
 	
 
-	""")
+	""" + bcolors.ENDC)
 
 	file_name = file_prompt()
 	num_quads = num_quadrant_prompt()
@@ -177,24 +192,28 @@ def main():
 
 
 	quadrants = []
-	for i in range(0, num_quads):
-		min_c = num_prompt("Step 3 for Quadrant %s: Please input minimum concentration: ", i+1)
-		num_controls = int_prompt("Step 4 for Quadrant %s: Please input how many rows of controls: ", i+1)
-		half_log_prompt = input("Step 5 for Quadrant " + str(i + 1) + ": Are you using log (input y) or half-log (input n): ")
+	count = 0
+	while count < num_quads:
+		try:
+			min_c = num_prompt("Step 3 for Quadrant %s: Please input minimum concentration: ", count+1)
+			num_controls = int_prompt("Step 4 for Quadrant %s: Please input how many rows of controls: ", count+1)
+			half_log_prompt = input("Step 5 for Quadrant " + str(count + 1) + ": Are you using log (input y) or half-log (input n): ")
 
-		half_log = half_log_prompt.upper() == "Y"
+			half_log = half_log_prompt.upper() == "Y"
 
-		q = Quadrant(i, min_c, num_controls, half_log, abs_by_quadrants[i])
-		quadrants.append(q)
-		q.showAbs()
+			q = Quadrant(count, min_c, num_controls, half_log, abs_by_quadrants[count])
+			conc = q.calc_conc_range()
+			p_vals = q.parse_vals()
 
-		print('')
+			quadrants.append(q)
 
-	print("--- RESULTS ---")
+			count += 1
+
+		except IndexError as e:
+			print("Warning: discrepancy between the minimum concentration and rows of controls. Please input information again for this quadrant.\n")
+
+	print("\n--- RESULTS ---")
 	for q in quadrants:
-		conc = q.calc_conc_range()
-		p_vals = q.parse_vals()
-
 		print("For Quadrant " + str(q.q_id + 1))
 		for i in range(0, len(conc)):
 			print(str(conc[i]) + '\t' + str(p_vals[i][0]) + '\t' + str(p_vals[i][1]))
