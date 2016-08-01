@@ -165,5 +165,18 @@ bioApp.controller('QuadrantController', function($scope, $http) {
 });
 
 bioApp.controller('StockController', function($scope, $http) {
+    $scope.toggleMenus = {
+        newStockOldClone: true,
+        newStockNewClone: false
+    }
 
+    $scope.newStockOldCloneOpen = function() {
+        $scope.toggleMenus.newStockNewClone = false;
+        $scope.toggleMenus.newStockOldClone = !$scope.toggleMenus.newStockOldClone;
+    };
+
+    $scope.newStockNewCloneOpen = function() {
+        $scope.toggleMenus.newStockOldClone = false;
+        $scope.toggleMenus.newStockNewClone = !$scope.toggleMenus.newStockNewClone;
+    };
 });

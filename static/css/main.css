@@ -53,6 +53,10 @@ form .ng-dirty.ng-valid {
     margin-top: 1em;
 }
 
+.quad-stock-btns {
+    margin-bottom: 1em;
+}
+
 .radio {
     margin-top: 0em;
     margin-bottom: 0em;
