@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %} - Edit Virus Stocks {% endblock %}
+{% set active_page = "edit_vs" %}
+
+{% block content %}
+	<div class="container" ng-controller="StockController">
+		<h2>Edit virus stocks</h2>
+		<p class="alert alert-danger" ng-show="alertVisible">{a alertMessage a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
+	</div>
+{% endblock %}

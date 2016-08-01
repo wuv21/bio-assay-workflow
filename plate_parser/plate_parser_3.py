@@ -151,7 +151,7 @@ def int_prompt(string, quadrant):
 	return inp
 
 def main():
-	print(bcolors.HEADER + """
+	print(bcolors.OKGREEN + """
 	
 
 	Welcome to Assay Plate Parser (v1.0).

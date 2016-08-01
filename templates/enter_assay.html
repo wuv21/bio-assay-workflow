@@ -4,10 +4,11 @@
 {% set active_page = "enter_assay" %}
 
 {% block content %}
-	<div class="container" ng-controller="MainController">
+	<div class="container" ng-controller="QuadrantController">
 		<h2>Enter assay data</h2>
 		<p class="alert alert-danger" ng-show="alertVisible">{a alertMessage a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 		</p>
+
 		<form action="" name="plateForm">
 			<div class="row">
 				<label for="plateNameInp" class="col-xs-1">Plate name</label>
