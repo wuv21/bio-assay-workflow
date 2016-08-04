@@ -13,40 +13,14 @@ bioApp.directive('quadrant', function($http) {
         templateUrl: "/static/template/quadrant.html",
         link: function(scope) {
             scope.quads[scope.$id] = {
-                oldStockToggle: false,
-                newStockOldToggle: false,
-                newStockNewToggle: false,
-                oldCloneDateFilter: '06/26/2016',
                 virusStockDate: '08/01/2016',
                 virusStockFFU : 55555,
                 selectedClone: null,
-                newCName: null,
-                newCDate: null,
-                newCAA: null,
-                newCType: null,
                 minDrug: 5,
                 maxDrug: 10,
                 inc: null,
                 numControls: 4,
                 drug: null
-            };
-
-            scope.oldStockOpen = function() {
-                scope.quads[scope.$id].newStockOldToggle = false;
-                scope.quads[scope.$id].newStockNewToggle = false;
-                scope.quads[scope.$id].oldStockToggle = !scope.quads[scope.$id].oldStockToggle;
-            };
-
-            scope.newStockOldOpen = function() {
-                scope.quads[scope.$id].oldStockToggle = false;
-                scope.quads[scope.$id].newStockNewToggle = false;
-                scope.quads[scope.$id].newStockOldToggle = !scope.quads[scope.$id].newStockOldToggle;
-            };
-
-            scope.newStockNewOpen = function() {
-                scope.quads[scope.$id].oldStockToggle = false;
-                scope.quads[scope.$id].newStockOldToggle = false;
-                scope.quads[scope.$id].newStockNewToggle = !scope.quads[scope.$id].newStockNewToggle;
             };
 
             scope.createStockAndClone = function() {
@@ -145,7 +119,7 @@ bioApp.directive('checkDate', function() {
     }
 });
 
-bioApp.controller('MainController', function($scope, $http) {
+bioApp.controller('QuadrantController', function($scope, $http) {
     $scope.plate = {
         name: "Sample Plate Name",
         date: "01/02/1661",
@@ -188,4 +162,21 @@ bioApp.controller('MainController', function($scope, $http) {
                 console.log("error");
             });
     }
+});
+
+bioApp.controller('StockController', function($scope, $http) {
+    $scope.toggleMenus = {
+        newStockOldClone: true,
+        newStockNewClone: false
+    }
+
+    $scope.newStockOldCloneOpen = function() {
+        $scope.toggleMenus.newStockNewClone = false;
+        $scope.toggleMenus.newStockOldClone = !$scope.toggleMenus.newStockOldClone;
+    };
+
+    $scope.newStockNewCloneOpen = function() {
+        $scope.toggleMenus.newStockOldClone = false;
+        $scope.toggleMenus.newStockNewClone = !$scope.toggleMenus.newStockNewClone;
+    };
 });

@@ -122,11 +122,11 @@ def index():
     return render_template('index.html')
 
 
-# edit.html
-# todo decommission this endpoint
-@app.route('/edit')
+# edit_vs.html
+# edits virus stocks
+@app.route('/edit_vs')
 def edit():
-    return render_template('edit.html', c=query_db("SELECT * FROM Clone"))
+    return render_template('edit_vs.html')
 
 
 # enter_assay.html

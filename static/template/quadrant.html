@@ -1,119 +1,26 @@
 <div class="quadrant">
 	<h3>Quadrant {a $id - 2 a}</h3>
-	<div class="quad-stock-btns">
-		<span>
-			<p class="btn btn-success btn-sm" ng-click="oldStockOpen()">Old stock</p>
-			<p class="btn btn-primary btn-sm" ng-click="newStockOldOpen()">New stock (from old clone)</p>		
-			<p class="btn btn-info btn-sm" ng-click="newStockNewOpen()">New stock (from new clone)</p>		
-		</span>
+
+	<h4>Virus stock info</h4>
+	<div class="form-group row">
+		<label for="virusStockDateInp" class="control-label col-md-4">Stock harvest date</label>
+		<div class="col-md-8">
+			<input type="text" name="virusStockDateInp" id="virusStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate" check-date>
+		</div>
 	</div>
 
-	<div ng-show="quads[$id].oldStockToggle">
-		<div class="form-group row">
-			<label for="oldStockDateInp" class="control-label col-md-4">Old stock harvest date</label>
-			<div class="col-md-8">
-				<input type="text" name="oldStockDateInp" id="oldStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate" check-date>
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label for="oldCloneSelect" class="control-label col-md-4">Select clone</label>
-			<div class="col-md-8">
-			    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control"
-						ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.harvest_date for c in stockClones
-						 | filter: {harvest_date: quads[$id].virusStockDate}
-						 | orderBy: 'name'" ng-model="quads[$id].selectedClone">
-    			</select>
-			</div>			
-		</div>
-
+	<div class="form-group row">
+		<label for="oldCloneSelect" class="control-label col-md-4">Select clone</label>
+		<div class="col-md-8">
+		    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control"
+					ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.harvest_date for c in stockClones
+					 | filter: {harvest_date: quads[$id].virusStockDate}
+					 | orderBy: 'name'" ng-model="quads[$id].selectedClone">
+			</select>
+		</div>			
 	</div>
 
-	<div ng-show="quads[$id].newStockOldToggle">
-		<div class="form-group row">
-			<label for="oldCloneDateInp" class="control-label col-md-4">Old clone date</label>
-			<div class="col-md-8">
-				<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldCloneDateFilter">
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label for="oldCloneSelect_newStock" class="control-label col-md-4">Select clone</label>
-			<div class="col-md-8">
-			    <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control"
-						ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.type for c in clones
-						| filter: {purify_date: quads[$id].oldCloneDateFilter}"
-						ng-model="quads[$id].selectedClone">
-    			</select>
-			</div>			
-		</div>		
-
-		<div class="form-group row">
-			<label for="newOldHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
-			<div class="col-md-8">
-				<input type="text" name="newOldHarvestDateInp" id="newOldHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="quads[$id].virusStockDate">
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label for="newOldFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
-			<div class="col-md-8">
-				<input type="number" min=0 name="newOldFFUInp" id="newOldFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
-			</div>
-		</div>						
-
-		<p class="btn btn-primary btn-sm" ng-click="createStock()">Create stock</p>
-	</div>
-
-	<div ng-show="quads[$id].newStockNewToggle">
-		<div class="form-group row">
-			<label for="newCloneNameInp" class="control-label col-md-4">New clone name</label>
-			<div class="col-md-8">
-				<input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter name" class="form-control" ng-model="quads[$id].newCName">
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label for="newCloneDateInp" class="control-label col-md-4">New clone date</label>
-			<div class="col-md-8">
-				<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter date" class="form-control" ng-model="quads[$id].newCDate">
-			</div>			
-		</div>
-
-		<div class="form-group row">
-			<label for="newCloneAAInp" class="control-label col-md-4">AA changes</label>
-			<div class="col-md-8">
-				<input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes" class="form-control" ng-model="quads[$id].newCAA">
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label for="newCloneTypeInp" class="control-label col-md-4">Plasmid Type</label>
-			<div class="col-md-8">
-				<input type="text" name="newCloneTypeInp" id="newCloneTypeInp" placeholder="Enter vector type" class="form-control" ng-model="quads[$id].newCType">
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label for="newHarvestDateInp" class="control-label col-md-4">Stock Harvest Date</label>
-			<div class="col-md-8">
-				<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="quads[$id].virusStockDate">
-			</div>
-		</div>
-
-		<div class="form-group row">
-			<label for="newFFUInp" class="control-label col-md-4">Stock FFU/ml</label>
-			<div class="col-md-8">
-				<input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
-			</div>
-		</div>						
-
-		<p class="btn btn-info btn-sm" ng-click="createStockAndClone()">Create clone and stock</p>
-	</div>
-
-	<hr>
-
-	<div>
+<!-- 	<div>
         <p ng-show="quads[$id].oldStockDateFilter">
             <strong>Selected harvest date:</strong> {a quads[$id].virusStockDate a}
         </p>
@@ -123,10 +30,9 @@
             {a quads[$id].selectedClone.name a} ({a quads[$id].selectedClone.aa_changes a})
             purified on {a quads[$id].selectedClone.purify_date a}
         </span>
-	</div>
+	</div> -->
 
-	<hr>
-
+	<h4>Quadrant layout info</h4>
 	<!--Quadrant layout questions-->
 	<div class="form-group row">
 		<label class="control-label col-md-4">Min [drug]</label>
@@ -153,9 +59,9 @@
 	</div>
 
 	<div class="form-group row">
-		<label class="control-label col-md-4"># of controls</label>
+		<label class="control-label col-md-4"># of control rows</label>
 		<div class="col-md-8">
-			<input type="number" min=0 name="" placeholder="Enter # of controls" class="form-control" ng-model="quads[$id].numControls">
+			<input type="number" min=0 name="" placeholder="Enter # of control rows" class="form-control" ng-model="quads[$id].numControls">
 		</div>
 	</div>		
 	

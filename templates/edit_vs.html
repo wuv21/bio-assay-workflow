@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %} - Edit Virus Stocks {% endblock %}
+{% set active_page = "edit_vs" %}
+
+{% block content %}
+	<div class="container" ng-controller="StockController">
+		<h2>Edit virus stocks</h2>
+		<p class="alert alert-danger" ng-show="alertVisible">{a alertMessage a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
+
+		<div class="quad-stock-btns">
+				<span>
+					<p class="btn btn-primary btn-sm" ng-click="newStockOldCloneOpen()">New stock (from old clone)</p>		
+					<p class="btn btn-info btn-sm" ng-click="newStockNewCloneOpen()">New stock (from new clone)</p>		
+				</span>
+			</div>
+
+			<div ng-show="toggleMenus.newStockOldClone">
+				<div class="form-group row">
+					<label for="oldCloneDateInp" class="control-label col-md-3">Old clone date</label>
+					<div class="col-md-9">
+						<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].oldCloneDateFilter">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="oldCloneSelect_newStock" class="control-label col-md-3">Select clone</label>
+					<div class="col-md-9">
+					    <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control"
+								ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.type for c in clones
+								| filter: {purify_date: quads[$id].oldCloneDateFilter}"
+								ng-model="quads[$id].selectedClone">
+		    			</select>
+					</div>			
+				</div>		
+
+				<div class="form-group row">
+					<label for="newOldHarvestDateInp" class="control-label col-md-3">Stock Harvest Date</label>
+					<div class="col-md-9">
+						<input type="text" name="newOldHarvestDateInp" id="newOldHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="quads[$id].virusStockDate">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="newOldFFUInp" class="control-label col-md-3">Stock FFU/ml</label>
+					<div class="col-md-9">
+						<input type="number" min=0 name="newOldFFUInp" id="newOldFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
+					</div>
+				</div>						
+
+				<p class="btn btn-primary btn-sm" ng-click="createStock()">Create stock</p>
+			</div>
+
+			<div ng-show="toggleMenus.newStockNewClone">
+				<div class="form-group row">
+					<label for="newCloneNameInp" class="control-label col-md-3">New clone name</label>
+					<div class="col-md-9">
+						<input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter name" class="form-control" ng-model="quads[$id].newCName">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="newCloneDateInp" class="control-label col-md-3">New clone date</label>
+					<div class="col-md-9">
+						<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter date" class="form-control" ng-model="quads[$id].newCDate">
+					</div>			
+				</div>
+
+				<div class="form-group row">
+					<label for="newCloneAAInp" class="control-label col-md-3">AA changes</label>
+					<div class="col-md-9">
+						<input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes" class="form-control" ng-model="quads[$id].newCAA">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="newCloneTypeInp" class="control-label col-md-3">Plasmid Type</label>
+					<div class="col-md-9">
+						<input type="text" name="newCloneTypeInp" id="newCloneTypeInp" placeholder="Enter vector type" class="form-control" ng-model="quads[$id].newCType">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="newHarvestDateInp" class="control-label col-md-3">Stock Harvest Date</label>
+					<div class="col-md-9">
+						<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="quads[$id].virusStockDate">
+					</div>
+				</div>
+
+				<div class="form-group row">
+					<label for="newFFUInp" class="control-label col-md-3">Stock FFU/ml</label>
+					<div class="col-md-9">
+						<input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
+					</div>
+				</div>						
+
+				<p class="btn btn-info btn-sm" ng-click="createStockAndClone()">Create clone and stock</p>
+		</div>		
+	</div>
+{% endblock %}
