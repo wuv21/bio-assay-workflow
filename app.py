@@ -139,12 +139,16 @@ def enter_assay():
 # POST request to enter a new stock
 @app.route('/create_stock', methods=['POST'])
 def create_stock():
-    stock = request.get_json(force=True)
-    values = [stock['clone']['name'], stock['clone']['purify_date']]
+    try:
+        stock = request.get_json(force=True)
+        values = [stock['clone']['name'], format_date(stock['clone']['purify_date'])]
 
-    clone_id = query_db("SELECT id FROM Clone WHERE name=? AND purify_date=?", args=values)[0][0]
-    add_stock([stock['stockDate'], clone_id, stock['stockFFU']])
+        clone_id = query_db("SELECT id FROM Clone WHERE name=? AND purify_date=?", args=values)[0][0]
 
+        add_stock([format_date(stock['stockDate']), clone_id, stock['stockFFU']])
+
+    except:
+        raise BadRequest("OH NO, SOMETHING BAD HAPPENED")
     # todo error handling
 
     return "success"

@@ -22,52 +22,6 @@ bioApp.directive('quadrant', function($http) {
                 numControls: 4,
                 drug: null
             };
-
-            scope.createStockAndClone = function() {
-                var data = {
-                    cName: scope.quads[scope.$id].newCName,
-                    cDate: scope.quads[scope.$id].newCDate,
-                    cAA: scope.quads[scope.$id].newCAA,
-                    cType: scope.quads[scope.$id].newCType,
-                    stockDate: scope.quads[scope.$id].virusStockDate,
-                    stockFFU: scope.quads[scope.$id].virusStockFFU
-                };
-
-                if (data.stockDate && data.stockFFU) {
-                    $http.post(baseAddress + '/create_clone_and_stock', data)
-                        .success(function(resp) {
-                            alert('Clone and stock successfully created.');
-                        })
-                        .error(function(resp) {
-                            alert('Error in creating clone and stock - please ensure data is inputted correctly');
-                        });
-                } else {
-                    console.log('form not inputted');
-                }
-            };
-
-            scope.createStock = function() {
-                var data = {
-                    stockDate: scope.quads[scope.$id].virusStockDate,
-                    stockFFU: scope.quads[scope.$id].virusStockFFU,
-                    clone: scope.quads[scope.$id].selectedClone
-                };
-
-                if (data.stockDate && data.stockFFU && data.clone) {
-                    $http.post(baseAddress + '/create_stock', data)
-                        .success(function(resp) {
-                            alert('Stock successfully created');
-                        })
-                        .error(function(resp) {
-                            alert('Error in creating stock - please ensure data is inputted correctly');
-                        });
-                } else {
-                    console.log('stock form not inputted');
-                }
-
-
-            };
-
         }
     }
 });
@@ -101,6 +55,11 @@ bioApp.directive('checkDate', function() {
                 }
 
                 var splitDate = inp.split('/');
+
+                if (splitDate.length != 3) {
+                    return false;
+                }
+
                 var month = splitDate[0];
                 var day = splitDate[1];
                 var year = splitDate[2];
@@ -168,6 +127,34 @@ bioApp.controller('StockController', function($scope, $http) {
     $scope.toggleMenus = {
         newStockOldClone: true,
         newStockNewClone: false
+    };
+
+    $scope.stockData = {
+        cloneDate: "06/26/2016",
+        selectedClone: null,
+        virusStockDate: "08/05/2016",
+        virusStockFFU: 16000,
+        newCName: '',
+        newCDate: '',
+        newCAA: '',
+        newCType: '',
+    };
+
+    // alert settings
+    $scope.alertSettings = {
+        visible: false,
+        message: "",
+        warning: false
+    }
+
+    $scope.closeAlert = function() {
+        $scope.alertSettings.visible = false;
+    };
+
+    var showAlert = function(msg, warning) {
+        $scope.alertSettings.message = msg;
+        $scope.alertSettings.warning = warning;
+        $scope.alertSettings.visible = true;
     }
 
     $scope.newStockOldCloneOpen = function() {
@@ -178,5 +165,53 @@ bioApp.controller('StockController', function($scope, $http) {
     $scope.newStockNewCloneOpen = function() {
         $scope.toggleMenus.newStockOldClone = false;
         $scope.toggleMenus.newStockNewClone = !$scope.toggleMenus.newStockNewClone;
+    };
+
+    $http.get(baseAddress + '/get_all_clones')
+        .success(function(resp) {
+            $scope.clones = resp;
+    });
+
+    $scope.createStock = function() {
+        var data = {
+            stockDate: $scope.stockData.virusStockDate,
+            stockFFU: $scope.stockData.virusStockFFU,
+            clone: $scope.stockData.selectedClone
+        };
+
+        if (data.stockDate && data.stockFFU && data.clone) {
+            $http.post(baseAddress + '/create_stock', data)
+                .success(function(resp) {
+                    showAlert('Stock successfully created', warning=false);
+                })
+                .error(function(resp) {
+                    showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
+                });
+        } else {
+            showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
+        }
+    };
+
+    $scope.createStockAndClone = function() {
+        var data = {
+            cName: $scope.stockData.newCName,
+            cDate: $scope.stockData.newCDate,
+            cAA: $scope.stockData.newCAA,
+            cType: $scope.stockData.newCType,
+            stockDate: $scope.stockData.virusStockDate,
+            stockFFU: $scope.stockData.virusStockFFU
+        };
+
+        if (data.stockDate && data.stockFFU) {
+            $http.post(baseAddress + '/create_clone_and_stock', data)
+                .success(function(resp) {
+                    showAlert('Clone and stock successfully created', warning=false);
+                })
+                .error(function(resp) {
+                    showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning-true);
+                });
+        } else {
+            showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning-true);
+        }
     };
 });
