@@ -17,7 +17,7 @@ bioApp.directive('quadrant', function($http) {
                 virusStockFFU : 55555,
                 selectedClone: null,
                 minDrug: 5,
-                maxDrug: 10,
+                // maxDrug: 10,
                 inc: null,
                 numControls: 4,
                 drug: null

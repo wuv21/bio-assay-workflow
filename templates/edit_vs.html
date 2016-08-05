@@ -10,12 +10,12 @@
 
 		<div class="quad-stock-btns">
 				<span>
-					<p class="btn btn-primary btn-sm" ng-click="newStockOldCloneOpen()">New stock (from old clone)</p>		
-					<p class="btn btn-info btn-sm" ng-click="newStockNewCloneOpen()">New stock (from new clone)</p>		
+					<p class="btn btn-primary btn-sm" ng-click="newStockOldCloneOpen()">New stock (from old clone)</p>
+					<p class="btn btn-info btn-sm" ng-click="newStockNewCloneOpen()">New stock (from new clone)</p>
 				</span>
 			</div>
 
-			<div ng-show="toggleMenus.newStockOldClone">
+			<form action="" name="newOldForm" ng-show="toggleMenus.newStockOldClone">
 				<div class="form-group row">
 					<label for="oldCloneDateInp" class="control-label col-md-3">Old clone date</label>
 					<div class="col-md-9">
@@ -31,8 +31,8 @@
 								| filter: {purify_date: quads[$id].oldCloneDateFilter}"
 								ng-model="quads[$id].selectedClone">
 		    			</select>
-					</div>			
-				</div>		
+					</div>
+				</div>
 
 				<div class="form-group row">
 					<label for="newOldHarvestDateInp" class="control-label col-md-3">Stock Harvest Date</label>
@@ -46,12 +46,12 @@
 					<div class="col-md-9">
 						<input type="number" min=0 name="newOldFFUInp" id="newOldFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
 					</div>
-				</div>						
+				</div>
 
-				<p class="btn btn-primary btn-sm" ng-click="createStock()">Create stock</p>
-			</div>
+				<button type="submit" class="btn btn-primary" ng-click="createStock()">Create stock</button>
+			</form>
 
-			<div ng-show="toggleMenus.newStockNewClone">
+			<form action="" name="newNewForm" ng-show="toggleMenus.newStockNewClone">
 				<div class="form-group row">
 					<label for="newCloneNameInp" class="control-label col-md-3">New clone name</label>
 					<div class="col-md-9">
@@ -63,7 +63,7 @@
 					<label for="newCloneDateInp" class="control-label col-md-3">New clone date</label>
 					<div class="col-md-9">
 						<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter date" class="form-control" ng-model="quads[$id].newCDate">
-					</div>			
+					</div>
 				</div>
 
 				<div class="form-group row">
@@ -92,9 +92,9 @@
 					<div class="col-md-9">
 						<input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="quads[$id].virusStockFFU">
 					</div>
-				</div>						
+				</div>
 
-				<p class="btn btn-info btn-sm" ng-click="createStockAndClone()">Create clone and stock</p>
-		</div>		
+				<button type="submit" class="btn btn-info" ng-click="createStockAndClone()">Create clone and stock</button>
+		</form>
 	</div>
 {% endblock %}
