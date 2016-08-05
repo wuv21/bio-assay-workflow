@@ -180,7 +180,7 @@ def testPost():
     data = request.get_json(force=True)
 
     if data:
-        file = data['file'].split('\r\n')
+        file = data['file'].replace('\r\n', '\n').split('\n')
         header = file[0]
 
         # todo parse file
@@ -203,7 +203,7 @@ def testPost():
 
             marker += 12
 
-        pp.pprint(quadrants)    
+        pp.pprint(quadrants)
 
         return "success"
     else:
@@ -239,4 +239,3 @@ if __name__ == "__main__":
 
     app.debug = True
     app.run(host="127.0.0.1", port=8080, threaded=True)
-
