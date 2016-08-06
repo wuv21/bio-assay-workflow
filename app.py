@@ -90,17 +90,51 @@ def insert_db(query, args=()):
 
 # adds a clone into the Clone table, given arguments
 def add_clone(args):
-    # todo check if clone already exists
-    insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
+    try:
+        check = query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
+        if len(check) > 0:
+            return False
 
-    return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)[0][0]
+        insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
+
+        return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)[0][0]
+
+    except:
+        raise BadRequest("OH NO...I'm in add_clone")
 
 
 # adds a virus stock into the Virus stock, given arguments
 def add_stock(args):
-    insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
+    try:
+        check = query_db("SELECT id FROM Virus_Stock WHERE harvest_date=? AND clone=? AND ffu_per_ml=?", args=args)
+        if len(check) > 0:
+            return False
 
-    return "success"
+        insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
+
+        return "success"
+
+    except:
+        raise BadRequest("OH NO")
+
+
+def add_drug(args):
+    try:
+        check = query_db("SELECT id FROM Drug WHERE name=? AND abbreviation=?", args=args)
+        if len(check) > 0:
+            return False
+
+        insert_db("INSERT INTO Drug(name, abbreviation) VALUES(?, ?)", args=args)
+
+        return "success"
+
+    except:
+        raise BadRequest("OH NO")
+
+
+def convert_date(date):
+    d = date.split('-')
+    return d[1] + '/' + d[2] + '/' + d[0]
 
 
 # index.html
@@ -132,13 +166,16 @@ def create_stock():
 
         clone_id = query_db("SELECT id FROM Clone WHERE name=? AND purify_date=?", args=values)[0][0]
 
-        add_stock([format_date(stock['stockDate']), clone_id, stock['stockFFU']])
+        stock = add_stock([format_date(stock['stockDate']), clone_id, stock['stockFFU']])
 
-    except:
-        raise BadRequest("OH NO, SOMETHING BAD HAPPENED")
-    # todo error handling
+        if not stock:
+            return json.dumps({'success': False, 'msg': "Stock already exists"}), 404, {'ContentType': 'application/json'}
 
-    return "success"
+        return json.dumps({'success': True, 'msg': "Stock created successfully"}), 404, {'ContentType': 'application/json'}
+
+    except Exception as e:
+        print(e)
+        return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
 # POST request to enter a new clone and stock
@@ -147,22 +184,30 @@ def create_clone_and_stock():
     data = request.get_json(force=True)
 
     clone_id = add_clone([data["cName"], data["cAA"], data["cType"], format_date(data["cDate"])])
-    print(clone_id)
-    add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
+    if not clone_id:
+        return json.dumps({'success': False, 'msg': "Clone already exists"}), 404, {'ContentType': 'application/json'}
 
-    # todo error handling
-    return "success"
+    stock = add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
+    if not stock:
+        return json.dumps({'success': False, 'msg': "Stock already exists"}), 404, {'ContentType': 'application/json'}
 
-
-# test GET request - USE FOR DEBUGGING ONLY
-@app.route('/testGet', methods=['GET'])
-def testGet():
-    return str(query_db("SELECT * FROM Clone"))
+    return json.dumps({'success': True, 'msg': "Clone and stock created successfully"}), 200, {'ContentType': 'application/json'}
 
 
-def convert_date(date):
-    d = date.split('-')
-    return d[1] + '/' + d[2] + '/' + d[0]
+# POST request to enter a new durg
+@app.route('/create_drug', methods=['POST'])
+def create_drug():
+    try:
+        data = request.get_json(force=True)
+
+        val = add_drug([data['name'], data['abbrev']])
+        if not val:
+            return json.dumps({'success': False, 'msg': "Drug already exists"}), 404, {'ContentType': 'application/json'}
+
+        return "Drug created successfully"
+
+    except IndexError as e:
+        return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
 # test POST request - USE FOR DEBUGGING ONLY
@@ -188,7 +233,7 @@ def testPost():
             quadrants[0].append(abs_values[marker : marker+6])
             quadrants[1].append(abs_values[marker + 6: marker+12])
 
-            b_half = marker + 48;
+            b_half = marker + 48
             quadrants[2].append(abs_values[b_half: b_half+6])
             quadrants[3].append(abs_values[b_half + 6: b_half+12])
 
@@ -205,7 +250,7 @@ def testPost():
 @app.route('/get_all_stocks', methods=["GET"])
 def get_all_stocks():
     resp = format_resp(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"),
-                                  ["Virus_Stock", "Clone"])
+                       ["Virus_Stock", "Clone"])
 
     for i in range(0, len(resp)):
         resp[i]['harvest_date'] = convert_date(resp[i]['harvest_date'])
@@ -221,6 +266,13 @@ def get_all_clones():
 
     for i in range(0, len(resp)):
         resp[i]['purify_date'] = convert_date(resp[i]['purify_date'])
+
+    return json.dumps(resp)
+
+
+@app.route('/get_all_drugs', methods=["GET"])
+def get_all_drugs():
+    resp = format_resp(query_db("SELECT * FROM Drug"), ["Drug"])
 
     return json.dumps(resp)
 

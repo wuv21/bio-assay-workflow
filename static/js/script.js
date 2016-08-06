@@ -6,6 +6,12 @@ bioApp.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.endSymbol('a}');
 }]);
 
+bioApp.filter('htmlToText', function() {
+    return function(text) {
+      return text ? String(text).replace(/<[^>]+>/gm, '') : '';
+    };
+});
+
 bioApp.directive('quadrant', function($http) {
     return {
         restrict: "E",
@@ -103,7 +109,11 @@ bioApp.controller('QuadrantController', function($scope, $http) {
             $scope.clones = resp;
         });
 
-
+    $http.get(baseAddress + '/get_all_drugs')
+        .success(function(resp) {
+            console.log(resp);
+            $scope.allDrugs = resp;
+        });
 
     $scope.testSubmission = function() {
         $scope.plate.quads = $scope.quads;
@@ -123,7 +133,7 @@ bioApp.controller('QuadrantController', function($scope, $http) {
     }
 });
 
-bioApp.controller('StockController', function($scope, $http) {
+bioApp.controller('StockController', function($scope, $http, $filter) {
     $scope.toggleMenus = {
         newStockOldClone: true,
         newStockNewClone: false
@@ -182,11 +192,10 @@ bioApp.controller('StockController', function($scope, $http) {
         if (data.stockDate && data.stockFFU && data.clone) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
-                    console.log('here');
-                    showAlert('Stock successfully created!', warning=false);
+                    showAlert($filter('htmlToText')(resp.msg), warning=false);
                 })
                 .error(function(resp) {
-                    showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
+                    showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
             showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
@@ -206,10 +215,10 @@ bioApp.controller('StockController', function($scope, $http) {
         if (data.stockDate && data.stockFFU) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
-                    showAlert('Clone and stock successfully created!', warning=false);
+                    showAlert($filter('htmlToText')(resp.msg), warning=false);
                 })
                 .error(function(resp) {
-                    showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
+                    showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
             showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
@@ -217,6 +226,40 @@ bioApp.controller('StockController', function($scope, $http) {
     };
 });
 
-bioApp.controller('DrugController', function($scope, $http) {
+bioApp.controller('DrugController', function($scope, $http, $filter) {
+    // alert settings
+    $scope.alertSettings = {
+        visible: false,
+        message: "",
+        warning: false
+    };
 
+    $scope.closeAlert = function() {
+        $scope.alertSettings.visible = false;
+    };
+
+    var showAlert = function(msg, warning) {
+        $scope.alertSettings.message = msg;
+        $scope.alertSettings.warning = warning;
+        $scope.alertSettings.visible = true;
+    };
+
+    $scope.newDrug = {
+        name: '',
+        abbrev: ''
+    };
+
+    $scope.createDrug = function() {
+        if ($scope.newDrug.name && $scope.newDrug.abbrev) {
+            $http.post(baseAddress + '/create_drug', $scope.newDrug)
+                .success(function(resp) {
+                    showAlert($filter('htmlToText')(resp.msg), warning=false);
+                })
+                .error(function(resp) {
+                    showAlert($filter('htmlToText')(resp.msg), warning=true);
+                });
+        } else {
+            showAlert('Error in creating drug - please ensure data is inputted correctly', warning=true);
+        }
+    };
 });
