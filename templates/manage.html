@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %} - Edit Virus Stocks {% endblock %}
-{% set active_page = "edit_vs" %}
+{% block title %} - Manage {% endblock %}
+{% set active_page = "manage" %}
 
 {% block content %}
 	<div class="container" ng-controller="StockController">
-		<h2>Create virus stocks</h2>
+		<h2>Enter virus stocks</h2>
 		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
 			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 		</p>
@@ -99,5 +99,11 @@
 
 				<button type="submit" class="btn btn-info" ng-disabled="newNewForm.$invalid" ng-click="createStockAndClone()">Create clone and stock</button>
 		</form>
+
+        <hr>
 	</div>
+
+	<div class="container" ng-controller="DrugController">
+        <h2>Enter Drug</h2>
+    </div>
 {% endblock %}

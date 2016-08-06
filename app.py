@@ -3,7 +3,6 @@ import sqlite3
 import os
 import json
 import datetime
-import base64
 # from flask_cors import CORS
 
 from werkzeug.exceptions import BadRequest
@@ -64,7 +63,6 @@ def format_date(date_str):
     return datetime.date(year, month, day)
 
 
-
 # formats the query response into an array of dict in order to align with JSON formatting
 def format_resp(resp, tbl_name):
     fields = []
@@ -92,9 +90,10 @@ def insert_db(query, args=()):
 
 # adds a clone into the Clone table, given arguments
 def add_clone(args):
+    # todo check if clone already exists
     insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
 
-    return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
+    return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)[0][0]
 
 
 # adds a virus stock into the Virus stock, given arguments
@@ -104,29 +103,17 @@ def add_stock(args):
     return "success"
 
 
-# clears the database - USE FOR DEBUGGING ONLY
-# todo remove this to prevent accidental deletion
-@app.route('/clear_db', methods=["GET"])
-def clear_db():
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM Clone")
-    conn.commit()
-
-    return redirect(url_for('index'))
-
-
 # index.html
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
-# edit_vs.html
+# manage.html
 # edits virus stocks
-@app.route('/edit_vs')
+@app.route('/manage')
 def edit():
-    return render_template('edit_vs.html')
+    return render_template('manage.html')
 
 
 # enter_assay.html

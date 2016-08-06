@@ -134,10 +134,10 @@ bioApp.controller('StockController', function($scope, $http) {
         selectedClone: null,
         virusStockDate: "08/05/2016",
         virusStockFFU: 16000,
-        newCName: '',
-        newCDate: '',
-        newCAA: '',
-        newCType: '',
+        newCName: 'TestClone',
+        newCDate: '05/02/2015',
+        newCAA: 'A153G',
+        newCType: 'ROD9'
     };
 
     // alert settings
@@ -145,7 +145,7 @@ bioApp.controller('StockController', function($scope, $http) {
         visible: false,
         message: "",
         warning: false
-    }
+    };
 
     $scope.closeAlert = function() {
         $scope.alertSettings.visible = false;
@@ -155,7 +155,7 @@ bioApp.controller('StockController', function($scope, $http) {
         $scope.alertSettings.message = msg;
         $scope.alertSettings.warning = warning;
         $scope.alertSettings.visible = true;
-    }
+    };
 
     $scope.newStockOldCloneOpen = function() {
         $scope.toggleMenus.newStockNewClone = false;
@@ -182,7 +182,8 @@ bioApp.controller('StockController', function($scope, $http) {
         if (data.stockDate && data.stockFFU && data.clone) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
-                    showAlert('Stock successfully created', warning=false);
+                    console.log('here');
+                    showAlert('Stock successfully created!', warning=false);
                 })
                 .error(function(resp) {
                     showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
@@ -205,13 +206,17 @@ bioApp.controller('StockController', function($scope, $http) {
         if (data.stockDate && data.stockFFU) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
-                    showAlert('Clone and stock successfully created', warning=false);
+                    showAlert('Clone and stock successfully created!', warning=false);
                 })
                 .error(function(resp) {
-                    showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning-true);
+                    showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
                 });
         } else {
-            showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning-true);
+            showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
         }
     };
+});
+
+bioApp.controller('DrugController', function($scope, $http) {
+
 });
