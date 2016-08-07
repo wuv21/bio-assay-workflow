@@ -3,8 +3,7 @@ import sqlite3
 import os
 import json
 import datetime
-# from flask_cors import CORS
-
+import quadrant
 from werkzeug.exceptions import BadRequest
 
 
@@ -219,27 +218,21 @@ def testPost():
         file = data['file'].replace('\r\n', '\n').split('\n')
         header = file[0]
 
-        # todo parse file
-        # q1 is A01 to D06...0:6, 12:18
-        # q2 is A07 to D12
-        # q3 is E01 to H06
-        # q4 is E07 to H12
-
+        abs_by_quadrants = [[] for x in range(0, 4)]
         abs_values = [float(x.split(',')[5]) for x in file[1:]]
 
-        quadrants = [[] for x in range(0, 4)]
         marker = 0
         for i in range(0, 4):
-            quadrants[0].append(abs_values[marker : marker+6])
-            quadrants[1].append(abs_values[marker + 6: marker+12])
+            abs_by_quadrants[0].append(abs_values[marker: marker + 6])
+            abs_by_quadrants[1].append(abs_values[marker + 6: marker + 12])
 
             b_half = marker + 48
-            quadrants[2].append(abs_values[b_half: b_half+6])
-            quadrants[3].append(abs_values[b_half + 6: b_half+12])
+            abs_by_quadrants[2].append(abs_values[b_half: b_half + 6])
+            abs_by_quadrants[3].append(abs_values[b_half + 6: b_half + 12])
 
             marker += 12
 
-        pp.pprint(quadrants)
+        pp.pprint(abs_by_quadrants[0])
 
         return "success"
     else:
