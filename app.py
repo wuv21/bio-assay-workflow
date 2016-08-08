@@ -62,13 +62,21 @@ def format_date(date_str):
     return datetime.date(year, month, day)
 
 
-# formats the query response into an array of dict in order to align with JSON formatting
-def format_resp(resp, tbl_name):
+# returns the column names of given tables
+def get_column_names(tbl_name):
     fields = []
     for name in tbl_name:
         field = query_db("PRAGMA table_info(" + name + ")")
         for x in field:
+            # gets column name
             fields.append(x[1])
+
+    return fields
+
+
+# formats the query response into an array of dict in order to align with JSON formatting
+def format_resp(resp, tbl_name):
+    fields = get_column_names(tbl_name)
 
     formatted_resp = []
     for x in resp:
@@ -131,6 +139,22 @@ def add_drug(args):
         raise BadRequest("OH NO")
 
 
+def add_plate(args):
+    try:
+        name = args[0]
+        letter = args[1]
+        check = query_db("SELECT id FROM Plate_Reading WHERE name=? AND letter=?", args=[name, letter])
+        if len(check) > 0:
+            return False
+
+        insert_db("INSERT INTO Plate_reading VALUES(?,?,?,?)", args=args)
+
+        return "success"
+
+    except:
+        raise BadRequest("OH NO")
+
+
 def convert_date(date):
     d = date.split('-')
     return d[1] + '/' + d[2] + '/' + d[0]
@@ -170,7 +194,7 @@ def create_stock():
         if not stock:
             return json.dumps({'success': False, 'msg': "Stock already exists"}), 404, {'ContentType': 'application/json'}
 
-        return json.dumps({'success': True, 'msg': "Stock created successfully"}), 404, {'ContentType': 'application/json'}
+        return json.dumps({'success': True, 'msg': "Stock created successfully"}), 200, {'ContentType': 'application/json'}
 
     except Exception as e:
         print(e)
@@ -203,20 +227,18 @@ def create_drug():
         if not val:
             return json.dumps({'success': False, 'msg': "Drug already exists"}), 404, {'ContentType': 'application/json'}
 
-        return "Drug created successfully"
+        return json.dumps({'success': True, 'msg': "Drug created successfully"}), 200, {'ContentType': 'application/json'}
 
     except IndexError as e:
         return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
 # test POST request - USE FOR DEBUGGING ONLY
-@app.route('/testPost', methods=['POST'])
-def testPost():
+@app.route('/create_plate', methods=['POST'])
+def create_plate():
     data = request.get_json(force=True)
-
     if data:
-        file = data['file'].replace('\r\n', '\n').split('\n')
-        header = file[0]
+        file = data['file'].replace('\r', '').split('\n')
 
         abs_by_quadrants = [[] for x in range(0, 4)]
         abs_values = [float(x.split(',')[5]) for x in file[1:]]
@@ -232,9 +254,28 @@ def testPost():
 
             marker += 12
 
-        pp.pprint(abs_by_quadrants[0])
+        quadrants = []
+        quad_lbl = [str(x) for x in range(3, 7)]
+        for i in range(0, 4):
+            try:
+                info = data['quads'][quad_lbl[i]]
 
-        return "success"
+                q = quadrant.Quadrant(i,
+                                      info['minDrug'],
+                                      info['drug']['name'],
+                                      info['drug']['id'],
+                                      info['inc'],
+                                      info['numControls'],
+                                      info['selectedClone']['id'],
+                                      abs_by_quadrants[i])
+
+                quadrants.append(q)
+
+            except TypeError as e:
+                quadrants.append(None)
+                print(i, e)
+
+        return json.dumps({'success': True, 'msg': "Successful"}), 200, {'ContentType': 'application/json'}
     else:
         raise BadRequest("OH NO")
 

@@ -12,7 +12,7 @@ bioApp.filter('htmlToText', function() {
     };
 });
 
-bioApp.directive('quadrant', function($http) {
+bioApp.directive('quadrant', function() {
     return {
         restrict: "E",
         scope: true,
@@ -20,10 +20,8 @@ bioApp.directive('quadrant', function($http) {
         link: function(scope) {
             scope.quads[scope.$id] = {
                 virusStockDate: '08/01/2016',
-                virusStockFFU : 55555,
                 selectedClone: null,
                 minDrug: 5,
-                // maxDrug: 10,
                 inc: null,
                 numControls: 4,
                 drug: null
@@ -37,7 +35,7 @@ bioApp.directive("fileread", [function () {
         scope: {
             fileread: "="
         },
-        link: function (scope, element, attributes) {
+        link: function (scope, element, attrs) {
             element.bind("change", function (changeEvent) {
                 var reader = new FileReader();
                 reader.onload = function (loadEvent) {
@@ -99,27 +97,29 @@ bioApp.controller('QuadrantController', function($scope, $http) {
         $scope.alertVisible = false;
     };
 
-    $http.get(baseAddress + '/get_all_stocks')
-        .success(function(resp) {
-            $scope.stockClones = resp;
+    $scope.getAllData = function() {
+        $http.get(baseAddress + '/get_all_stocks')
+            .success(function(resp) {
+                $scope.stockClones = resp;
         });
 
-    $http.get(baseAddress + '/get_all_clones')
-        .success(function(resp) {
-            $scope.clones = resp;
-        });
+        $http.get(baseAddress + '/get_all_clones')
+            .success(function(resp) {
+                $scope.clones = resp;
+            });
 
-    $http.get(baseAddress + '/get_all_drugs')
-        .success(function(resp) {
-            console.log(resp);
-            $scope.allDrugs = resp;
-        });
+        $http.get(baseAddress + '/get_all_drugs')
+            .success(function(resp) {
+                $scope.allDrugs = resp;
+            });
+    };
 
-    $scope.testSubmission = function() {
+    $scope.getAllData();
+
+    $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
-        console.log($scope.plate);
 
-        $http.post(baseAddress + '/testPost', $scope.plate)
+        $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
                 console.log(resp);
                 if (resp == "no data") {
