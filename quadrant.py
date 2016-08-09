@@ -4,18 +4,13 @@ import math
 class Quadrant(object):
     variables = 12
 
-    def __init__(self, q_id, min_c, drug_name, drug_id, log, num_ctrl, virus_stock, abs_val):
-        self.q_id = q_id
-        self.min_c = min_c
-        self.drug_name = drug_name
-        self.drug_id = drug_id
-        self.log = log
-        self.num_ctrl = num_ctrl
+    def __init__(self, virus_stock, drug_id, min_c, inc, num_ctrl, abs_val):
         self.virus_stock = virus_stock
+        self.drug_id = drug_id
+        self.min_c = min_c
+        self.inc = inc
+        self.num_ctrl = num_ctrl
         self.abs_val = abs_val
-
-    def get_id(self):
-        return self.q_id
 
     def show_abs(self):
         return self.abs_val

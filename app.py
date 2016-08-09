@@ -5,6 +5,7 @@ import json
 import datetime
 import quadrant
 from werkzeug.exceptions import BadRequest
+import pickle
 
 
 app = Flask(__name__)
@@ -139,20 +140,41 @@ def add_drug(args):
         raise BadRequest("OH NO")
 
 
-def add_plate(args):
+# adds a quadrant into the Quadrant table, given arguments
+def add_quadrant(args):
     try:
-        name = args[0]
-        letter = args[1]
-        check = query_db("SELECT id FROM Plate_Reading WHERE name=? AND letter=?", args=[name, letter])
+        insert_db("INSERT INTO Quadrant(virus_stock, drug, min_c, concentration_inc, num_controls, q_abs)"
+                  " VALUES(?, ?, ?, ?, ?, ?)", args=args)
+
+        return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
+
+    except Exception as e:
+        print(e)
+        raise BadRequest("OH NO...I'm in add_quadrant")
+
+
+# adds a plate into the Plate_reading table, given arguments
+def add_plate_and_quadrants(plate, quads):
+    try:
+        ids = []
+        for q in quads:
+            if q:
+                ids.append(add_quadrant(q))
+            else:
+                ids.append(-1)
+
+        check = query_db("SELECT id FROM Plate_Reading WHERE name=? AND read_date=? AND letter=?", args=plate)
         if len(check) > 0:
             return False
 
-        insert_db("INSERT INTO Plate_reading VALUES(?,?,?,?)", args=args)
+        values = [x for x in plate + ids]
+        insert_db("INSERT INTO Plate_Reading(name, read_date, letter, q1, q2, q3, q4) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                  args=values)
 
         return "success"
 
-    except:
-        raise BadRequest("OH NO")
+    except Exception as e:
+        raise BadRequest(e)
 
 
 def convert_date(date):
@@ -178,6 +200,12 @@ def edit():
 @app.route('/enter_assay')
 def enter_assay():
     return render_template('enter_assay.html')
+
+
+@app.route('/analysis', defaults={'plate_id': None})
+@app.route('/analysis/<int:plate_id>')
+def analysis(plate_id):
+    return render_template('analysis.html')
 
 
 # POST request to enter a new stock
@@ -233,7 +261,7 @@ def create_drug():
         return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
-# test POST request - USE FOR DEBUGGING ONLY
+# POST request to enter a new plate reading
 @app.route('/create_plate', methods=['POST'])
 def create_plate():
     data = request.get_json(force=True)
@@ -259,25 +287,32 @@ def create_plate():
         for i in range(0, 4):
             try:
                 info = data['quads'][quad_lbl[i]]
+                info_picked = [info['selectedClone']['id'],
+                               info['drug']['id'],
+                               info['minDrug'],
+                               info['inc'],
+                               info['numControls'],
+                               pickle.dumps(abs_by_quadrants[i])]
 
-                q = quadrant.Quadrant(i,
-                                      info['minDrug'],
-                                      info['drug']['name'],
-                                      info['drug']['id'],
-                                      info['inc'],
-                                      info['numControls'],
-                                      info['selectedClone']['id'],
-                                      abs_by_quadrants[i])
-
-                quadrants.append(q)
+                q = quadrant.Quadrant(*info_picked)
+                quadrants.append(info_picked)
 
             except TypeError as e:
                 quadrants.append(None)
                 print(i, e)
 
-        return json.dumps({'success': True, 'msg': "Successful"}), 200, {'ContentType': 'application/json'}
+        plate = [data['name'],
+                 format_date(data['date']),
+                 data['letter']]
+
+        add_result = add_plate_and_quadrants(plate, quadrants)
+        if not add_result:
+            return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {
+                'ContentType': 'application/json'}
+
+        return json.dumps({'success': True, 'msg': "Successful plate creation"}), 200, {'ContentType': 'application/json'}
     else:
-        raise BadRequest("OH NO")
+        return json.dumps({'success': False, 'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
 
 
 # GET request to get all stocks

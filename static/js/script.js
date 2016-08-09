@@ -91,10 +91,20 @@ bioApp.controller('QuadrantController', function($scope, $http) {
     $scope.quads = {};
 
     // alert settings
-    $scope.alertVisible = false;
-    $scope.alertMessage = "Hello";
+    $scope.alertSettings = {
+        visible: false,
+        message: "",
+        warning: false
+    };
+
     $scope.closeAlert = function() {
-        $scope.alertVisible = false;
+        $scope.alertSettings.visible = false;
+    };
+
+    var showAlert = function(msg, warning) {
+        $scope.alertSettings.message = msg;
+        $scope.alertSettings.warning = warning;
+        $scope.alertSettings.visible = true;
     };
 
     $scope.getAllData = function() {
@@ -114,6 +124,11 @@ bioApp.controller('QuadrantController', function($scope, $http) {
             });
     };
 
+    $scope.refreshData = function() {
+        $scope.getAllData();
+        showAlert('Virus stocks and drugs updated', warning=false);
+    };
+
     $scope.getAllData();
 
     $scope.submitPlate = function() {
@@ -121,14 +136,10 @@ bioApp.controller('QuadrantController', function($scope, $http) {
 
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
-                console.log(resp);
-                if (resp == "no data") {
-                    $scope.alertMessage = "ALERT: " + resp;
-                    $scope.alertVisible = false;
-                }
+                showAlert(resp.msg, warning=false);
             })
             .error(function(resp) {
-                console.log("error");
+                showAlert(resp.msg, warning=true);
             });
     }
 });
