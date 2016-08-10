@@ -6,8 +6,9 @@
 {% block content %}
 	<div class="container" ng-controller="QuadrantController">
 		<h2>Enter assay data</h2>
-		<p class="alert alert-danger" ng-show="alertVisible">{a alertMessage a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
-		</p>
+        <p>Fill out the below form to submit a new 96-well plate reading. If you have added new stocks or drugs, please press <span class="btn btn-info btn-xs" ng-click="refreshData()">Refresh</span> to update this page.</p>
+		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
+			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 
 		<form action="" name="plateForm">
 			<div class="row">
@@ -45,8 +46,9 @@
 			</div>
 			
 			<span>
-				<p class="btn btn-warning" ng-click="testSubmission()">Test response</p>
+				<p class="btn btn-warning" ng-click="submitPlate()">Test response</p>
 				<button class="btn btn-danger">Reset</button>
+
 				<button class="btn btn-primary" ng-disabled="plateForm.$invalid">Submit</button>
 			</span>
 			

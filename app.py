@@ -1,12 +1,11 @@
-from flask import Flask, render_template, g, request, redirect, url_for, abort
+from flask import Flask, render_template, g, request
 import sqlite3
 import os
 import json
 import datetime
-import base64
-# from flask_cors import CORS
-
+import quadrant
 from werkzeug.exceptions import BadRequest
+import pickle
 
 
 app = Flask(__name__)
@@ -53,8 +52,8 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
+# provided param is in MM/DD/YYYY. Correct format will be returned as datetime.date(YYYY, MM, DD)
 def format_date(date_str):
-    # provided param is in MM/DD/YYYY. Correct format will be in datetime.date(YYYY, MM, DD)
     date_sep = date_str.split('/')
 
     month = int(date_sep[0])
@@ -64,14 +63,21 @@ def format_date(date_str):
     return datetime.date(year, month, day)
 
 
-
-# formats the query response into an array of dict in order to align with JSON formatting
-def format_resp(resp, tbl_name):
+# returns the column names of given tables
+def get_column_names(tbl_name):
     fields = []
     for name in tbl_name:
         field = query_db("PRAGMA table_info(" + name + ")")
         for x in field:
+            # gets column name
             fields.append(x[1])
+
+    return fields
+
+
+# formats the query response into an array of dict in order to align with JSON formatting
+def format_resp(resp, tbl_name):
+    fields = get_column_names(tbl_name)
 
     formatted_resp = []
     for x in resp:
@@ -90,30 +96,92 @@ def insert_db(query, args=()):
     conn.commit()
 
 
-# adds a clone into the Clone table, given arguments
+# adds a clone into the Clone table if not exists, given arguments
 def add_clone(args):
-    insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
+    try:
+        check = query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
+        if len(check) > 0:
+            return False
 
-    return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
+        insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
+
+        return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)[0][0]
+
+    except:
+        raise BadRequest("OH NO...I'm in add_clone")
 
 
-# adds a virus stock into the Virus stock, given arguments
+# adds a virus stock into the Virus stock if not exists, given arguments
 def add_stock(args):
-    insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
+    try:
+        check = query_db("SELECT id FROM Virus_Stock WHERE harvest_date=? AND clone=? AND ffu_per_ml=?", args=args)
+        if len(check) > 0:
+            return False
 
-    return "success"
+        insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
+
+        return "success"
+
+    except:
+        raise BadRequest("OH NO")
 
 
-# clears the database - USE FOR DEBUGGING ONLY
-# todo remove this to prevent accidental deletion
-@app.route('/clear_db', methods=["GET"])
-def clear_db():
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM Clone")
-    conn.commit()
+# adds a drug into the Drug table if not exists, given arguments
+def add_drug(args):
+    try:
+        check = query_db("SELECT id FROM Drug WHERE name=? AND abbreviation=?", args=args)
+        if len(check) > 0:
+            return False
 
-    return redirect(url_for('index'))
+        insert_db("INSERT INTO Drug(name, abbreviation) VALUES(?, ?)", args=args)
+
+        return "success"
+
+    except:
+        raise BadRequest("OH NO")
+
+
+# adds a quadrant into the Quadrant table, given arguments
+def add_quadrant(args):
+    try:
+        insert_db("INSERT INTO Quadrant(virus_stock, drug, min_c, concentration_inc, num_controls, q_abs)"
+                  " VALUES(?, ?, ?, ?, ?, ?)", args=args)
+
+        return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
+
+    except Exception as e:
+        print(e)
+        raise BadRequest("OH NO...I'm in add_quadrant")
+
+
+# adds a plate into the Plate_reading table if does not already exist, given arguments
+def add_plate_and_quadrants(plate, quads):
+    try:
+        ids = []
+        for q in quads:
+            if q:
+                ids.append(add_quadrant(q))
+            else:
+                ids.append(-1)
+
+        check = query_db("SELECT id FROM Plate_Reading WHERE name=? AND read_date=? AND letter=?", args=plate)
+        if len(check) > 0:
+            return False
+
+        values = [x for x in plate + ids]
+        insert_db("INSERT INTO Plate_Reading(name, read_date, letter, q1, q2, q3, q4) VALUES(?, ?, ?, ?, ?, ?, ?)",
+                  args=values)
+
+        return "success"
+
+    except Exception as e:
+        raise BadRequest(e)
+
+
+# converts date from datetime into MM/DD/YYYY format
+def convert_date(date):
+    d = date.split('-')
+    return d[1] + '/' + d[2] + '/' + d[0]
 
 
 # index.html
@@ -122,11 +190,11 @@ def index():
     return render_template('index.html')
 
 
-# edit_vs.html
+# manage.html
 # edits virus stocks
-@app.route('/edit_vs')
+@app.route('/manage')
 def edit():
-    return render_template('edit_vs.html')
+    return render_template('manage.html')
 
 
 # enter_assay.html
@@ -134,6 +202,14 @@ def edit():
 @app.route('/enter_assay')
 def enter_assay():
     return render_template('enter_assay.html')
+
+
+# analysis.html
+# will return a custom page for each quadrant analysis
+@app.route('/analysis', defaults={'plate_id': None})
+@app.route('/analysis/<int:plate_id>')
+def analysis(plate_id):
+    return render_template('analysis.html')
 
 
 # POST request to enter a new stock
@@ -145,13 +221,16 @@ def create_stock():
 
         clone_id = query_db("SELECT id FROM Clone WHERE name=? AND purify_date=?", args=values)[0][0]
 
-        add_stock([format_date(stock['stockDate']), clone_id, stock['stockFFU']])
+        stock = add_stock([format_date(stock['stockDate']), clone_id, stock['stockFFU']])
 
-    except:
-        raise BadRequest("OH NO, SOMETHING BAD HAPPENED")
-    # todo error handling
+        if not stock:
+            return json.dumps({'success': False, 'msg': "Stock already exists"}), 404, {'ContentType': 'application/json'}
 
-    return "success"
+        return json.dumps({'success': True, 'msg': "Stock created successfully"}), 200, {'ContentType': 'application/json'}
+
+    except Exception as e:
+        print(e)
+        return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
 # POST request to enter a new clone and stock
@@ -160,65 +239,91 @@ def create_clone_and_stock():
     data = request.get_json(force=True)
 
     clone_id = add_clone([data["cName"], data["cAA"], data["cType"], format_date(data["cDate"])])
-    print(clone_id)
-    add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
+    if not clone_id:
+        return json.dumps({'success': False, 'msg': "Clone already exists"}), 404, {'ContentType': 'application/json'}
 
-    # todo error handling
-    return "success"
+    stock = add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
+    if not stock:
+        return json.dumps({'success': False, 'msg': "Stock already exists"}), 404, {'ContentType': 'application/json'}
 
-
-# test GET request - USE FOR DEBUGGING ONLY
-@app.route('/testGet', methods=['GET'])
-def testGet():
-    return str(query_db("SELECT * FROM Clone"))
+    return json.dumps({'success': True, 'msg': "Clone and stock created successfully"}), 200, {'ContentType': 'application/json'}
 
 
-def convert_date(date):
-    d = date.split('-')
-    return d[1] + '/' + d[2] + '/' + d[0]
+# POST request to enter a new durg
+@app.route('/create_drug', methods=['POST'])
+def create_drug():
+    try:
+        data = request.get_json(force=True)
+
+        val = add_drug([data['name'], data['abbrev']])
+        if not val:
+            return json.dumps({'success': False, 'msg': "Drug already exists"}), 404, {'ContentType': 'application/json'}
+
+        return json.dumps({'success': True, 'msg': "Drug created successfully"}), 200, {'ContentType': 'application/json'}
+
+    except IndexError as e:
+        return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
-# test POST request - USE FOR DEBUGGING ONLY
-@app.route('/testPost', methods=['POST'])
-def testPost():
+# POST request to enter a new plate reading
+@app.route('/create_plate', methods=['POST'])
+def create_plate():
     data = request.get_json(force=True)
-
     if data:
-        file = data['file'].replace('\r\n', '\n').split('\n')
-        header = file[0]
+        file = data['file'].replace('\r', '').split('\n')
 
-        # todo parse file
-        # q1 is A01 to D06...0:6, 12:18
-        # q2 is A07 to D12
-        # q3 is E01 to H06
-        # q4 is E07 to H12
-
+        abs_by_quadrants = [[] for x in range(0, 4)]
         abs_values = [float(x.split(',')[5]) for x in file[1:]]
 
-        quadrants = [[] for x in range(0, 4)]
         marker = 0
         for i in range(0, 4):
-            quadrants[0].append(abs_values[marker : marker+6])
-            quadrants[1].append(abs_values[marker + 6: marker+12])
+            abs_by_quadrants[0].append(abs_values[marker: marker + 6])
+            abs_by_quadrants[1].append(abs_values[marker + 6: marker + 12])
 
-            b_half = marker + 48;
-            quadrants[2].append(abs_values[b_half: b_half+6])
-            quadrants[3].append(abs_values[b_half + 6: b_half+12])
+            b_half = marker + 48
+            abs_by_quadrants[2].append(abs_values[b_half: b_half + 6])
+            abs_by_quadrants[3].append(abs_values[b_half + 6: b_half + 12])
 
             marker += 12
 
-        pp.pprint(quadrants)
+        quadrants = []
+        quad_lbl = [str(x) for x in range(3, 7)]
+        for i in range(0, 4):
+            try:
+                info = data['quads'][quad_lbl[i]]
+                info_picked = [info['selectedClone']['id'],
+                               info['drug']['id'],
+                               info['minDrug'],
+                               info['inc'],
+                               info['numControls'],
+                               pickle.dumps(abs_by_quadrants[i])]
 
-        return "success"
+                q = quadrant.Quadrant(*info_picked)
+                quadrants.append(info_picked)
+
+            except TypeError as e:
+                quadrants.append(None)
+                print(i, e)
+
+        plate = [data['name'],
+                 format_date(data['date']),
+                 data['letter']]
+
+        add_result = add_plate_and_quadrants(plate, quadrants)
+        if not add_result:
+            return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {
+                'ContentType': 'application/json'}
+
+        return json.dumps({'success': True, 'msg': "Successful plate creation"}), 200, {'ContentType': 'application/json'}
     else:
-        raise BadRequest("OH NO")
+        return json.dumps({'success': False, 'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
 
 
 # GET request to get all stocks
 @app.route('/get_all_stocks', methods=["GET"])
 def get_all_stocks():
     resp = format_resp(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"),
-                                  ["Virus_Stock", "Clone"])
+                       ["Virus_Stock", "Clone"])
 
     for i in range(0, len(resp)):
         resp[i]['harvest_date'] = convert_date(resp[i]['harvest_date'])
@@ -234,6 +339,14 @@ def get_all_clones():
 
     for i in range(0, len(resp)):
         resp[i]['purify_date'] = convert_date(resp[i]['purify_date'])
+
+    return json.dumps(resp)
+
+
+# GET request to get all drugs
+@app.route('/get_all_drugs', methods=["GET"])
+def get_all_drugs():
+    resp = format_resp(query_db("SELECT * FROM Drug"), ["Drug"])
 
     return json.dumps(resp)
 

@@ -6,7 +6,13 @@ bioApp.config(['$interpolateProvider', function($interpolateProvider) {
     $interpolateProvider.endSymbol('a}');
 }]);
 
-bioApp.directive('quadrant', function($http) {
+bioApp.filter('htmlToText', function() {
+    return function(text) {
+      return text ? String(text).replace(/<[^>]+>/gm, '') : '';
+    };
+});
+
+bioApp.directive('quadrant', function() {
     return {
         restrict: "E",
         scope: true,
@@ -14,10 +20,8 @@ bioApp.directive('quadrant', function($http) {
         link: function(scope) {
             scope.quads[scope.$id] = {
                 virusStockDate: '08/01/2016',
-                virusStockFFU : 55555,
                 selectedClone: null,
                 minDrug: 5,
-                // maxDrug: 10,
                 inc: null,
                 numControls: 4,
                 drug: null
@@ -31,7 +35,7 @@ bioApp.directive("fileread", [function () {
         scope: {
             fileread: "="
         },
-        link: function (scope, element, attributes) {
+        link: function (scope, element, attrs) {
             element.bind("change", function (changeEvent) {
                 var reader = new FileReader();
                 reader.onload = function (loadEvent) {
@@ -87,43 +91,60 @@ bioApp.controller('QuadrantController', function($scope, $http) {
     $scope.quads = {};
 
     // alert settings
-    $scope.alertVisible = false;
-    $scope.alertMessage = "Hello";
-    $scope.closeAlert = function() {
-        $scope.alertVisible = false;
+    $scope.alertSettings = {
+        visible: false,
+        message: "",
+        warning: false
     };
 
-    $http.get(baseAddress + '/get_all_stocks')
-        .success(function(resp) {
-            $scope.stockClones = resp;
-        });
+    $scope.closeAlert = function() {
+        $scope.alertSettings.visible = false;
+    };
 
-    $http.get(baseAddress + '/get_all_clones')
-        .success(function(resp) {
-            $scope.clones = resp;
-        });
+    var showAlert = function(msg, warning) {
+        $scope.alertSettings.message = msg;
+        $scope.alertSettings.warning = warning;
+        $scope.alertSettings.visible = true;
+    };
 
-
-
-    $scope.testSubmission = function() {
-        $scope.plate.quads = $scope.quads;
-        console.log($scope.plate);
-
-        $http.post(baseAddress + '/testPost', $scope.plate)
+    $scope.getAllData = function() {
+        $http.get(baseAddress + '/get_all_stocks')
             .success(function(resp) {
-                console.log(resp);
-                if (resp == "no data") {
-                    $scope.alertMessage = "ALERT: " + resp;
-                    $scope.alertVisible = false;
-                }
+                $scope.stockClones = resp;
+        });
+
+        $http.get(baseAddress + '/get_all_clones')
+            .success(function(resp) {
+                $scope.clones = resp;
+            });
+
+        $http.get(baseAddress + '/get_all_drugs')
+            .success(function(resp) {
+                $scope.allDrugs = resp;
+            });
+    };
+
+    $scope.refreshData = function() {
+        $scope.getAllData();
+        showAlert('Virus stocks and drugs updated', warning=false);
+    };
+
+    $scope.getAllData();
+
+    $scope.submitPlate = function() {
+        $scope.plate.quads = $scope.quads;
+
+        $http.post(baseAddress + '/create_plate', $scope.plate)
+            .success(function(resp) {
+                showAlert(resp.msg, warning=false);
             })
             .error(function(resp) {
-                console.log("error");
+                showAlert(resp.msg, warning=true);
             });
     }
 });
 
-bioApp.controller('StockController', function($scope, $http) {
+bioApp.controller('StockController', function($scope, $http, $filter) {
     $scope.toggleMenus = {
         newStockOldClone: true,
         newStockNewClone: false
@@ -134,10 +155,10 @@ bioApp.controller('StockController', function($scope, $http) {
         selectedClone: null,
         virusStockDate: "08/05/2016",
         virusStockFFU: 16000,
-        newCName: '',
-        newCDate: '',
-        newCAA: '',
-        newCType: '',
+        newCName: 'TestClone',
+        newCDate: '05/02/2015',
+        newCAA: 'A153G',
+        newCType: 'ROD9'
     };
 
     // alert settings
@@ -145,7 +166,7 @@ bioApp.controller('StockController', function($scope, $http) {
         visible: false,
         message: "",
         warning: false
-    }
+    };
 
     $scope.closeAlert = function() {
         $scope.alertSettings.visible = false;
@@ -155,7 +176,7 @@ bioApp.controller('StockController', function($scope, $http) {
         $scope.alertSettings.message = msg;
         $scope.alertSettings.warning = warning;
         $scope.alertSettings.visible = true;
-    }
+    };
 
     $scope.newStockOldCloneOpen = function() {
         $scope.toggleMenus.newStockNewClone = false;
@@ -182,10 +203,10 @@ bioApp.controller('StockController', function($scope, $http) {
         if (data.stockDate && data.stockFFU && data.clone) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
-                    showAlert('Stock successfully created', warning=false);
+                    showAlert($filter('htmlToText')(resp.msg), warning=false);
                 })
                 .error(function(resp) {
-                    showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
+                    showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
             showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
@@ -205,13 +226,51 @@ bioApp.controller('StockController', function($scope, $http) {
         if (data.stockDate && data.stockFFU) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
-                    showAlert('Clone and stock successfully created', warning=false);
+                    showAlert($filter('htmlToText')(resp.msg), warning=false);
                 })
                 .error(function(resp) {
-                    showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning-true);
+                    showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
-            showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning-true);
+            showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
+        }
+    };
+});
+
+bioApp.controller('DrugController', function($scope, $http, $filter) {
+    // alert settings
+    $scope.alertSettings = {
+        visible: false,
+        message: "",
+        warning: false
+    };
+
+    $scope.closeAlert = function() {
+        $scope.alertSettings.visible = false;
+    };
+
+    var showAlert = function(msg, warning) {
+        $scope.alertSettings.message = msg;
+        $scope.alertSettings.warning = warning;
+        $scope.alertSettings.visible = true;
+    };
+
+    $scope.newDrug = {
+        name: '',
+        abbrev: ''
+    };
+
+    $scope.createDrug = function() {
+        if ($scope.newDrug.name && $scope.newDrug.abbrev) {
+            $http.post(baseAddress + '/create_drug', $scope.newDrug)
+                .success(function(resp) {
+                    showAlert($filter('htmlToText')(resp.msg), warning=false);
+                })
+                .error(function(resp) {
+                    showAlert($filter('htmlToText')(resp.msg), warning=true);
+                });
+        } else {
+            showAlert('Error in creating drug - please ensure data is inputted correctly', warning=true);
         }
     };
 });
