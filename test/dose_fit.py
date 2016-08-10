@@ -33,8 +33,6 @@ y = np.array(raw_val,dtype='float')
 
 # x=resize(-x,lower=0.3)
 # y=resize(y,lower=0.3)
-print(x)
-print(y)
 popt, pcov = scipy.optimize.curve_fit(sigmoid, x, y)
 
 print(popt)
