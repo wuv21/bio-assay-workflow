@@ -311,8 +311,7 @@ def create_plate():
 
         add_result = add_plate_and_quadrants(plate, quadrants)
         if not add_result:
-            return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {
-                'ContentType': 'application/json'}
+            return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {'ContentType': 'application/json'}
 
         return json.dumps({'success': True, 'msg': "Successful plate creation"}), 200, {'ContentType': 'application/json'}
     else:
