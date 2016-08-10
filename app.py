@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request, redirect, url_for, abort
+from flask import Flask, render_template, g, request
 import sqlite3
 import os
 import json
@@ -52,8 +52,8 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
+# provided param is in MM/DD/YYYY. Correct format will be returned as datetime.date(YYYY, MM, DD)
 def format_date(date_str):
-    # provided param is in MM/DD/YYYY. Correct format will be in datetime.date(YYYY, MM, DD)
     date_sep = date_str.split('/')
 
     month = int(date_sep[0])
@@ -96,7 +96,7 @@ def insert_db(query, args=()):
     conn.commit()
 
 
-# adds a clone into the Clone table, given arguments
+# adds a clone into the Clone table if not exists, given arguments
 def add_clone(args):
     try:
         check = query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
@@ -111,7 +111,7 @@ def add_clone(args):
         raise BadRequest("OH NO...I'm in add_clone")
 
 
-# adds a virus stock into the Virus stock, given arguments
+# adds a virus stock into the Virus stock if not exists, given arguments
 def add_stock(args):
     try:
         check = query_db("SELECT id FROM Virus_Stock WHERE harvest_date=? AND clone=? AND ffu_per_ml=?", args=args)
@@ -126,6 +126,7 @@ def add_stock(args):
         raise BadRequest("OH NO")
 
 
+# adds a drug into the Drug table if not exists, given arguments
 def add_drug(args):
     try:
         check = query_db("SELECT id FROM Drug WHERE name=? AND abbreviation=?", args=args)
@@ -153,7 +154,7 @@ def add_quadrant(args):
         raise BadRequest("OH NO...I'm in add_quadrant")
 
 
-# adds a plate into the Plate_reading table, given arguments
+# adds a plate into the Plate_reading table if does not already exist, given arguments
 def add_plate_and_quadrants(plate, quads):
     try:
         ids = []
@@ -177,6 +178,7 @@ def add_plate_and_quadrants(plate, quads):
         raise BadRequest(e)
 
 
+# converts date from datetime into MM/DD/YYYY format
 def convert_date(date):
     d = date.split('-')
     return d[1] + '/' + d[2] + '/' + d[0]
@@ -202,6 +204,8 @@ def enter_assay():
     return render_template('enter_assay.html')
 
 
+# analysis.html
+# will return a custom page for each quadrant analysis
 @app.route('/analysis', defaults={'plate_id': None})
 @app.route('/analysis/<int:plate_id>')
 def analysis(plate_id):
@@ -339,6 +343,7 @@ def get_all_clones():
     return json.dumps(resp)
 
 
+# GET request to get all drugs
 @app.route('/get_all_drugs', methods=["GET"])
 def get_all_drugs():
     resp = format_resp(query_db("SELECT * FROM Drug"), ["Drug"])
