@@ -24,15 +24,16 @@ CREATE TABLE IF NOT EXISTS Plate_Reading (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   read_date DATE NOT NULL,
-  letter CHARACTER(1) NOT NULL,
-  q1 INTEGER,
-  q2 INTEGER,
-  q3 INTEGER,
-  q4 INTEGER,
-  FOREIGN KEY (q1) REFERENCES Quadrant(id),
-  FOREIGN KEY (q2) REFERENCES Quadrant(id),
-  FOREIGN KEY (q3) REFERENCES Quadrant(id),
-  FOREIGN KEY (q4) REFERENCES Quadrant(id)
+  letter CHARACTER(1) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Plate_to_Quadrant (
+  id INTEGER PRIMARY KEY,
+  plate_id INTEGER NOT NULL,
+  quad_location INTEGER NOT NULL,
+  quad INTEGER,
+  FOREIGN KEY (plate_id) REFERENCES Plate_Reading(id),
+  FOREIGN KEY (quad) REFERENCES Quadrant(id)
 );
 
 CREATE TABLE IF NOT EXISTS Quadrant (
