@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request
+from flask import Flask, render_template, g, request, redirect, url_for
 import sqlite3
 import os
 import json
@@ -150,7 +150,18 @@ def add_quadrant(args):
         return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
 
     except Exception as e:
-        print(e)
+        raise BadRequest("OH NO...I'm in add_quadrant")
+
+
+# adds a row into the Plate to Quadrant table, given arguments
+def add_plate(args):
+    try:
+        insert_db("INSERT INTO Plate_Reading(name, read_date, letter) VALUES(?, ?, ?)",
+                  args=args)
+
+        return query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0]
+
+    except Exception as e:
         raise BadRequest("OH NO...I'm in add_quadrant")
 
 
@@ -168,13 +179,15 @@ def add_plate_and_quadrants(plate, quads):
         if len(check) > 0:
             return False
 
-        values = [x for x in plate + ids]
-        insert_db("INSERT INTO Plate_Reading(name, read_date, letter, q1, q2, q3, q4) VALUES(?, ?, ?, ?, ?, ?, ?)",
-                  args=values)
-
+        plate_id = add_plate(plate)
+        for i in range(0, len(ids)):
+            insert_db("INSERT INTO Plate_to_Quadrant(plate_id, quad_location, quad) VALUES(?, ?, ?)", args=[plate_id,
+                                                                                                            i,
+                                                                                                            ids[i]])
         return "success"
 
     except Exception as e:
+        print(e)
         raise BadRequest(e)
 
 
@@ -209,6 +222,20 @@ def enter_assay():
 @app.route('/analysis', defaults={'plate_id': None})
 @app.route('/analysis/<int:plate_id>')
 def analysis(plate_id):
+    # todo sqlite3 querying for quadrants and plates
+    # todo analysis with numpy and scipy
+    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
+                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
+                        "JOIN Quadrant AS c ON b.quad=c.id WHERE a.id=?", args=[1])
+    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant'])
+
+    q_data = list(data_raw[0][9:])
+    q_data[-1] = pickle.loads(q_data[-1])
+
+    q = quadrant.Quadrant(*q_data)
+
+    print(q.calc_c_range())
+
     return render_template('analysis.html')
 
 
@@ -249,7 +276,7 @@ def create_clone_and_stock():
     return json.dumps({'success': True, 'msg': "Clone and stock created successfully"}), 200, {'ContentType': 'application/json'}
 
 
-# POST request to enter a new durg
+# POST request to enter a new drug
 @app.route('/create_drug', methods=['POST'])
 def create_drug():
     try:
@@ -268,6 +295,8 @@ def create_drug():
 # POST request to enter a new plate reading
 @app.route('/create_plate', methods=['POST'])
 def create_plate():
+    # return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=1)}), 200, {'ContentType': 'application/json'}
+
     data = request.get_json(force=True)
     if data:
         file = data['file'].replace('\r', '').split('\n')
@@ -313,7 +342,9 @@ def create_plate():
         if not add_result:
             return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {'ContentType': 'application/json'}
 
-        return json.dumps({'success': True, 'msg': "Successful plate creation"}), 200, {'ContentType': 'application/json'}
+        # todo fix error handling here
+
+        return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=3)}), 200, {'ContentType': 'application/json'}
     else:
         return json.dumps({'success': False, 'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
 

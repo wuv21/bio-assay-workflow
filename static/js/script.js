@@ -137,6 +137,7 @@ bioApp.controller('QuadrantController', function($scope, $http) {
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
                 showAlert(resp.msg, warning=false);
+                window.location = resp.next_url;
             })
             .error(function(resp) {
                 showAlert(resp.msg, warning=true);
@@ -203,10 +204,10 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
         if (data.stockDate && data.stockFFU && data.clone) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    showAlert(resp.msg, warning=false);
                 })
                 .error(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=true);
+                    showAlert(resp.msg, warning=true);
                 });
         } else {
             showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
@@ -273,4 +274,9 @@ bioApp.controller('DrugController', function($scope, $http, $filter) {
             showAlert('Error in creating drug - please ensure data is inputted correctly', warning=true);
         }
     };
+});
+
+bioApp.controller('AnalysisController', function($scope, $http) {
+    // todo add analysis code
+    // todo add d3 code and graph element
 });
