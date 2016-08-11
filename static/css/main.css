@@ -26,10 +26,13 @@ h4 {
     color: #468966;
 }
 
-
 .validation-error {
     color: #dd1531;
     font-size: 1em;
+}
+
+dd {
+    margin-bottom: 0.5em;
 }
 
 form .ng-dirty.ng-invalid {
