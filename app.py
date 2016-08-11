@@ -222,7 +222,19 @@ def enter_assay():
 @app.route('/analysis', defaults={'plate_id': None})
 @app.route('/analysis/<int:plate_id>')
 def analysis(plate_id):
-    # data = query_db("SELECT * FROM Plate_Reading JOIN Quadrant ON ")
+    # todo sqlite3 querying for quadrants and plates
+    # todo analysis with numpy and scipy
+    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
+                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
+                        "JOIN Quadrant AS c ON b.quad=c.id WHERE a.id=?", args=[1])
+    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant'])
+
+    q_data = list(data_raw[0][9:])
+    q_data[-1] = pickle.loads(q_data[-1])
+
+    q = quadrant.Quadrant(*q_data)
+
+    print(q.calc_c_range())
 
     return render_template('analysis.html')
 

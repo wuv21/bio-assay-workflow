@@ -275,3 +275,8 @@ bioApp.controller('DrugController', function($scope, $http, $filter) {
         }
     };
 });
+
+bioApp.controller('AnalysisController', function($scope, $http) {
+    // todo add analysis code
+    // todo add d3 code and graph element
+});
