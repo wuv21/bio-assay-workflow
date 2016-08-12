@@ -3,13 +3,22 @@ document.addEventListener('DOMContentLoaded', function() {
     var y1 = [133.274,122.674,102.343,142.231,128.382,50.975,6.529,11.635,6.225,6.919]
     var x = [0.0001,0.001,0.01,0.1,1.0,10.0,100.0,1000.0,10000.0,100000.0]
 
-    var sampleData = [];
+    var raw_vals = [];
     for (var i = 0; i < y0.length; i++) {
-        sampleData.push({
+        raw_vals.push({
             x: x[i],
-            y: y0[i]
-        })
+            y0: y0[i],
+            y1: y1[i]
+        });
     }
+
+    var sampleData = {
+        id: 0,
+        vals: raw_vals,
+        bottom: 121.2,
+        top: 5.215,
+        ec: 6.699
+    };
 
     var myChart = DRCChart();
     var chartWrapper = d3.select('#vis').datum([sampleData]).call(myChart);

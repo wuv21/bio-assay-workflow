@@ -1,15 +1,22 @@
 function DRCChart() {
-    var width = 450,
+    var width = 900,
         height = 500;
 
-    var margin = {left:10, top:10, bottom:20, right:10};
+    var margin = {left:50, top:10, bottom:20, right:10};
 
     function my(selection) {
         selection.each(function(data) {
+            var x = []
+            var y = []
+            data.forEach(function(arr) {
+                arr.vals.forEach(function(a) {
+                    x.push(a.x)
+                    y.push(_.mean([a.y0, a.y1]))
+                });
+            });
 
-            
-            var xScale = d3.scale.linear().domain(null).range(null);
-            var yScale = d3.scale.linear().domain(null).range(null);
+            var xScale = d3.scale.log().domain([d3.min(x) * 0.1, d3.max(x) * 10]).range([margin.left, width - margin.left -  margin.right]);
+            var yScale = d3.scale.linear().domain([0, d3.max(y) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
 
             var svg = d3.select(this)
                 .selectAll('.DRCChart')
@@ -17,66 +24,78 @@ function DRCChart() {
 
             var svgEnter = svg.enter()
                 .append('svg')
-                .attr('class', 'pebbleCharts')
+                .attr('class', 'DRCChart')
                 .attr('width', width)
                 .attr('height', height);
 
             var xAxisLabel = svg.append('g')
                 .attr('class', 'axis')
-                .attr('transform', 'translate(' + margin.left + ',' + (height - margin.top - margin.bottom) + ')');
+                .attr('transform', 'translate(' + 0 + ',' + (height - margin.top - margin.bottom) + ')');
 
-            var xAxis = d3.svg.axis().scale(xScale).orient('bottom');
-            xAxisLabel.transition().duration(400).call(xAxis);
+            var yAxisLabel = svg.append('g')
+                .attr('class', 'axis')
+                .attr('transform', 'translate(' + margin.left + ',' + 0 + ')');
+
+
+            function setAxes() {
+                var xAxis = d3.svg.axis().scale(xScale).orient('bottom');
+                var yAxis = d3.svg.axis().scale(yScale).orient('left');
+
+                xAxisLabel.transition().duration(500).call(xAxis);
+                yAxisLabel.transition().duration(500).call(yAxis);
+            }
+
+            setAxes();
+
+            function sigmoid(x, top, bottom, ec) {
+                return bottom + ((top - bottom) / (1 + Math.pow(10, Math.log10(ec) - x)))
+            }
+
+            var line = d3.svg.line()
+                .x(function(i) {return i.x})
+                .y(function(i) {return i.y});
 
             svg.exit().remove();
 
-            var pebbles = svgEnter.selectAll('.pebble').data(data[0].values);
+            data.forEach(function(arr) {
+                var circles = svgEnter.selectAll('.residual').data(arr.vals);
 
-            pebbles.enter()
-                .append("rect")
-                .attr("class", "pebble")
-                .attr("width", squareSize)
-                .attr("height", squareSize)
-                .style("fill", function(d) {return color(d.name)})
-                .attr("x", width / 2)
-                .attr("y", 0)
-                .attr("title", function(x, i) {return x.bucket + '-' + i})
-                .on('mouseover', function(d) {
-                    d3.select(this)
-                        .style('fill', 'cyan');
-                })
-                .on('mouseout', function(d) {
-                    d3.select(this)
-                        .style('fill', function(d) {return color(d.name)});
-                })
-                .append("rect:title")
-                .text(function(d, i) {return i});
+                circles.enter()
+                    .append('circle')
+                    .attr('r', 3)
+                    .attr('cx', function(i) {return xScale(i.x)})
+                    .attr('cy', function(i) {return yScale(_.mean([i.y0, i.y1]))})
+                    .style('fill', '#FFF')
+                    .transition()
+                    .duration(1000)
+                    .style('fill', '#000');
 
+                circles.exit().remove();
 
-            pebbles.exit().remove();
+                var generated = [];
+                for (var j=0.0001; j<100001; j *= 1.05) {
+                    generated.push({
+                        x: xScale(j),
+                        y: yScale(sigmoid(Math.log10(j), arr.top, arr.bottom, arr.ec))
+                    });
 
-            pebbles.transition()
-                .duration(function(d, i) {return i / data[0].values.length * transitionDelay;})
-                .attr("x", function(d) {
-                    var index = buckets.indexOf(d.bucket);
+                };
 
-                    counters[index].xCounter++;
-                    var adjustment = xScale.rangeBand() / 2 - (squareSize * squareCols + squareMargin * (squareCols - 1)) / 2;
-
-                    return margin.left + xScale(d.bucket) + adjustment + rowScale((counters[index].xCounter - 1) % squareCols);
-                })
-                .attr("y", function(d) {
-                    var index = buckets.indexOf(d.bucket);
-                    counters[index].yCounter++;
-
-                    if ((counters[index].yCounter - 1) % squareCols == 0) {
-                        counters[index].hCounter++;
-                    }
-
-                    return (height - margin.bottom -margin.top) - (counters[index].hCounter * (squareMargin + squareSize));
+                generated.push({
+                    x: xScale(100000),
+                    y: yScale(sigmoid(Math.log10(100000), 5.215, 121.2, 6.699))
                 });
 
-            pebbles.exit().transition().duration(function(d, i) {return i/data[0].values.length * transitionDelay}).remove();
+                var regression_line = svgEnter.append('path')
+                    .datum(generated)
+                    .attr('class', 'line')
+                    .attr('d', line)
+                    .style('stroke', '#FFF')
+                    .transition()
+                    .duration(1000)
+                    .style('stroke', 'steelblue');
+            });
+
         })
     }
 

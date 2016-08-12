@@ -7,9 +7,20 @@
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 
+    <!--D3-->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <!-- lodash -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.2/lodash.min.js"></script>
+
+    <!-- angular -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-animate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-animate.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap.min.js"></script> -->
+
+    <!--DRC chart library-->
+    <script src="{{ url_for('static', filename='js/DRCChart.js') }}"></script>
+
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
     <!-- Uncomment if using separate js files for controllers -->

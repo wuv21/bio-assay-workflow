@@ -6,7 +6,7 @@
 {% block content %}
 	<div class="container" ng-controller="AnalysisController">
 		<h2>Analysis</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias animi assumenda consequatur dolor dolore dolorum esse excepturi fuga ipsum laudantium, magni minus necessitatibus nemo nulla quod rem sequi voluptatem?</p>
+		<p>View plate results with calculated absorbance values (% control) and plate details. Table can be directly copied into Prism or Excel. Sigmoidal dose regression calculated from Numpy and Scipy libraries and is still in beta mode. The mean of absorbance values is plotted with the dose response curve. Since this is in beta mode, please double check curve and values via Prism.</p>
 
 		{% set conc = q.calc_c_range() %}
 		{% set parsed_vals = q.parse_vals() %}
@@ -72,9 +72,8 @@
 			</div>
 		</div>
 
-		<h3>Dose response curve</h3>
-		<p>d3 svg goes here...</p>
-		
+		<h3>Dose response curve <small>beta | still in development</small></h3>
+		<drc-chart></drc-chart>
 	</div>
 
 {% endblock %}

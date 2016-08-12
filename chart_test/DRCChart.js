@@ -1,28 +1,26 @@
 function DRCChart() {
-    var width = 800,
+    var width = 900,
         height = 500;
 
     var margin = {left:50, top:10, bottom:20, right:10};
 
     function my(selection) {
         selection.each(function(data) {
-
             var x = []
             var y = []
             data.forEach(function(arr) {
-                arr.forEach(function(a) {
+                arr.vals.forEach(function(a) {
                     x.push(a.x)
-                    y.push(a.y)
+                    y.push(_.mean([a.y0, a.y1]))
                 });
             });
 
-            var xScale = d3.scale.log().domain([d3.min(x), d3.max(x)]).range([margin.left, width - margin.right]);
-            var yScale = d3.scale.linear().domain([0, d3.max(y)]).range([height - margin.top - margin.bottom, margin.top]);
-
+            var xScale = d3.scale.log().domain([d3.min(x) * 0.1, d3.max(x) * 10]).range([margin.left, width - margin.left -  margin.right]);
+            var yScale = d3.scale.linear().domain([0, d3.max(y) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
 
             var svg = d3.select(this)
                 .selectAll('.DRCChart')
-                .data(data, function(d) {return d});
+                .data(data, function(d) {return d.id});
 
             var svgEnter = svg.enter()
                 .append('svg')
@@ -59,14 +57,18 @@ function DRCChart() {
 
             svg.exit().remove();
 
-            data.forEach(function(d) {
-                var circles = svgEnter.selectAll('.residual').data(d);
+            data.forEach(function(arr) {
+                var circles = svgEnter.selectAll('.residual').data(arr.vals);
 
                 circles.enter()
                     .append('circle')
                     .attr('r', 3)
                     .attr('cx', function(i) {return xScale(i.x)})
-                    .attr('cy', function(i) {return yScale(i.y)});
+                    .attr('cy', function(i) {return yScale(_.mean([i.y0, i.y1]))})
+                    .style('fill', '#FFF')
+                    .transition()
+                    .duration(1000)
+                    .style('fill', '#000');
 
                 circles.exit().remove();
 
@@ -74,7 +76,7 @@ function DRCChart() {
                 for (var j=0.0001; j<100001; j *= 1.05) {
                     generated.push({
                         x: xScale(j),
-                        y: yScale(sigmoid(Math.log10(j), 5.215, 121.2, 6.699))
+                        y: yScale(sigmoid(Math.log10(j), arr.top, arr.bottom, arr.ec))
                     });
 
                 };
@@ -84,38 +86,16 @@ function DRCChart() {
                     y: yScale(sigmoid(Math.log10(100000), 5.215, 121.2, 6.699))
                 });
 
-                console.log(generated.length)
-
-                svgEnter.append('path')
+                var regression_line = svgEnter.append('path')
                     .datum(generated)
                     .attr('class', 'line')
-                    .attr('d', line);
+                    .attr('d', line)
+                    .style('stroke', '#FFF')
+                    .transition()
+                    .duration(1000)
+                    .style('stroke', 'steelblue');
             });
 
-            // var pebbles = svgEnter.selectAll('.pebble').data(data[0].values);
-
-            // pebbles.enter()
-            //     .append("rect")
-            //     .attr("class", "pebble")
-            //     .attr("width", squareSize)
-            //     .attr("height", squareSize)
-            //     .style("fill", function(d) {return color(d.name)})
-            //     .attr("x", width / 2)
-            //     .attr("y", 0)
-            //     .attr("title", function(x, i) {return x.bucket + '-' + i})
-            //     .on('mouseover', function(d) {
-            //         d3.select(this)
-            //             .style('fill', 'cyan');
-            //     })
-            //     .on('mouseout', function(d) {
-            //         d3.select(this)
-            //             .style('fill', function(d) {return color(d.name)});
-            //     })
-            //     .append("rect:title")
-            //     .text(function(d, i) {return i});
-
-
-            // pebbles.exit().remove();
         })
     }
 
