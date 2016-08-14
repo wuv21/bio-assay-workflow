@@ -184,7 +184,7 @@ def add_plate_and_quadrants(plate, quads):
             insert_db("INSERT INTO Plate_to_Quadrant(plate_id, quad_location, quad) VALUES(?, ?, ?)", args=[plate_id,
                                                                                                             i,
                                                                                                             ids[i]])
-        return "success"
+        return plate_id
 
     except Exception as e:
         print(e)
@@ -226,7 +226,7 @@ def analysis(plate_id):
     # todo analysis with numpy and scipy
     data_raw = query_db("SELECT * FROM Plate_Reading AS a "
                         "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
-                        "JOIN Quadrant AS c ON b.quad=c.id WHERE a.id=?", args=[1])
+                        "JOIN Quadrant AS c ON b.quad=c.id WHERE a.id=?", args=[plate_id])
     data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant'])
 
     q_data = list(data_raw[0][9:])
@@ -234,9 +234,7 @@ def analysis(plate_id):
 
     q = quadrant.Quadrant(*q_data)
 
-    print(q.calc_c_range())
-
-    return render_template('analysis.html')
+    return render_template('analysis.html', q=q)
 
 
 # POST request to enter a new stock
@@ -340,12 +338,11 @@ def create_plate():
 
         add_result = add_plate_and_quadrants(plate, quadrants)
         if not add_result:
-            return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {
-                'ContentType': 'application/json'}
+            return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {'ContentType': 'application/json'}
 
         # todo fix error handling here
 
-        return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=3)}), 200, {'ContentType': 'application/json'}
+        return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=add_result)}), 200, {'ContentType': 'application/json'}
     else:
         return json.dumps({'success': False, 'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
 

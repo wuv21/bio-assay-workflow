@@ -49,6 +49,26 @@ bioApp.directive("fileread", [function () {
     }
 }]);
 
+bioApp.directive('drcChart', function() {
+    return {
+        restrict: 'E',
+        scope: false,
+        link: function(scope, elem) {
+            var myChart = DRCChart()
+                .width(800)
+                .height(500);
+
+            var chart = d3.select(elem[0]);
+
+            scope.$watch('testData', function() {
+                chart.datum([scope.testData])
+                    .call(myChart);
+            }, true);
+        }
+    };
+});
+
+
 bioApp.directive('checkDate', function() {
     return {
         require: 'ngModel',
@@ -279,4 +299,25 @@ bioApp.controller('DrugController', function($scope, $http, $filter) {
 bioApp.controller('AnalysisController', function($scope, $http) {
     // todo add analysis code
     // todo add d3 code and graph element
+
+    var y0 = [116.136,106.434,124.895,110.316,94.625,49.778,4.917,9.014,6.047,5.956]
+    var y1 = [133.274,122.674,102.343,142.231,128.382,50.975,6.529,11.635,6.225,6.919]
+    var x = [0.0001,0.001,0.01,0.1,1.0,10.0,100.0,1000.0,10000.0,100000.0]
+
+    var raw_vals = [];
+    for (var i = 0; i < y0.length; i++) {
+        raw_vals.push({
+            x: x[i],
+            y0: y0[i],
+            y1: y1[i]
+        });
+    }
+
+    $scope.testData = {
+        id: 0,
+        vals: raw_vals,
+        bottom: 121.2,
+        top: 5.215,
+        ec: 6.699
+    };
 });

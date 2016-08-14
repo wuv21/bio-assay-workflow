@@ -26,10 +26,13 @@ h4 {
     color: #468966;
 }
 
-
 .validation-error {
     color: #dd1531;
     font-size: 1em;
+}
+
+dd {
+    margin-bottom: 0.5em;
 }
 
 form .ng-dirty.ng-invalid {
@@ -73,4 +76,15 @@ form .ng-dirty.ng-valid {
 .alert i {
     float: right;
     cursor: pointer;
+}
+
+.axis line, .axis path {
+    fill: none;
+    stroke: #000;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
 }
