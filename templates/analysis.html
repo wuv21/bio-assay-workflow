@@ -60,14 +60,11 @@
 					</thead>
 
 					<tbody>
-						{% for row in parsed_vals %}
-							<tr>
-								<td>{{ conc[loop.index - 1] }}</td>
-								{% for y in row %}
-									<td>{{ y }}</td>
-								{% endfor %}
-							</tr>
-						{% endfor %}
+						<tr ng-repeat="c in quads[selQuad].Quadrant_q_abs track by $index">
+							<td>{a quads[selQuad].Quadrant_conc_range[$index] a}</td>
+							<td>{a c[0] a}</td>
+							<td>{a c[1] a}</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

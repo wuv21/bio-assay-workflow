@@ -399,14 +399,16 @@ def get_plate(plate_id):
 
     data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
-    for q in data_parsed:
+    for index, q in enumerate(data_parsed):
+        q_data = list(data_raw[index][9:15])
+        q_data[-1] = pickle.loads(q_data[-1])
+        quad = quadrant.Quadrant(*q_data)
+
         q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
         q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
         q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
-        q['Quadrant_q_abs'] = pickle.loads(q['Quadrant_q_abs'])
-        # todo quadrant parsing...currently sends raw abs values only
-
-    pp.pprint(data_parsed)
+        q['Quadrant_q_abs'] = quad.parse_vals()
+        q['Quadrant_conc_range'] = quad.calc_c_range()
 
     return json.dumps(data_parsed)
 
