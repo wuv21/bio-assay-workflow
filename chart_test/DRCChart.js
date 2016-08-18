@@ -83,7 +83,7 @@ function DRCChart() {
 
                 generated.push({
                     x: xScale(100000),
-                    y: yScale(sigmoid(Math.log10(100000), 5.215, 121.2, 6.699))
+                    y: yScale(sigmoid(Math.log10(100000), arr.top, arr.bottom, arr.ec))
                 });
 
                 var regression_line = svgEnter.append('path')
