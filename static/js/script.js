@@ -297,8 +297,8 @@ bioApp.controller('DrugController', function($scope, $http, $filter) {
 });
 
 bioApp.controller('AnalysisController', function($scope, $http) {
-    // todo add analysis code
-    // todo add d3 code and graph element
+    var currentURL = window.location.href.split('/')
+    var plateID = currentURL[currentURL.length - 1]
 
     var y0 = [116.136,106.434,124.895,110.316,94.625,49.778,4.917,9.014,6.047,5.956]
     var y1 = [133.274,122.674,102.343,142.231,128.382,50.975,6.529,11.635,6.225,6.919]
@@ -320,4 +320,12 @@ bioApp.controller('AnalysisController', function($scope, $http) {
         top: 5.215,
         ec: 6.699
     };
+
+    $scope.selQuad = 1;
+
+    $http.get(baseAddress + '/get_plate/' + plateID)
+        .success(function(resp) {
+            $scope.plate = _.pickBy(resp[0], function(value, key) {return key[0] == "P"});
+            $scope.quads = _.orderBy(resp, 'Quadrant_id');
+        });
 });

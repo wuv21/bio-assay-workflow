@@ -10,39 +10,40 @@
 
 		{% set conc = q.calc_c_range() %}
 		{% set parsed_vals = q.parse_vals() %}
+		{% set p = plate_info %}
 
 		<div class="row">
 			<div class="col-lg-4">
 				<h3>Plate details</h3>
 				<dl>
 				  <dt>Plate name (Plate letter): </dt>
-				  <dd>RAL Experiment H (A)</dd>
+				  <dd>{a plate.Plate_Reading_name a} ({a plate.Plate_Reading_letter a})</dd>
 
   				  <dt>Plate date: </dt>
-				  <dd>05/06/2015</dd>
+				  <dd>{a plate.Plate_Reading_read_date a}</dd>
 
 				</dl>
 
 				<h3>Quadrant details: </h3>
-				<span>
-					<button class='btn btn-sm btn-primary'>1</button>
-					<button class='btn btn-sm'>2</button>
-					<button class='btn btn-sm'>3</button>
-					<button class='btn btn-sm'>4</button>
-				</span>
+				<div>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="0">1</label>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="1">2</label>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="2">3</label>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="3">4</label>
+				</div>
 
 				<dl class="">
   				  <dt>Clone: </dt>
-				  <dd>A153G+N155H ROD9 (1-5) purified on 05/25/1505</dd>
+				  <dd>{a quads[selQuad].Clone_aa_changes a} {a quads[selQuad].Clone_type a} ({a quads[selQuad].Clone_name a}) purified on {a quads[selQuad].Clone_purify_date a}</dd>
 
   				  <dt>Stock FFU (harvest date): </dt>
-				  <dd>05/06/2015</dd>
+				  <dd>{a quads[selQuad].Virus_Stock_ffu_per_ml a} ({a quads[selQuad].Virus_Stock_harvest_date a})</dd>
 
 				  <dt>Drug: </dt>
-				  <dd>Raltegravir (RAL)</dd>
+				  <dd>{a quads[selQuad].Drug_name a} ({a quads[selQuad].Drug_abbreviation a})</dd>
 
   				  <dt># of control rows: </dt>
-				  <dd>1</dd>
+				  <dd>{a quads[selQuad].Quadrant_num_controls a}</dd>
 				</dl>
 
 			</div>
@@ -59,14 +60,11 @@
 					</thead>
 
 					<tbody>
-						{% for row in parsed_vals %}
-							<tr>
-								<td>{{ conc[loop.index - 1] }}</td>
-								{% for y in row %}
-									<td>{{ y }}</td>
-								{% endfor %}
-							</tr>
-						{% endfor %}
+						<tr ng-repeat="c in quads[selQuad].Quadrant_q_abs track by $index">
+							<td>{a quads[selQuad].Quadrant_conc_range[$index] a}</td>
+							<td>{a c[0] a}</td>
+							<td>{a c[1] a}</td>
+						</tr>
 					</tbody>
 				</table>
 			</div>

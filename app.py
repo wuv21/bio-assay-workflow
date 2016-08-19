@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request, redirect, url_for
+from flask import Flask, render_template, g, request, redirect, url_for, jsonify
 import sqlite3
 import os
 import json
@@ -64,20 +64,23 @@ def format_date(date_str):
 
 
 # returns the column names of given tables
-def get_column_names(tbl_name):
+def get_column_names(tbl_name, full_name):
     fields = []
     for name in tbl_name:
         field = query_db("PRAGMA table_info(" + name + ")")
         for x in field:
             # gets column name
-            fields.append(x[1])
+            if full_name:
+                fields.append(name + "_" + x[1])
+            else:
+                fields.append(x[1])
 
     return fields
 
 
 # formats the query response into an array of dict in order to align with JSON formatting
-def format_resp(resp, tbl_name):
-    fields = get_column_names(tbl_name)
+def format_resp(resp, tbl_name, full_name=False):
+    fields = get_column_names(tbl_name, full_name)
 
     formatted_resp = []
     for x in resp:
@@ -226,15 +229,21 @@ def analysis(plate_id):
     # todo analysis with numpy and scipy
     data_raw = query_db("SELECT * FROM Plate_Reading AS a "
                         "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
-                        "JOIN Quadrant AS c ON b.quad=c.id WHERE a.id=?", args=[plate_id])
-    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant'])
+                        "JOIN Quadrant AS c ON b.quad=c.id "
+                        "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
+                        "JOIN Clone AS e ON d.clone=e.id "
+                        "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
+    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
-    q_data = list(data_raw[0][9:])
+    q_data = list(data_raw[0][9:15])
     q_data[-1] = pickle.loads(q_data[-1])
 
     q = quadrant.Quadrant(*q_data)
 
-    return render_template('analysis.html', q=q)
+    # todo parse dates
+    pp.pprint(data_parsed)
+
+    return render_template('analysis.html', q=q, plate_info=data_parsed[0])
 
 
 # POST request to enter a new stock
@@ -377,6 +386,31 @@ def get_all_drugs():
     resp = format_resp(query_db("SELECT * FROM Drug"), ["Drug"])
 
     return json.dumps(resp)
+
+
+@app.route('/get_plate/<int:plate_id>', methods=["GET"])
+def get_plate(plate_id):
+    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
+                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
+                        "JOIN Quadrant AS c ON b.quad=c.id "
+                        "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
+                        "JOIN Clone AS e ON d.clone=e.id "
+                        "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
+
+    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
+
+    for index, q in enumerate(data_parsed):
+        q_data = list(data_raw[index][9:15])
+        q_data[-1] = pickle.loads(q_data[-1])
+        quad = quadrant.Quadrant(*q_data)
+
+        q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
+        q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
+        q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
+        q['Quadrant_q_abs'] = quad.parse_vals()
+        q['Quadrant_conc_range'] = quad.calc_c_range()
+
+    return json.dumps(data_parsed)
 
 # initializes app
 if __name__ == "__main__":
