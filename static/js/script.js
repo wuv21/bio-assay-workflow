@@ -19,11 +19,11 @@ bioApp.directive('quadrant', function() {
         templateUrl: "/static/template/quadrant.html",
         link: function(scope) {
             scope.quads[scope.$id] = {
-                virusStockDate: '08/01/2016',
+                virusStockDate: '',
                 selectedClone: null,
-                minDrug: 5,
+                minDrug: 0.0001,
                 inc: null,
-                numControls: 4,
+                numControls: 1,
                 drug: null
             };
         }
@@ -60,9 +60,11 @@ bioApp.directive('drcChart', function() {
 
             var chart = d3.select(elem[0]);
 
-            scope.$watch('testData', function() {
-                chart.datum([scope.testData])
-                    .call(myChart);
+            scope.$watch('absData', function() {
+                if (scope.absData.vals) {
+                    chart.datum([scope.absData])
+                        .call(myChart);
+                }
             }, true);
         }
     };
@@ -313,19 +315,49 @@ bioApp.controller('AnalysisController', function($scope, $http) {
         });
     }
 
-    $scope.testData = {
-        id: 0,
-        vals: raw_vals,
-        bottom: 121.2,
-        top: 5.215,
-        ec: 6.699
-    };
+    $scope.selQuad = 0;
+    $scope.absData = {};
 
-    $scope.selQuad = 1;
+    $scope.$watch('selQuad', function() {
+        if ($scope.quads && $scope.quads[$scope.selQuad]) {
+            var parsedVals = $scope.quads[$scope.selQuad].Quadrant_q_abs;
+            $scope.absData.id = Number($scope.selQuad);
+            $scope.absData.vals = [];
+
+            for (var i=0; i<parsedVals.length; i++) {
+                $scope.absData.vals.push({
+                    x: $scope.quads[$scope.selQuad].Quadrant_conc_range[i],
+                    y0: parsedVals[i][0],
+                    y1: parsedVals[i][1]
+                });
+            }
+
+            $scope.absData.bottom = $scope.quads[$scope.selQuad].regression[1];
+            $scope.absData.top = $scope.quads[$scope.selQuad].regression[0];
+            $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
+        }
+    });
+
 
     $http.get(baseAddress + '/get_plate/' + plateID)
         .success(function(resp) {
             $scope.plate = _.pickBy(resp[0], function(value, key) {return key[0] == "P"});
             $scope.quads = _.orderBy(resp, 'Quadrant_id');
+
+            var parsedVals = $scope.quads[$scope.selQuad].Quadrant_q_abs;
+            $scope.absData.id = 0;
+            $scope.absData.vals = [];
+
+            for (var i=0; i<parsedVals.length; i++) {
+                $scope.absData.vals.push({
+                    x: $scope.quads[$scope.selQuad].Quadrant_conc_range[i],
+                    y0: parsedVals[i][0],
+                    y1: parsedVals[i][1]
+                });
+            }
+
+            $scope.absData.bottom = $scope.quads[$scope.selQuad].regression[1];
+            $scope.absData.top = $scope.quads[$scope.selQuad].regression[0];
+            $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
         });
 });
