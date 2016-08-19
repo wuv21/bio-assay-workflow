@@ -1,4 +1,6 @@
 import math
+import numpy as np
+import scipy.optimize
 
 
 class Quadrant(object):
@@ -58,3 +60,24 @@ class Quadrant(object):
             vals[i][1] = vals[i][1] / no_drug_control * 100
 
         return vals
+
+    def sigmoid(self, x, top, bottom, ec):
+        # todo check param ordering...
+        y = bottom + ((top - bottom) / (1 + np.power(10, np.log10(ec) - x)))
+
+        return y
+
+    def sigmoidal_regression(self):
+        values = self.parse_vals()
+        y0 = [y[0] for y in values]
+        y1 = [y[1] for y in values]
+
+        conc = self.calc_c_range()
+
+        y_mean = [np.mean([y0[i], y1[i]]) for i in range(0, len(y0))]
+        x = np.array(conc + conc, dtype='float')
+        y = np.array(y0 + y1, dtype='float')
+
+        popt, pcov = scipy.optimize.curve_fit(self.sigmoid, np.log10(x), y)
+
+        return popt.tolist()

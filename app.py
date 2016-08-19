@@ -305,6 +305,8 @@ def create_plate():
     # return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=1)}), 200, {'ContentType': 'application/json'}
 
     data = request.get_json(force=True)
+    pp.pprint(data);
+    
     if data:
         file = data['file'].replace('\r', '').split('\n')
 
@@ -409,7 +411,9 @@ def get_plate(plate_id):
         q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
         q['Quadrant_q_abs'] = quad.parse_vals()
         q['Quadrant_conc_range'] = quad.calc_c_range()
+        q['regression'] = quad.sigmoidal_regression()
 
+    # todo fix query problems
     return json.dumps(data_parsed)
 
 # initializes app
