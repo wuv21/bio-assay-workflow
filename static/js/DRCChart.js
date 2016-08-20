@@ -40,7 +40,8 @@ function DRCChart() {
                 .attr('transform', 'translate(' + margin.left + ',' + 0 + ')');
 
             function setAxes() {
-                var xAxis = d3.svg.axis().scale(xScale).orient('bottom');
+                var xAxis = d3.svg.axis().scale(xScale)
+                    .orient('bottom')
                 var yAxis = d3.svg.axis().scale(yScale).orient('left');
 
                 xAxisLabel.transition().duration(500).call(xAxis);
@@ -57,6 +58,39 @@ function DRCChart() {
             var line = d3.svg.line()
                 .x(function(i) {return i.x})
                 .y(function(i) {return i.y});
+
+
+            var hoverG = svgEnter.append('g')
+                .attr('id', 'mouseHover')
+                // .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')')
+                // .attr('width', width - margin.left - margin.right)
+                // .attr('height', height - margin.top - margin.bottom);
+
+            hoverG.append('line')
+                .attr('x1', margin.left)
+                .attr('x2', width - margin.left - margin.right)
+                .attr('y1', 0)
+                .attr('y2', 0)
+                .attr('id', 'mouseHoverY')
+                .style('stroke-width', 2)
+                .style('stroke', '#CCC');
+
+            hoverG.append('line')
+                .attr('x1', 0)
+                .attr('x2', 0)
+                .attr('y1', margin.top)
+                .attr('y2', height-margin.top-margin.bottom)
+                .attr('id', 'mouseHoverX')
+                .style('stroke-width', 2)
+                .style('stroke', '#CCC');
+
+            hoverG.append('text')
+                .attr('id', 'hoverText')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('font-size', 14)
+                .fill("#CCC");
+
 
 
             data.forEach(function(arr) {
@@ -110,6 +144,36 @@ function DRCChart() {
                     .text("EC50 = " + arr.ec.toFixed(4));
             });
 
+            svgEnter.on("mousemove", function() {
+                var mousePos = d3.mouse(this);
+
+                if (mousePos[1] < height - margin.bottom - margin.top) {
+                    d3.select('#mouseHoverY')
+                        .attr('y1', mousePos[1])
+                        .attr('y2', mousePos[1]);
+
+                } else {
+                    d3.select('#mouseHoverY')
+                        .attr('y1', height - margin.bottom - margin.top)
+                        .attr('y2', height - margin.bottom - margin.top);
+                }
+
+                if (mousePos[0] > margin.left) {
+                    d3.select('#mouseHoverX')
+                        .attr('x1', mousePos[0])
+                        .attr('x2', mousePos[0]);
+                } else {
+                    d3.select('#mouseHoverX')
+                        .attr('x1', margin.left)
+                        .attr('x2', margin.left);
+                }
+
+                d3.select('#hoverText')
+                    .attr('x', mousePos[0] + 5)
+                    .attr('y', mousePos[1] - 5)
+                    .text("(" + d3.format('.5f')(xScale.invert(mousePos[0])) + ', ' + d3.format('.3f')(yScale.invert(mousePos[1])) + ")")
+
+            });
         })
     }
 

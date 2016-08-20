@@ -306,7 +306,7 @@ bioApp.controller('DrugController', function($scope, $http, $filter) {
 
 bioApp.controller('AnalysisController', function($scope, $http) {
     var currentURL = window.location.href.split('/')
-    var plateID = currentURL[currentURL.length - 1]
+    var plateID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1
 
     // alert settings
     $scope.alertSettings = {
@@ -371,7 +371,11 @@ bioApp.controller('AnalysisController', function($scope, $http) {
             $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
         })
         .error(function(resp) {
-            console.log(resp);
-            showAlert(resp.msg, warning=true)                    
+            if (resp.msg) {
+                showAlert(resp.msg, warning=true);   
+            } else {
+                showAlert("No plate to show", warning=true);
+            }
+                 
         });
 });
