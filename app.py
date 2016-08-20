@@ -174,7 +174,6 @@ def add_plate_and_quadrants(plate, quads):
         ids = []
         for q in quads:
             if q:
-                print(q)
                 ids.append(add_quadrant(q))
             else:
                 ids.append(-1)
@@ -393,29 +392,36 @@ def get_all_drugs():
 
 @app.route('/get_plate/<int:plate_id>', methods=["GET"])
 def get_plate(plate_id):
-    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
-                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
-                        "JOIN Quadrant AS c ON b.quad=c.id "
-                        "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
-                        "JOIN Clone AS e ON d.clone=e.id "
-                        "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
+    try:
+        data_raw = query_db("SELECT * FROM Plate_Reading AS a "
+                            "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
+                            "JOIN Quadrant AS c ON b.quad=c.id "
+                            "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
+                            "JOIN Clone AS e ON d.clone=e.id "
+                            "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
 
-    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
+        if len(data_raw) == 0:
+            raise BadRequest('Stuff')
 
-    for index, q in enumerate(data_parsed):
-        q_data = list(data_raw[index][9:15])
-        q_data[-1] = pickle.loads(q_data[-1])
-        quad = quadrant.Quadrant(*q_data)
+        data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
-        q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
-        q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
-        q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
-        q['Quadrant_q_abs'] = quad.parse_vals()
-        q['Quadrant_conc_range'] = quad.calc_c_range()
-        q['regression'] = quad.sigmoidal_regression()
+        for index, q in enumerate(data_parsed):
+            q_data = list(data_raw[index][9:15])
+            q_data[-1] = pickle.loads(q_data[-1])
+            quad = quadrant.Quadrant(*q_data)
 
-    # todo fix query problems
-    return json.dumps(data_parsed)
+            q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
+            q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
+            q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
+            q['Quadrant_q_abs'] = quad.parse_vals()
+            q['Quadrant_conc_range'] = quad.calc_c_range()
+            q['regression'] = quad.sigmoidal_regression()
+
+        # todo fix query problems
+        return json.dumps(data_parsed)
+
+    except Exception as e:
+        return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
 
 # initializes app
 if __name__ == "__main__":

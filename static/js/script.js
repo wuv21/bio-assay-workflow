@@ -308,18 +308,22 @@ bioApp.controller('AnalysisController', function($scope, $http) {
     var currentURL = window.location.href.split('/')
     var plateID = currentURL[currentURL.length - 1]
 
-    var y0 = [116.136,106.434,124.895,110.316,94.625,49.778,4.917,9.014,6.047,5.956]
-    var y1 = [133.274,122.674,102.343,142.231,128.382,50.975,6.529,11.635,6.225,6.919]
-    var x = [0.0001,0.001,0.01,0.1,1.0,10.0,100.0,1000.0,10000.0,100000.0]
+    // alert settings
+    $scope.alertSettings = {
+        visible: false,
+        message: "",
+        warning: false
+    };
 
-    var raw_vals = [];
-    for (var i = 0; i < y0.length; i++) {
-        raw_vals.push({
-            x: x[i],
-            y0: y0[i],
-            y1: y1[i]
-        });
-    }
+    $scope.closeAlert = function() {
+        $scope.alertSettings.visible = false;
+    };
+
+    var showAlert = function(msg, warning) {
+        $scope.alertSettings.message = msg;
+        $scope.alertSettings.warning = warning;
+        $scope.alertSettings.visible = true;
+    };
 
     $scope.selQuad = 0;
     $scope.absData = {};
@@ -344,9 +348,9 @@ bioApp.controller('AnalysisController', function($scope, $http) {
         }
     });
 
-
     $http.get(baseAddress + '/get_plate/' + plateID)
         .success(function(resp) {
+            console.log(resp);
             $scope.plate = _.pickBy(resp[0], function(value, key) {return key[0] == "P"});
             $scope.quads = _.orderBy(resp, 'Quadrant_id');
 
@@ -365,5 +369,9 @@ bioApp.controller('AnalysisController', function($scope, $http) {
             $scope.absData.bottom = $scope.quads[$scope.selQuad].regression[1];
             $scope.absData.top = $scope.quads[$scope.selQuad].regression[0];
             $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
+        })
+        .error(function(resp) {
+            console.log(resp);
+            showAlert(resp.msg, warning=true)                    
         });
 });

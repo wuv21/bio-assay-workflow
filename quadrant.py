@@ -1,6 +1,6 @@
 import math
 import numpy as np
-# import scipy.optimize
+import scipy.optimize
 
 
 class Quadrant(object):

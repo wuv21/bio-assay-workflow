@@ -46,10 +46,8 @@
 			</div>
 			
 			<span>
-				<p class="btn btn-warning" ng-click="submitPlate()">Test response</p>
 				<button class="btn btn-danger">Reset</button>
-
-				<button class="btn btn-primary" ng-disabled="plateForm.$invalid">Submit</button>
+				<button class="btn btn-primary" ng-submit="submitPlate()" ng-disabled="plateForm.$invalid">Submit</button>
 			</span>
 			
 		</form>
