@@ -8,10 +8,6 @@
 		<h2>Analysis</h2>
 		<p>View plate results with calculated absorbance values (% control) and plate details. Table can be directly copied into Prism or Excel. Sigmoidal dose regression calculated from Numpy and Scipy libraries and is still in beta mode. The mean of absorbance values is plotted with the dose response curve. Since this is in beta mode, please double check curve and values via Prism.</p>
 
-		{% set conc = q.calc_c_range() %}
-		{% set parsed_vals = q.parse_vals() %}
-		{% set p = plate_info %}
-
 		<div class="row">
 			<div class="col-lg-4">
 				<h3>Plate details</h3>

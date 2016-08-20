@@ -13,7 +13,8 @@
 		<label for="oldCloneSelect" class="control-label col-md-4">Select clone</label>
 		<div class="col-md-8">
 		    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control"
-					ng-options="c.name + ' | ' + c.aa_changes + ' | ' + c.purify_date group by c.harvest_date for c in stockClones
+					ng-change="updateStockDate(quads[$id].selectedClone)"
+					ng-options="c.name + ' | ' + c.aa_changes + ' | purified on ' + c.purify_date group by c.harvest_date for c in stockClones
 					 | filter: {harvest_date: quads[$id].virusStockDate}
 					 | orderBy: 'name'" ng-model="quads[$id].selectedClone">
 			</select>
@@ -40,7 +41,7 @@
 		<div class="col-md-8">
 			<div class="radio">
 				<label><input type="radio" name="inc" value="log10" ng-model="quads[$id].inc">log10</label>
-				<label><input type="radio" name="inc" value="halfLog10" ng-model="quads[$id].inc">Half log10</label>
+				<label><input type="radio" name="inc" value="halfLog10" ng-model="quads[$id].inc" disabled>Half log10</label>
 			</div>
 		</div>
 	</div>

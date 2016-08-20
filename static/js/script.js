@@ -26,6 +26,10 @@ bioApp.directive('quadrant', function() {
                 numControls: 1,
                 drug: null
             };
+
+            scope.updateStockDate = function(option) {
+                scope.quads[scope.$id].virusStockDate = option.harvest_date;
+            };
         }
     }
 });
@@ -155,6 +159,8 @@ bioApp.controller('QuadrantController', function($scope, $http) {
 
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
+
+        console.log($scope.plate);
 
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {

@@ -174,6 +174,7 @@ def add_plate_and_quadrants(plate, quads):
         ids = []
         for q in quads:
             if q:
+                print(q)
                 ids.append(add_quadrant(q))
             else:
                 ids.append(-1)
@@ -225,25 +226,25 @@ def enter_assay():
 @app.route('/analysis', defaults={'plate_id': None})
 @app.route('/analysis/<int:plate_id>')
 def analysis(plate_id):
-    # todo sqlite3 querying for quadrants and plates
-    # todo analysis with numpy and scipy
-    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
-                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
-                        "JOIN Quadrant AS c ON b.quad=c.id "
-                        "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
-                        "JOIN Clone AS e ON d.clone=e.id "
-                        "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
-    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
+    # # todo sqlite3 querying for quadrants and plates
+    # # todo analysis with numpy and scipy
+    # data_raw = query_db("SELECT * FROM Plate_Reading AS a "
+    #                     "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
+    #                     "JOIN Quadrant AS c ON b.quad=c.id "
+    #                     "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
+    #                     "JOIN Clone AS e ON d.clone=e.id "
+    #                     "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
+    # data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
+    #
+    # q_data = list(data_raw[0][9:15])
+    # q_data[-1] = pickle.loads(q_data[-1])
+    #
+    # q = quadrant.Quadrant(*q_data)
+    #
+    # # todo parse dates
+    # pp.pprint(data_parsed)
 
-    q_data = list(data_raw[0][9:15])
-    q_data[-1] = pickle.loads(q_data[-1])
-
-    q = quadrant.Quadrant(*q_data)
-
-    # todo parse dates
-    pp.pprint(data_parsed)
-
-    return render_template('analysis.html', q=q, plate_info=data_parsed[0])
+    return render_template('analysis.html')
 
 
 # POST request to enter a new stock
@@ -305,7 +306,7 @@ def create_plate():
     # return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=1)}), 200, {'ContentType': 'application/json'}
 
     data = request.get_json(force=True)
-    pp.pprint(data);
+    pp.pprint(data)
     
     if data:
         file = data['file'].replace('\r', '').split('\n')
