@@ -230,9 +230,9 @@ def analysis(plate_id):
 
 # comparison.html
 # will return a selection menu to show all experiments
-@app.route('/comparison')
+@app.route('/overview')
 def comparison():
-    return render_template('comparison.html')
+    return render_template('overview.html')
 
 
 # POST request to enter a new stock
