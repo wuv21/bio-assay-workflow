@@ -225,25 +225,14 @@ def enter_assay():
 @app.route('/analysis', defaults={'plate_id': None})
 @app.route('/analysis/<int:plate_id>')
 def analysis(plate_id):
-    # todo sqlite3 querying for quadrants and plates
-    # todo analysis with numpy and scipy
-    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
-                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
-                        "JOIN Quadrant AS c ON b.quad=c.id "
-                        "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
-                        "JOIN Clone AS e ON d.clone=e.id "
-                        "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
-    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
+    return render_template('analysis.html')
 
-    q_data = list(data_raw[0][9:15])
-    q_data[-1] = pickle.loads(q_data[-1])
 
-    q = quadrant.Quadrant(*q_data)
-
-    # todo parse dates
-    pp.pprint(data_parsed)
-
-    return render_template('analysis.html', q=q, plate_info=data_parsed[0])
+# comparison.html
+# will return a selection menu to show all experiments
+@app.route('/overview')
+def comparison():
+    return render_template('overview.html')
 
 
 # POST request to enter a new stock
@@ -305,7 +294,7 @@ def create_plate():
     # return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=1)}), 200, {'ContentType': 'application/json'}
 
     data = request.get_json(force=True)
-    pp.pprint(data);
+    pp.pprint(data)
     
     if data:
         file = data['file'].replace('\r', '').split('\n')
@@ -392,29 +381,37 @@ def get_all_drugs():
 
 @app.route('/get_plate/<int:plate_id>', methods=["GET"])
 def get_plate(plate_id):
-    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
-                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
-                        "JOIN Quadrant AS c ON b.quad=c.id "
-                        "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
-                        "JOIN Clone AS e ON d.clone=e.id "
-                        "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
+    try:
+        print(plate_id)
+        data_raw = query_db("SELECT * FROM Plate_Reading AS a "
+                            "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
+                            "JOIN Quadrant AS c ON b.quad=c.id "
+                            "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
+                            "JOIN Clone AS e ON d.clone=e.id "
+                            "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
 
-    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
+        if len(data_raw) == 0:
+            raise BadRequest('Stuff')
 
-    for index, q in enumerate(data_parsed):
-        q_data = list(data_raw[index][9:15])
-        q_data[-1] = pickle.loads(q_data[-1])
-        quad = quadrant.Quadrant(*q_data)
+        data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
-        q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
-        q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
-        q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
-        q['Quadrant_q_abs'] = quad.parse_vals()
-        q['Quadrant_conc_range'] = quad.calc_c_range()
-        q['regression'] = quad.sigmoidal_regression()
+        for index, q in enumerate(data_parsed):
+            q_data = list(data_raw[index][9:15])
+            q_data[-1] = pickle.loads(q_data[-1])
+            quad = quadrant.Quadrant(*q_data)
 
-    # todo fix query problems
-    return json.dumps(data_parsed)
+            q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
+            q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
+            q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
+            q['Quadrant_q_abs'] = quad.parse_vals()
+            q['Quadrant_conc_range'] = quad.calc_c_range()
+            q['regression'] = quad.sigmoidal_regression()
+
+        # todo fix query problems
+        return json.dumps(data_parsed)
+
+    except Exception as e:
+        return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
 
 # initializes app
 if __name__ == "__main__":

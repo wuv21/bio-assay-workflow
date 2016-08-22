@@ -3,7 +3,7 @@
 <head>
     {% block head %}
 	<meta charset="UTF-8">
-	<title>Bio workflow{% block title %}{% endblock %}</title>
+	<title>BARS{% block title %}{% endblock %}</title>
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
 
@@ -47,7 +47,8 @@
                     ('/', 'index', 'Home'),
                     ('/manage', 'manage', 'Manage'),
                     ('/enter_assay', 'enter_assay', 'Enter Assay'),
-                    ('/analysis', 'analysis', 'Analysis')] -%}
+                    ('/analysis', 'analysis', 'Analysis'),
+                    ('/overview', 'overview', 'Overview')] -%}
 
                 {% set active_page = active_page|default('index') -%}
 

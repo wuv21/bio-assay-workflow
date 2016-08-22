@@ -7,10 +7,9 @@
 	<div class="container" ng-controller="AnalysisController">
 		<h2>Analysis</h2>
 		<p>View plate results with calculated absorbance values (% control) and plate details. Table can be directly copied into Prism or Excel. Sigmoidal dose regression calculated from Numpy and Scipy libraries and is still in beta mode. The mean of absorbance values is plotted with the dose response curve. Since this is in beta mode, please double check curve and values via Prism.</p>
-
-		{% set conc = q.calc_c_range() %}
-		{% set parsed_vals = q.parse_vals() %}
-		{% set p = plate_info %}
+		
+		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
+		{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 
 		<div class="row">
 			<div class="col-lg-4">
@@ -26,10 +25,10 @@
 
 				<h3>Quadrant details: </h3>
 				<div>
-					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="0">1</label>
-					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="1">2</label>
-					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="2">3</label>
-					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="3">4</label>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="0" ng-disabled="!quads[0]">1</label>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="1" ng-disabled="!quads[1]">2</label>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="2" ng-disabled="!quads[2]">3</label>
+					<label class="radio-inline"><input type="radio" ng-model="selQuad" value="3" ng-disabled="!quads[3]">4</label>
 				</div>
 
 				<dl class="">

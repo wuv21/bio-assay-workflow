@@ -29,18 +29,27 @@ function DRCChart() {
                 .append('svg')
                 .attr('class', 'DRCChart')
                 .attr('width', width)
-                .attr('height', height);
+                .attr('height', height + 15);
 
-            var xAxisLabel = svg.append('g')
+            var xAxisLabel = svgEnter.append('g')
                 .attr('class', 'axis')
                 .attr('transform', 'translate(' + 0 + ',' + (height - margin.top - margin.bottom) + ')');
 
-            var yAxisLabel = svg.append('g')
+            var yAxisLabel = svgEnter.append('g')
                 .attr('class', 'axis')
                 .attr('transform', 'translate(' + margin.left + ',' + 0 + ')');
 
+            var xAxisTitle = svgEnter.append('text')
+                .attr('transform', 'translate(' + (margin.left+((width-margin.left-margin.right) / 2) - 40) + ',' + (height + margin.top + margin.bottom - 20) + ')')
+                .text('[Drug] (nM)');
+
+            var yAxisTitle = svgEnter.append('text')
+                .attr('transform', 'translate(' + 12 + ', ' + ((height + margin.top + margin.bottom + 50) / 2) + ') rotate(-90)')
+                .text("% control");
+
             function setAxes() {
-                var xAxis = d3.svg.axis().scale(xScale).orient('bottom');
+                var xAxis = d3.svg.axis().scale(xScale)
+                    .orient('bottom')
                 var yAxis = d3.svg.axis().scale(yScale).orient('left');
 
                 xAxisLabel.transition().duration(500).call(xAxis);
@@ -57,6 +66,36 @@ function DRCChart() {
             var line = d3.svg.line()
                 .x(function(i) {return i.x})
                 .y(function(i) {return i.y});
+
+
+            var hoverG = svgEnter.append('g')
+                .attr('id', 'mouseHover');
+
+            hoverG.append('line')
+                .attr('x1', margin.left)
+                .attr('x2', width - margin.left - margin.right)
+                .attr('y1', 0)
+                .attr('y2', 0)
+                .attr('id', 'mouseHoverY')
+                .style('stroke-width', 2)
+                .style('stroke', '#FFF');
+
+            hoverG.append('line')
+                .attr('x1', 0)
+                .attr('x2', 0)
+                .attr('y1', margin.top)
+                .attr('y2', height-margin.top-margin.bottom)
+                .attr('id', 'mouseHoverX')
+                .style('stroke-width', 2)
+                .style('stroke', '#FFF');
+
+            hoverG.append('text')
+                .attr('id', 'hoverText')
+                .attr('x', 0)
+                .attr('y', 0)
+                .attr('font-size', 14)
+                .fill("#CCC");
+
 
 
             data.forEach(function(arr) {
@@ -110,6 +149,42 @@ function DRCChart() {
                     .text("EC50 = " + arr.ec.toFixed(4));
             });
 
+            svgEnter.on("mousemove", function() {
+                var mousePos = d3.mouse(this);
+                var limit = 10;
+
+                if (mousePos[1] < height - margin.bottom - margin.top) {
+                    d3.select('#mouseHoverY')
+                        .attr('y1', mousePos[1])
+                        .attr('y2', mousePos[1])
+                        .style('stroke', '#ccc');
+
+                } else {
+                    d3.select('#mouseHoverY')
+                        .attr('y1', height - margin.bottom - margin.top - limit)
+                        .attr('y2', height - margin.bottom - margin.top - limit)
+                        .style('stroke', '#fff');
+                }
+
+                if (mousePos[0] > margin.left + limit) {
+                    d3.select('#mouseHoverX')
+                        .attr('x1', mousePos[0])
+                        .attr('x2', mousePos[0])
+                        .style('stroke', '#ccc');
+
+                } else {
+                    d3.select('#mouseHoverX')
+                        .attr('x1', margin.left + limit)
+                        .attr('x2', margin.left + limit)
+                        .style('stroke', '#fff');
+                }
+
+                d3.select('#hoverText')
+                    .attr('x', mousePos[0] + 5)
+                    .attr('y', mousePos[1] - 5)
+                    .text("(" + d3.format('.5f')(xScale.invert(mousePos[0])) + ', ' + d3.format('.3f')(yScale.invert(mousePos[1])) + ")")
+
+            });
         })
     }
 
