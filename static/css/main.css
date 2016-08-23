@@ -88,3 +88,11 @@ form .ng-dirty.ng-valid {
     stroke: steelblue;
     stroke-width: 1.5px;
 }
+
+.user-select {
+    overflow-y: scroll;
+}
+
+.overview-controls button {
+    margin-top: 1em;
+}

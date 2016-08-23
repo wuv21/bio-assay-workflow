@@ -12,6 +12,17 @@ bioApp.filter('htmlToText', function() {
     };
 });
 
+bioApp.filter('convertFromSqlDate', function() {
+  return function(date) {
+    var decomp = date.split('-');
+    var month = decomp[1],
+        day = decomp[2],
+        year = decomp[0];
+
+    return month + '/' + day + '/' + year;
+  };
+});
+
 bioApp.directive('quadrant', function() {
     return {
         restrict: "E",
@@ -372,10 +383,36 @@ bioApp.controller('AnalysisController', function($scope, $http) {
         })
         .error(function(resp) {
             if (resp.msg) {
-                showAlert(resp.msg, warning=true);   
+                showAlert(resp.msg, warning=true);
             } else {
                 showAlert("No plate to show", warning=true);
             }
-                 
+
         });
+});
+
+bioApp.controller('OverviewController', function($scope, $http) {
+    // alert settings
+    $scope.alertSettings = {
+        visible: false,
+        message: "",
+        warning: false
+    };
+
+    $scope.closeAlert = function() {
+        $scope.alertSettings.visible = false;
+    };
+
+    var showAlert = function(msg, warning) {
+        $scope.alertSettings.message = msg;
+        $scope.alertSettings.warning = warning;
+        $scope.alertSettings.visible = true;
+    };
+
+    $scope.plates = [];
+    $http.get(baseAddress + '/get_all_plates')
+        .success(function(resp) {
+            $scope.plates = resp;
+            console.log(resp);
+        })
 });
