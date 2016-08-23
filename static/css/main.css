@@ -96,3 +96,7 @@ form .ng-dirty.ng-valid {
 .overview-controls button {
     margin-top: 1em;
 }
+
+.caption {
+    font-size: 14px;
+}

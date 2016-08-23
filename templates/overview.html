@@ -6,20 +6,26 @@
 {% block content %}
     <div class="container" ng-controller="OverviewController">
         <h2>Overview</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum obcaecati maiores, optio impedit molestiae ipsa atque. Temporibus facere voluptatum laudantium, laboriosam, pariatur, ex numquam commodi obcaecati aperiam, quae error tempore.</p>
+        <p>View results from any selected quadrants.</p>
+        <ol>
+            <li>Filter plates by read date and select a plate, which will then display all quadrants from that plate.</li>
+            <li>Select any quadrant(s) that you want. Click <span class="text-primary">Add</span> to show quadrant data in below table.</li>
+            <li>Select any quadrant(s) from "Chosen Quadrant(s)" table. Click <span class="text-danger">Remove</span> to remove selected quadrants from table.</li>
+
+        </ol>
 
         <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
-        {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
+        {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
 
         <div class="row overview-controls">
             <div class="col-md-4">
                 <h3>Filter experiments</h3>
-                <p>Filter by date and select experiment</p>
+                <p class="caption">Filter by date and select experiment</p>
                 <form>
                     <input type="text" name="plateReadDateInp" id="plateReadDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="selectedExpDate" check-date>
                 </form>
                 <br>
-                <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control" ng-model="selectedExp"
+                <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control" ng-change="showQuadrants(selectedExp)" ng-model="selectedExp"
                 ng-options="exp.name + ' (' + exp.letter + ') assayed on ' + exp.read_date for exp in plates
                 | filter: {read_date: selectedExpDate}
                 | orderBy: 'name'" required></select>
@@ -27,23 +33,25 @@
             </div>
 
             <div class="col-md-4">
-                <h3>Add plate(s)</h3>
-                <p>Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to select multiple plates.</p>
-                <select name="" id="" class="form-control user-select" size="5" multiple></select>
+                <h3>Add quadrant(s)</h3>
+                <p class="caption">Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to add multiple quadrants.</p>
+                <select name="" id="" class="form-control user-select" size="4" ng-model="selectedQuads" ng-options="q.Clone_aa_changes + ' (' + q.Clone_type + ') - ' + q.Virus_Stock_harvest_date + ' - ' + q.Drug_abbreviation for q in availableQuads"
+                 multiple></select>
 
-                <button class='btn btn-primary btn-sm'>Add</button>
+                <button class='btn btn-primary btn-sm' ng-click="addQuads()">Add</button>
             </div>
 
             <div class="col-md-4">
-                <h3>Chosen plate(s)</h3>
-                <p>Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to select multiple plates.</p>
-                <select name="" id="" class="form-control user-select" size="5" multiple></select>
+                <h3>Chosen quadrant(s)</h3>
+                <p class="caption">Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to remove multiple quadrants.</p>
+                <select name="" id="" class="form-control user-select" size="4" ng-model="addedQuads"  ng-options="q.Clone_aa_changes + ' (' + q.Clone_type + ') - ' + q.Virus_Stock_harvest_date + ' - ' + q.Drug_abbreviation for q in stagedQuads" multiple></select>
 
-                <button class='btn btn-danger btn-sm'>Remove</button>
+                <button class='btn btn-danger btn-sm' ng-click="removeQuads()">Remove</button>
             </div>
         </div>
 
         <h3>Results</h3>
+
         <table class="table table-hover table-condensed">
             <thead>
                 <tr>
@@ -57,13 +65,13 @@
             </thead>
 
             <tbody>
-                <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
+                <tr ng-repeat="q in stagedQuads track by $index">
+                    <td>{a q.Plate_Reading_name a}</td>
+                    <td>{a q.Plate_Reading_read_date a}</td>
+                    <td>{a q.Clone_name a}</td>
+                    <td>{a q.Clone_aa_changes a}</td>
+                    <td>{a q.Clone_type a}</td>
+                    <td>{a q.regression[2] | number: 4 a}</td>
                 </tr>
             </tbody>
         </table>
