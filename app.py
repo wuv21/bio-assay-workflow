@@ -228,12 +228,22 @@ def analysis(plate_id):
     return render_template('analysis.html')
 
 
-# comparison.html
+# overview.html
 # will return a selection menu to show all experiments
 @app.route('/overview')
-def comparison():
+def overview():
     return render_template('overview.html')
 
+
+@app.route('/get_all_plates', methods=['GET'])
+def get_all_plates():
+    q = query_db("SELECT * FROM Plate_Reading");
+    resp = format_resp(q, ['Plate_Reading'])
+
+    for x in resp:
+        x['read_date'] = convert_date(x['read_date'])
+
+    return json.dumps(resp)
 
 # POST request to enter a new stock
 @app.route('/create_stock', methods=['POST'])
@@ -291,11 +301,9 @@ def create_drug():
 # POST request to enter a new plate reading
 @app.route('/create_plate', methods=['POST'])
 def create_plate():
-    # return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=1)}), 200, {'ContentType': 'application/json'}
-
     data = request.get_json(force=True)
     pp.pprint(data)
-    
+
     if data:
         file = data['file'].replace('\r', '').split('\n')
 

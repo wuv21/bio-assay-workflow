@@ -19,6 +19,10 @@ function DRCChart() {
             var xScale = d3.scale.log().domain([d3.min(x) * 0.1, d3.max(x) * 10]).range([margin.left, width - margin.left -  margin.right]);
             var yScale = d3.scale.linear().domain([0, d3.max(y) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
 
+            var superscript = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+
+            var formatPower = function(d) { return (d + "").split("").map(function(c) { return superscript[c]; }).join(""); };
+
             var svg = d3.select(this)
                 .selectAll('.DRCChart')
                 .data(data, function(d) {return Math.random(10007)});
@@ -50,6 +54,7 @@ function DRCChart() {
             function setAxes() {
                 var xAxis = d3.svg.axis().scale(xScale)
                     .orient('bottom')
+                    .ticks(10, function(d) { return 10 + formatPower(Math.round(Math.log(d) / Math.LN10)); });
                 var yAxis = d3.svg.axis().scale(yScale).orient('left');
 
                 xAxisLabel.transition().duration(500).call(xAxis);
@@ -146,7 +151,7 @@ function DRCChart() {
                 var ec50_label = svgEnter.append("text")
                     .attr("x", xScale(arr.ec) + 8)
                     .attr("y", yScale(sigmoid(Math.log10(arr.ec), arr.top, arr.bottom, arr.ec)))
-                    .text("EC50 = " + arr.ec.toFixed(4));
+                    .text("EC\u2085\u2080 = " + arr.ec.toFixed(4));
             });
 
             svgEnter.on("mousemove", function() {
@@ -201,6 +206,6 @@ function DRCChart() {
         height = val;
         return my;
     };
-    
+
     return my;
 }

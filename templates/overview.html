@@ -4,37 +4,69 @@
 {% set active_page = "overview" %}
 
 {% block content %}
-	<div class="container" ng-controller="">
-		<h2>Overview</h2>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-		tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-		quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-		consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-		cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-		proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		
-<!-- 		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible"> 
-		{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i> -->
-		<br>
-		
-		<div class="form-group row">
-			<label for="plateReadDateInp" class="control-label col-md-3">Filter by plate read date</label>
-			<div class="col-md-9">
-				<input type="text" name="plateReadDateInp" id="plateReadDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="">
-			</div>
-		</div>
+    <div class="container" ng-controller="OverviewController">
+        <h2>Overview</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorum obcaecati maiores, optio impedit molestiae ipsa atque. Temporibus facere voluptatum laudantium, laboriosam, pariatur, ex numquam commodi obcaecati aperiam, quae error tempore.</p>
 
-		<div class="form-group row">
-			<label for="oldCloneSelect_newStock" class="control-label col-md-3">Select experiment</label>
-			<div class="col-md-9">
-			    <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control"
-						ng-options="c.name + ' | ' + c.aa_changes + ' | maxiprepped on ' + c.purify_date group by c.type for c in clones
-						| filter: {purify_date: stockData.cloneDate}"
-						ng-model="stockData.selectedClone"
-						required>
-    			</select>
-			</div>
-		</div>
-	</div>
+        <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
+        {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
+
+        <div class="row overview-controls">
+            <div class="col-md-4">
+                <h3>Filter experiments</h3>
+                <p>Filter by date and select experiment</p>
+                <form>
+                    <input type="text" name="plateReadDateInp" id="plateReadDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="selectedExpDate" check-date>
+                </form>
+                <br>
+                <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control" ng-model="selectedExp"
+                ng-options="exp.name + ' (' + exp.letter + ') assayed on ' + exp.read_date for exp in plates
+                | filter: {read_date: selectedExpDate}
+                | orderBy: 'name'" required></select>
+
+            </div>
+
+            <div class="col-md-4">
+                <h3>Add plate(s)</h3>
+                <p>Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to select multiple plates.</p>
+                <select name="" id="" class="form-control user-select" size="5" multiple></select>
+
+                <button class='btn btn-primary btn-sm'>Add</button>
+            </div>
+
+            <div class="col-md-4">
+                <h3>Chosen plate(s)</h3>
+                <p>Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to select multiple plates.</p>
+                <select name="" id="" class="form-control user-select" size="5" multiple></select>
+
+                <button class='btn btn-danger btn-sm'>Remove</button>
+            </div>
+        </div>
+
+        <h3>Results</h3>
+        <table class="table table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>Experiment name</th>
+                    <th>Read date</th>
+                    <th>Clone name</th>
+                    <th>Genotype</th>
+                    <th>Type</th>
+                    <th>EC<sub>50</sub></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}
