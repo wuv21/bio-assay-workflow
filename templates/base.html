@@ -15,8 +15,6 @@
 
     <!-- angular -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.7/angular.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular-animate.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.3.3/ui-bootstrap.min.js"></script> -->
 
     <!--DRC chart library-->
     <script src="{{ url_for('static', filename='js/DRCChart.js') }}"></script>
@@ -40,7 +38,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="{{ url_for('index') }}" class="navbar-brand">Biological Assay Record Keeping System</a>
+                    <a href="{{ url_for('manage') }}" class="navbar-brand"><i class="fa fa-flask" aria-hidden="true"></i> BARS</a>
                 </div>
 
                 {% set nav_bar = [
