@@ -184,9 +184,9 @@ def add_plate_and_quadrants(plate, quads):
 
         plate_id = add_plate(plate)
         for i in range(0, len(ids)):
-            insert_db("INSERT INTO Plate_to_Quadrant(plate_id, quad_location, quad) VALUES(?, ?, ?)", args=[plate_id,
-                                                                                                            i,
-                                                                                                            ids[i]])
+            insert_db("INSERT INTO Plate_to_Quadrant(plate_id, quad_location, quad) "
+                      " VALUES(?, ?, ?)", args=[plate_id, i, ids[i]])
+
         return plate_id
 
     except Exception as e:
@@ -244,6 +244,33 @@ def get_all_plates():
         x['read_date'] = convert_date(x['read_date'])
 
     return json.dumps(resp)
+
+
+@app.route('/get_all_plate_quadrants', methods=['GET'])
+def get_all_plates_quadrants():
+    data_raw = query_db("SELECT * FROM Plate_Reading AS a "
+                        "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
+                        "JOIN Quadrant AS c ON b.quad=c.id "
+                        "JOIN Virus_Stock AS d ON c.virus_stock=d.id "
+                        "JOIN Clone AS e ON d.clone=e.id "
+                        "JOIN Drug As f ON c.drug=f.id")
+
+    data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
+
+    for index, q in enumerate(data_parsed):
+        q_data = list(data_raw[index][9:15])
+        q_data[-1] = pickle.loads(q_data[-1])
+        quad = quadrant.Quadrant(*q_data)
+
+        q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
+        q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
+        q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
+        q['Quadrant_q_abs'] = quad.parse_vals()
+        q['Quadrant_conc_range'] = quad.calc_c_range()
+        q['regression'] = quad.sigmoidal_regression()
+
+    return json.dumps(data_parsed)
+
 
 # POST request to enter a new stock
 @app.route('/create_stock', methods=['POST'])
@@ -305,7 +332,10 @@ def create_plate():
     pp.pprint(data)
 
     if data:
-        file = data['file'].replace('\r', '').split('\n')
+        try:
+            file = data['file'].replace('\r', '').split('\n')
+        except KeyError as e:
+            return json.dumps({'success': False, 'msg': "Invalid file submitted"}), 404, {'ContentType': 'application/json'}
 
         abs_by_quadrants = [[] for x in range(0, 4)]
         abs_values = [float(x.split(',')[5]) for x in file[1:]]
@@ -346,13 +376,17 @@ def create_plate():
 
         add_result = add_plate_and_quadrants(plate, quadrants)
         if not add_result:
-            return json.dumps({'success': False, 'msg': "Plate already exists"}), 404, {'ContentType': 'application/json'}
+            return json.dumps({'success': False,
+                               'msg': "Plate already exists"}), 404, {'ContentType': 'application/json'}
 
         # todo fix error handling here
 
-        return json.dumps({'success': True, 'msg': "Successful plate creation", 'next_url': url_for('analysis', plate_id=add_result)}), 200, {'ContentType': 'application/json'}
+        return json.dumps({'success': True,
+                           'msg': "Successful plate creation",
+                           'next_url': url_for('analysis', plate_id=add_result)}), 200, {'ContentType': 'application/json'}
     else:
-        return json.dumps({'success': False, 'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
+        return json.dumps({'success': False,
+                           'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
 
 
 # GET request to get all stocks
@@ -390,7 +424,6 @@ def get_all_drugs():
 @app.route('/get_plate/<int:plate_id>', methods=["GET"])
 def get_plate(plate_id):
     try:
-        print(plate_id)
         data_raw = query_db("SELECT * FROM Plate_Reading AS a "
                             "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
                             "JOIN Quadrant AS c ON b.quad=c.id "

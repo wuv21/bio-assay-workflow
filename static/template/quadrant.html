@@ -5,7 +5,7 @@
 	<div class="form-group row">
 		<label for="virusStockDateInp" class="control-label col-md-4">Stock harvest date</label>
 		<div class="col-md-8">
-			<input type="text" name="virusStockDateInp" id="virusStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate" check-date>
+			<input type="text" name="virusStockDateInp" id="virusStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate">
 		</div>
 	</div>
 
@@ -33,8 +33,8 @@
 		<label class="control-label col-md-4">Increment</label>
 		<div class="col-md-8">
 			<div class="radio">
-				<label><input type="radio" name="inc" value="log10" ng-model="quads[$id].inc">log10</label>
-				<label><input type="radio" name="inc" value="halfLog10" ng-model="quads[$id].inc" disabled>Half log10</label>
+				<label><input type="radio" name="inc-{a $id a}" value="log10" ng-model="quads[$id].inc">log10</label>
+				<label><input type="radio" name="inc-$id" value="halfLog10" ng-model="quads[$id].inc" disabled>Half log10</label>
 			</div>
 		</div>
 	</div>

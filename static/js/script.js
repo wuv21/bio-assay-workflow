@@ -410,9 +410,34 @@ bioApp.controller('OverviewController', function($scope, $http) {
     };
 
     $scope.plates = [];
+    $scope.selectedExp = {};
     $http.get(baseAddress + '/get_all_plates')
         .success(function(resp) {
             $scope.plates = resp;
-            console.log(resp);
-        })
+        });
+
+    $http.get(baseAddress + '/get_all_plate_quadrants')
+        .success(function(resp) {
+            $scope.quadrants = resp;
+        });
+
+    $scope.showQuadrants = function(option) {
+        $scope.availableQuads = [];
+        if (option && $scope.quadrants) {
+            $scope.quadrants.forEach(function(q) {
+                if (q.Plate_Reading_id == option.id) {
+                    $scope.availableQuads.push(q)
+                }
+            });
+        }
+    };
+
+    $scope.stagedQuads = [];
+    $scope.addQuads = function() {
+        $scope.selectedQuads.forEach(function(x) {$scope.stagedQuads.push(x)});
+    }
+
+    $scope.removeQuads = function() {
+        _.pullAll($scope.stagedQuads, $scope.addedQuads);
+    }
 });
