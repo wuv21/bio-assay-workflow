@@ -18,12 +18,22 @@ class Quadrant(object):
         return self.abs_val
 
     def calc_c_range(self):
+
         minimum = int(round(math.log(self.min_c, 10)))
-        maximum = self.variables - self.num_ctrl - 1 + minimum
+        if self.inc == 'log10':
+            maximum = self.variables - self.num_ctrl - 1 + minimum
+            c_range = [math.pow(10, x) for x in range(minimum, maximum)]
 
-        c_range = [math.pow(10, x) for x in range(minimum, maximum)]
+            return c_range
+        else:
+            maximum = int((self.variables - self.num_ctrl - 1 + minimum) / 2)
+            c_range = []
+            for i in range(minimum, maximum):
+                c_range.append(math.pow(10, i))
+                c_range.append(4.0 * math.pow(10, i))
 
-        return c_range
+            return c_range
+
 
     def format_abs_vals(self):
         x = []
