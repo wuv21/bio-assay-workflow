@@ -329,7 +329,7 @@ def create_drug():
 @app.route('/create_plate', methods=['POST'])
 def create_plate():
     data = request.get_json(force=True)
-    
+
     if data:
         try:
             file = data['file'].replace('\r', '').split('\n')
@@ -431,7 +431,7 @@ def get_plate(plate_id):
                             "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
 
         if len(data_raw) == 0:
-            raise BadRequest('Stuff')
+            raise IndexError()
 
         data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
@@ -439,8 +439,6 @@ def get_plate(plate_id):
             q_data = list(data_raw[index][9:15])
             q_data[-1] = pickle.loads(q_data[-1])
             quad = quadrant.Quadrant(*q_data)
-
-            pp.pprint(q)
 
             q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
             q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
@@ -454,7 +452,6 @@ def get_plate(plate_id):
 
     except ValueError as e:
         return json.dumps(data_parsed)
-        return json.dumps({'success': False, 'msg': "Regression unable to be calculated"}), 404, {'ContentType': 'application/json'}
     except IndexError as e:
         return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
 
