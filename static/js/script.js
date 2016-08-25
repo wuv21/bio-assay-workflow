@@ -409,6 +409,8 @@ bioApp.controller('OverviewController', function($scope, $http) {
         $scope.alertSettings.visible = true;
     };
 
+    $scope.loadingDisplay = true;
+
     $scope.plates = [];
     $scope.selectedExp = {};
     $http.get(baseAddress + '/get_all_plates')
@@ -419,6 +421,7 @@ bioApp.controller('OverviewController', function($scope, $http) {
     $http.get(baseAddress + '/get_all_plate_quadrants')
         .success(function(resp) {
             $scope.quadrants = resp;
+            $scope.loadingDisplay = false;
         });
 
     $scope.showQuadrants = function(option) {
@@ -431,6 +434,8 @@ bioApp.controller('OverviewController', function($scope, $http) {
             });
         }
     };
+
+    $scope.experimentRedirect = baseAddress + '/analysis/';
 
     $scope.stagedQuads = [];
     $scope.addQuads = function() {
