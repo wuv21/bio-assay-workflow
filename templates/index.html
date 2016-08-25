@@ -4,19 +4,20 @@
     <div class="container">
         <h2>Welcome to Biological Assay Record Keeping System (BARS)</h1>
         <h3>Intro</h3>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas commodi quia, delectus laborum ab itaque repellendus unde voluptas aperiam ipsa doloremque optio ratione, earum accusantium veniam, exercitationem perferendis. Eligendi, quaerat.</p>
+		<p>BARS is an open-source and full-stack tool for workflow management with single-cycle drug susceptibility assays. This system will manage plasmid clones, virus stocks, drugs, and plate readings (from the Victor plate reader).</p>
 
 		<h3>How to get started</h3>
 		<ol>
-			<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nostrum tempore, cumque sunt qui ut praesentium fuga, quidem maxime in beatae, alias. Porro illo, fuga et optio cumque dignissimos quos officiis.</li>
-			<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Praesentium perspiciatis similique corrupti accusamus, optio quidem et temporibus qui magni ducimus iste debitis quae, doloribus fugit! Et labore, ex vel alias.</li>
-			<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A optio quas suscipit eveniet sed rerum veniam, ex at possimus, eius repellat! Sapiente aperiam, dolorum nostrum cum iure ducimus rerum saepe.</li>
+			<li>The <a href="{{ url_for('manage') }}">Manage</a> page is for creating new virus stocks and/or new drugs that have been tested. You will be able to reference existing or add new clones.</li>
+			<li>After getting absorbance values and converting the resulting file into CSV format, use the <a href="{{ url_for('enter_assay') }}">Enter Assay</a> page to create a new plate reading in the system. Once submitted, the website will automatically redirect to the analysis page for that particular reading.</li>
+			<li>The <a href="{{ url_for('analysis') }}">Analysis</a> page will generate a dose response curve (with EC<sub>50</sub>) and % control transformed values (for use in Prism).</li>
+            <li>The <a href="{{ url_for('overview') }}">Overview</a> page is for comparing different quandrants.</li>
 		</ol>
 
 		<h3>About</h3>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente voluptatum soluta consequatur cumque. Deserunt aut ducimus rem, possimus est. Est saepe odit, atque at alias possimus provident ipsam assumenda eos?</p>
+		<p>Built using a Flask web server (Python 3.x) with a sqlite3 database. The front end utilizes Angular 1.x for data management and API requests to Flask, D3 for data visualization, and numpy + scipy libraries in Python for sigmoidal regression analysis. Please visit the <a href="https://github.com/wuv21/bio-assay-workflow" target="_blank">GitHub page</a> for the complete source code for this project.</p>
 
 		<h3>Contact</h3>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A provident voluptas sequi quia alias. Repellat nostrum deleniti cum autem neque quos, quam architecto aspernatur, itaque eligendi voluptates totam ea, quaerat.</p>
+		<p>For any concerns, comments, or questions: please email <a href="mailto:wuv21@uw.edu">Vincent Wu</a>. </p>
     </div>
 {% endblock %}

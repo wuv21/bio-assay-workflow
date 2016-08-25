@@ -207,9 +207,9 @@ def index():
 
 
 # manage.html
-# edits virus stocks
+# adds virus stocks and drugs
 @app.route('/manage')
-def edit():
+def manage():
     return render_template('manage.html')
 
 
