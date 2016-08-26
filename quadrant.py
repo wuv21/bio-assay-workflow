@@ -26,9 +26,9 @@ class Quadrant(object):
 
             return c_range
         else:
-            maximum = int((self.variables - self.num_ctrl - 1 + minimum) / 2)
+            maximum = math.trunc((self.variables - self.num_ctrl - 1 + minimum) / 2)
             c_range = []
-            for i in range(minimum, maximum):
+            for i in range(minimum, maximum - 1):
                 c_range.append(math.pow(10, i))
                 c_range.append(4.0 * math.pow(10, i))
 
