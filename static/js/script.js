@@ -377,9 +377,14 @@ bioApp.controller('AnalysisController', function($scope, $http) {
                 });
             }
 
-            $scope.absData.bottom = $scope.quads[$scope.selQuad].regression[1];
-            $scope.absData.top = $scope.quads[$scope.selQuad].regression[0];
-            $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
+            if ($scope.quads[$scope.selQuad].regression) {
+                $scope.absData.bottom = $scope.quads[$scope.selQuad].regression[1];
+                $scope.absData.top = $scope.quads[$scope.selQuad].regression[0];
+                $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
+            } else {
+                showAlert("Unable to calculate regression", warning=true);
+            }
+
         })
         .error(function(resp) {
             if (resp.msg) {
@@ -429,7 +434,8 @@ bioApp.controller('OverviewController', function($scope, $http) {
         if (option && $scope.quadrants) {
             $scope.quadrants.forEach(function(q) {
                 if (q.Plate_Reading_id == option.id) {
-                    $scope.availableQuads.push(q)
+                    $scope.availableQuads.push(q);
+                    console.log(q);
                 }
             });
         }

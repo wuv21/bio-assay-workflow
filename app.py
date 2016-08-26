@@ -329,7 +329,6 @@ def create_drug():
 @app.route('/create_plate', methods=['POST'])
 def create_plate():
     data = request.get_json(force=True)
-    pp.pprint(data)
 
     if data:
         try:
@@ -338,7 +337,7 @@ def create_plate():
             return json.dumps({'success': False, 'msg': "Invalid file submitted"}), 404, {'ContentType': 'application/json'}
 
         abs_by_quadrants = [[] for x in range(0, 4)]
-        abs_values = [float(x.split(',')[5]) for x in file[1:]]
+        abs_values = [float(x.split(',')[5]) for x in file[1:] if len(x) > 0]
 
         marker = 0
         for i in range(0, 4):
@@ -432,7 +431,7 @@ def get_plate(plate_id):
                             "JOIN Drug As f ON c.drug=f.id WHERE a.id=?", args=[plate_id])
 
         if len(data_raw) == 0:
-            raise BadRequest('Stuff')
+            raise IndexError()
 
         data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
@@ -446,13 +445,18 @@ def get_plate(plate_id):
             q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
             q['Quadrant_q_abs'] = quad.parse_vals()
             q['Quadrant_conc_range'] = quad.calc_c_range()
+
+            print(quad.calc_c_range())
             q['regression'] = quad.sigmoidal_regression()
 
         # todo fix query problems
         return json.dumps(data_parsed)
 
-    except Exception as e:
-        return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
+    except ValueError as e:
+        return json.dumps(data_parsed)
+    # except IndexError as e:
+    #     return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
+
 
 # initializes app
 if __name__ == "__main__":
