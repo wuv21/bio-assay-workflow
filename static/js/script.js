@@ -244,6 +244,7 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
                     showAlert(resp.msg, warning=false);
+                    $scope.stockData = {}; // todo make sure this reset works after successful submission
                 })
                 .error(function(resp) {
                     showAlert(resp.msg, warning=true);
@@ -319,6 +320,7 @@ bioApp.controller('AnalysisController', function($scope, $http) {
     var currentURL = window.location.href.split('/')
     var plateID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1
 
+    $scope.test = 4;
     // alert settings
     $scope.alertSettings = {
         visible: false,

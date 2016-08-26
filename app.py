@@ -225,7 +225,7 @@ def enter_assay():
 @app.route('/analysis', defaults={'plate_id': None})
 @app.route('/analysis/<int:plate_id>')
 def analysis(plate_id):
-    return render_template('analysis.html')
+    return render_template('analysis.html', plate_id=plate_id)
 
 
 # overview.html

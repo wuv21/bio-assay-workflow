@@ -71,7 +71,7 @@
 
             <tbody>
                 <tr ng-repeat="q in stagedQuads track by $index">
-                    <td><a ng-href="{a experimentRedirect + q.Plate_Reading_id a}" target="_blank">{a q.Plate_Reading_name a}</a></td>
+                    <td><a ng-href="{a experimentRedirect + q.Plate_Reading_id a}" target="_blank">{a q.Plate_Reading_name + ' (' + q.Plate_Reading_letter + ')' a} </a></td>
                     <td>{a q.Plate_Reading_read_date a}</td>
                     <td>{a q.Clone_name a}</td>
                     <td>{a q.Clone_aa_changes a}</td>
