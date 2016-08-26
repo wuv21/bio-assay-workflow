@@ -8,16 +8,20 @@ function DRCChart() {
         selection.each(function(data) {
             var x = []
             var y = []
+            var regr = []
             data.forEach(function(arr) {
                 arr.vals.forEach(function(a) {
                     x.push(a.x)
                     y.push(_.mean([a.y0, a.y1]))
                 });
+
+                regr.push(arr.top);
+                regr.push(arr.bottom);
             });
 
             var xMax = d3.max(x);
             var xScale = d3.scale.log().domain([d3.min(x) * 0.1, d3.max(x) * 10]).range([margin.left, width - margin.left -  margin.right]);
-            var yScale = d3.scale.linear().domain([0, d3.max(y) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
+            var yScale = d3.scale.linear().domain([d3.min(regr) * 1.5, d3.max(_.concat(y, regr)) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
 
             var superscript = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 
@@ -120,7 +124,7 @@ function DRCChart() {
                 circles.exit().remove();
 
                 var generated = [];
-                for (var j=0.0001; j<xMax + 1; j *= 1.05) {
+                for (var j=d3.min(x); j<xMax + 1; j *= 1.05) {
                     generated.push({
                         x: xScale(j),
                         y: yScale(sigmoid(Math.log10(j), arr.top, arr.bottom, arr.ec))
