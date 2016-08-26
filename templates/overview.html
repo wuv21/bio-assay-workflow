@@ -11,8 +11,13 @@
             <li>Filter plates by read date and select a plate, which will then display all quadrants from that plate.</li>
             <li>Select any quadrant(s) that you want. Click <span class="text-primary">Add</span> to show quadrant data in below table.</li>
             <li>Select any quadrant(s) from "Chosen Quadrant(s)" table. Click <span class="text-danger">Remove</span> to remove selected quadrants from table.</li>
-
         </ol>
+
+        <p ng-show="loadingDisplay">
+            <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
+            <span class="sr-only">Loading...</span>
+            Loading in experiements...please wait
+        </p>
 
         <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
         {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
@@ -66,7 +71,7 @@
 
             <tbody>
                 <tr ng-repeat="q in stagedQuads track by $index">
-                    <td>{a q.Plate_Reading_name a}</td>
+                    <td><a ng-href="{a experimentRedirect + q.Plate_Reading_id a}">{a q.Plate_Reading_name a}</a></td>
                     <td>{a q.Plate_Reading_read_date a}</td>
                     <td>{a q.Clone_name a}</td>
                     <td>{a q.Clone_aa_changes a}</td>
