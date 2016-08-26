@@ -335,8 +335,8 @@ def create_plate():
             file = data['file'].replace('\r', '').split('\n')
             abs_by_quadrants = [[] for x in range(0, 4)]
             abs_values = [float(x.split(',')[5]) for x in file[1:] if len(x) > 0]
-            
-        except KeyError as e:
+
+        except (IndexError, KeyError) as e:
             return json.dumps({'success': False, 'msg': "Invalid file submitted"}), 404, {'ContentType': 'application/json'}
 
         marker = 0

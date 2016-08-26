@@ -119,7 +119,7 @@ bioApp.directive('checkDate', function() {
     }
 });
 
-bioApp.controller('QuadrantController', function($scope, $http) {
+bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
     $scope.plate = {
         name: "",
         date: "",
@@ -139,6 +139,8 @@ bioApp.controller('QuadrantController', function($scope, $http) {
     };
 
     var showAlert = function(msg, warning) {
+        $anchorScroll();
+
         $scope.alertSettings.message = msg;
         $scope.alertSettings.warning = warning;
         $scope.alertSettings.visible = true;
@@ -170,8 +172,6 @@ bioApp.controller('QuadrantController', function($scope, $http) {
 
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
-
-        console.log($scope.plate);
 
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
@@ -361,7 +361,6 @@ bioApp.controller('AnalysisController', function($scope, $http) {
 
     $http.get(baseAddress + '/get_plate/' + plateID)
         .success(function(resp) {
-            console.log(resp);
             $scope.plate = _.pickBy(resp[0], function(value, key) {return key[0] == "P"});
             $scope.quads = _.orderBy(resp, 'Quadrant_id');
 
@@ -435,7 +434,6 @@ bioApp.controller('OverviewController', function($scope, $http) {
             $scope.quadrants.forEach(function(q) {
                 if (q.Plate_Reading_id == option.id) {
                     $scope.availableQuads.push(q);
-                    console.log(q);
                 }
             });
         }
