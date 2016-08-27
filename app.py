@@ -225,7 +225,7 @@ def enter_assay():
 @app.route('/analysis', defaults={'plate_id': None})
 @app.route('/analysis/<int:plate_id>')
 def analysis(plate_id):
-    return render_template('analysis.html')
+    return render_template('analysis.html', plate_id=plate_id)
 
 
 # overview.html
@@ -333,11 +333,11 @@ def create_plate():
     if data:
         try:
             file = data['file'].replace('\r', '').split('\n')
-        except KeyError as e:
-            return json.dumps({'success': False, 'msg': "Invalid file submitted"}), 404, {'ContentType': 'application/json'}
+            abs_by_quadrants = [[] for x in range(0, 4)]
+            abs_values = [float(x.split(',')[5]) for x in file[1:] if len(x) > 0]
 
-        abs_by_quadrants = [[] for x in range(0, 4)]
-        abs_values = [float(x.split(',')[5]) for x in file[1:] if len(x) > 0]
+        except (IndexError, KeyError) as e:
+            return json.dumps({'success': False, 'msg': "Invalid file submitted"}), 404, {'ContentType': 'application/json'}
 
         marker = 0
         for i in range(0, 4):
@@ -445,8 +445,6 @@ def get_plate(plate_id):
             q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
             q['Quadrant_q_abs'] = quad.parse_vals()
             q['Quadrant_conc_range'] = quad.calc_c_range()
-
-            print(quad.calc_c_range())
             q['regression'] = quad.sigmoidal_regression()
 
         # todo fix query problems
@@ -454,8 +452,8 @@ def get_plate(plate_id):
 
     except ValueError as e:
         return json.dumps(data_parsed)
-    # except IndexError as e:
-    #     return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
+    except IndexError as e:
+        return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
 
 
 # initializes app

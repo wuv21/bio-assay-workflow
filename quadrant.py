@@ -60,7 +60,11 @@ class Quadrant(object):
 
         for i in range(0, len(vals)):
             for j in range(0, 2):
-                vals[i][j] -= no_virus_control
+                difference = vals[i][j] - no_virus_control
+                if difference < 0:
+                    vals[i][j] = 0
+                else:
+                    vals[i][j] = difference
 
         no_drug_control = float((vals[0][0] + vals[0][1]) / 2)
         vals.pop(0)

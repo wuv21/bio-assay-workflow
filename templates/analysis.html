@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %} - Analysis {% endblock %}
+{% block title %} - Analysis - {{ plate_id }} {% endblock %}
 {% set active_page = "analysis" %}
 
 {% block content %}
 	<div class="container" ng-controller="AnalysisController">
 		<h2>Analysis</h2>
 		<p>View plate results with calculated absorbance values (% control) and plate details. Table can be directly copied into Prism or Excel. Sigmoidal dose regression calculated from Numpy and Scipy libraries and is still in beta mode. The mean of absorbance values is plotted with the dose response curve. Since this is in beta mode, please double check curve and values via Prism.</p>
-		
+
 		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
 		{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 

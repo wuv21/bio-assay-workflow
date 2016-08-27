@@ -32,9 +32,9 @@ bioApp.directive('quadrant', function() {
             scope.quads[scope.$id] = {
                 virusStockDate: '',
                 selectedClone: null,
-                minDrug: 0.0001,
+                minDrug: null,
                 inc: null,
-                numControls: 1,
+                numControls: null,
                 drug: null
             };
 
@@ -119,11 +119,11 @@ bioApp.directive('checkDate', function() {
     }
 });
 
-bioApp.controller('QuadrantController', function($scope, $http) {
+bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
     $scope.plate = {
-        name: "Sample Plate Name",
-        date: "01/02/1661",
-        letter: "A"
+        name: "",
+        date: "",
+        letter: ""
     };
     $scope.quads = {};
 
@@ -139,6 +139,8 @@ bioApp.controller('QuadrantController', function($scope, $http) {
     };
 
     var showAlert = function(msg, warning) {
+        $anchorScroll();
+
         $scope.alertSettings.message = msg;
         $scope.alertSettings.warning = warning;
         $scope.alertSettings.visible = true;
@@ -171,8 +173,6 @@ bioApp.controller('QuadrantController', function($scope, $http) {
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
 
-        console.log($scope.plate);
-
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
                 showAlert(resp.msg, warning=false);
@@ -191,14 +191,14 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
     };
 
     $scope.stockData = {
-        cloneDate: "06/26/2016",
+        cloneDate: '',
         selectedClone: null,
-        virusStockDate: "08/05/2016",
-        virusStockFFU: 16000,
-        newCName: 'TestClone',
-        newCDate: '05/02/2015',
-        newCAA: 'A153G',
-        newCType: 'ROD9'
+        virusStockDate: '',
+        virusStockFFU: null,
+        newCName: '',
+        newCDate: '',
+        newCAA: '',
+        newCType: ''
     };
 
     // alert settings
@@ -244,6 +244,7 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
                     showAlert(resp.msg, warning=false);
+                    $scope.stockData = {}; // todo make sure this reset works after successful submission
                 })
                 .error(function(resp) {
                     showAlert(resp.msg, warning=true);
@@ -319,6 +320,7 @@ bioApp.controller('AnalysisController', function($scope, $http) {
     var currentURL = window.location.href.split('/')
     var plateID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1
 
+    $scope.test = 4;
     // alert settings
     $scope.alertSettings = {
         visible: false,
@@ -361,7 +363,6 @@ bioApp.controller('AnalysisController', function($scope, $http) {
 
     $http.get(baseAddress + '/get_plate/' + plateID)
         .success(function(resp) {
-            console.log(resp);
             $scope.plate = _.pickBy(resp[0], function(value, key) {return key[0] == "P"});
             $scope.quads = _.orderBy(resp, 'Quadrant_id');
 
@@ -435,7 +436,6 @@ bioApp.controller('OverviewController', function($scope, $http) {
             $scope.quadrants.forEach(function(q) {
                 if (q.Plate_Reading_id == option.id) {
                     $scope.availableQuads.push(q);
-                    console.log(q);
                 }
             });
         }
