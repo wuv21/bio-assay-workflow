@@ -18,7 +18,6 @@ class Quadrant(object):
         return self.abs_val
 
     def calc_c_range(self):
-
         minimum = int(round(math.log(self.min_c, 10)))
         if self.inc == 'log10':
             maximum = self.variables - self.num_ctrl - 1 + minimum
@@ -28,10 +27,18 @@ class Quadrant(object):
         else:
             maximum = math.trunc((self.variables - self.num_ctrl - 1 + minimum) / 2)
             c_range = []
-            for i in range(minimum, maximum - 1):
-                c_range.append(math.pow(10, i))
-                c_range.append(4.0 * math.pow(10, i))
 
+            test = str(self.min_c)
+            if test[len(test) - 1] == '4':
+                for i in range(0, round((self.variables - self.num_ctrl) / 2) - 1):
+                    c_range.append(self.min_c * math.pow(10, i))
+                    c_range.append(self.min_c / 4.0 * math.pow(10, i + 1))
+
+            else:
+                for i in range(minimum, maximum - 1):
+                    c_range.append(math.pow(10, i))
+                    c_range.append(4.0 * math.pow(10, i))
+                    
             return c_range
 
 
