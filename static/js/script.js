@@ -32,11 +32,19 @@ bioApp.directive('quadrant', function() {
             scope.quads[scope.$id] = {
                 virusStockDate: '',
                 selectedClone: null,
-                minDrug: null,
+                // minDrug: null,
                 inc: null,
-                numControls: null,
-                drug: null
+                numControls: 1,
+                drug: null,
+                concRange: []
             };
+
+            scope.$watch('quads[$id].numControls', function() {
+                scope.quads[scope.$id].concRange = [];
+                for (var i=0; i<12 - scope.quads[scope.$id].numControls; i++) {
+                    scope.quads[scope.$id].concRange.push({});
+                }
+            });
 
             scope.updateStockDate = function(option) {
                 scope.quads[scope.$id].virusStockDate = option.harvest_date;
@@ -121,9 +129,9 @@ bioApp.directive('checkDate', function() {
 
 bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
     $scope.plate = {
-        name: "",
-        date: "",
-        letter: ""
+        name: "Test",
+        date: "01/01/0001",
+        letter: "A"
     };
     $scope.quads = {};
 
@@ -172,7 +180,7 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
 
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
-        
+
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
                 showAlert(resp.msg, warning=false);
