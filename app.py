@@ -165,7 +165,7 @@ def add_plate(args):
         return query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0]
 
     except Exception as e:
-        raise BadRequest("OH NO...I'm in add_quadrant")
+        raise BadRequest("OH NO...I'm in add_plate")
 
 
 # adds a plate into the Plate_reading table if does not already exist, given arguments

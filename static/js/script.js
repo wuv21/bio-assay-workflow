@@ -172,7 +172,7 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
 
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
-
+        
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
                 showAlert(resp.msg, warning=false);
@@ -268,6 +268,7 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
                     showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.stockData = {}; // todo make sure this reset works...
                 })
                 .error(function(resp) {
                     showAlert($filter('htmlToText')(resp.msg), warning=true);
