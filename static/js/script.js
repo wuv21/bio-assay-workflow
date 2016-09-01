@@ -67,7 +67,6 @@ bioApp.directive('quadrant', function() {
 
                         var test = String(current_q.concRange[0].step);
                         if (test.charAt(test.length - 1) == '4') {
-                            console.log('here');
                             for (var i=0; i<Math.round((12 - current_q.numControls) / 2 - 1); i++) {
                                 c_range.push(current_q.concRange[0].step * Math.pow(10, i));
                                 c_range.push(current_q.concRange[0].step / 4.0 * Math.pow(10, i + 1));
