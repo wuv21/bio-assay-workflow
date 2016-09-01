@@ -6,40 +6,38 @@ import scipy.optimize
 class Quadrant(object):
     variables = 12
 
-    def __init__(self, virus_stock, drug_id, min_c, inc, num_ctrl, abs_val):
+    def __init__(self, virus_stock, drug_id, c_range, num_ctrl, abs_val):
         self.virus_stock = virus_stock
         self.drug_id = drug_id
-        self.min_c = min_c
-        self.inc = inc
+        self.c_range = c_range
         self.num_ctrl = num_ctrl
         self.abs_val = abs_val
 
-    def show_abs(self):
-        return self.abs_val
-
     def calc_c_range(self):
-        minimum = int(round(math.log(self.min_c, 10)))
-        if self.inc == 'log10':
-            maximum = self.variables - self.num_ctrl - 1 + minimum
-            c_range = [math.pow(10, x) for x in range(minimum, maximum)]
+        # minimum = int(round(math.log(self.min_c, 10)))
+        # if self.inc == 'log10':
+        #     maximum = self.variables - self.num_ctrl - 1 + minimum
+        #     c_range = [math.pow(10, x) for x in range(minimum, maximum)]
+        #
+        #     return c_range
+        # else:
+        #     maximum = math.trunc((self.variables - self.num_ctrl - 1 + minimum) / 2)
+        #     c_range = []
+        #
+        #     test = str(self.min_c)
+        #     if test[len(test) - 1] == '4':
+        #         for i in range(0, round((self.variables - self.num_ctrl) / 2) - 1):
+        #             c_range.append(self.min_c * math.pow(10, i))
+        #             c_range.append(self.min_c / 4.0 * math.pow(10, i + 1))
+        #
+        #     else:
+        #         for i in range(minimum, maximum - 1):
+        #             c_range.append(math.pow(10, i))
+        #             c_range.append(4.0 * math.pow(10, i))
+        #
+        #     return c_range
 
-            return c_range
-        else:
-            maximum = math.trunc((self.variables - self.num_ctrl - 1 + minimum) / 2)
-            c_range = []
-
-            test = str(self.min_c)
-            if test[len(test) - 1] == '4':
-                for i in range(0, round((self.variables - self.num_ctrl) / 2) - 1):
-                    c_range.append(self.min_c * math.pow(10, i))
-                    c_range.append(self.min_c / 4.0 * math.pow(10, i + 1))
-
-            else:
-                for i in range(minimum, maximum - 1):
-                    c_range.append(math.pow(10, i))
-                    c_range.append(4.0 * math.pow(10, i))
-                    
-            return c_range
+        return self.c_range
 
 
     def format_abs_vals(self):

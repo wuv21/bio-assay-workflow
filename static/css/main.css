@@ -51,9 +51,10 @@ form .ng-dirty.ng-valid {
 
 .quadrant {
     padding: 1.5em;
+    padding-top: 0em;
     border: 1px #EEE solid;
     border-radius: 10px;
-    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 .quad-stock-btns {
@@ -99,4 +100,19 @@ form .ng-dirty.ng-valid {
 
 .caption {
     font-size: 14px;
+}
+
+.centered-pills {
+    text-align:center;
+}
+
+.centered-pills ul.nav-pills {
+    display:inline-block;
+}
+.centered-pills li {
+    display:inline;
+}
+
+.centered-pills a {
+    float:left;
 }

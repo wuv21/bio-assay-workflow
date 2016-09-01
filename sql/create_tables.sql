@@ -40,11 +40,11 @@ CREATE TABLE IF NOT EXISTS Quadrant (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   virus_stock INTEGER NOT NULL,
   drug INTEGER NOT NULL,
-  min_c DECIMAL(10, 10) NOT NULL,
-  concentration_inc TEXT NOT NULL,
+  -- min_c DECIMAL(10, 10) NOT NULL,
+  -- concentration_inc TEXT NOT NULL,
+  concentration_range TEXT NOT NULL,
   num_controls INTEGER NOT NULL,
   q_abs TEXT NOT NULL,
   FOREIGN KEY (virus_stock) REFERENCES Virus_Stock(id),
   FOREIGN KEY (drug) REFERENCES Drug(id)
 );
-

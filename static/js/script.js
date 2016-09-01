@@ -41,13 +41,52 @@ bioApp.directive('quadrant', function() {
 
             scope.$watch('quads[$id].numControls', function() {
                 scope.quads[scope.$id].concRange = [];
-                for (var i=0; i<12 - scope.quads[scope.$id].numControls; i++) {
+                for (var i=0; i<12 - scope.quads[scope.$id].numControls - 1; i++) {
                     scope.quads[scope.$id].concRange.push({});
                 }
             });
 
             scope.updateStockDate = function(option) {
                 scope.quads[scope.$id].virusStockDate = option.harvest_date;
+            };
+
+            var current_q = scope.quads[scope.$id];
+            scope.serialFill = function() {
+                if (current_q.inc && current_q.concRange[0].step && current_q.numControls) {
+                    var minimum = Math.round(Math.log10(current_q.concRange[0].step));
+
+                    if (current_q.inc == 'log10') {
+                        var maximum = 12 - current_q.numControls - 1 + minimum;
+                        var c_range = [];
+                        for (var i=minimum; i<maximum; i++) {
+                            c_range.push(Math.pow(10, i));
+                        }
+                    } else {
+                        var maximum = Math.trunc((12 - current_q.numControls + minimum) / 2)
+                        var c_range = [];
+
+                        var test = String(current_q.concRange[0].step);
+                        if (test.charAt(test.length - 1) == '4') {
+                            console.log('here');
+                            for (var i=0; i<Math.round((12 - current_q.numControls) / 2 - 1); i++) {
+                                c_range.push(current_q.concRange[0].step * Math.pow(10, i));
+                                c_range.push(current_q.concRange[0].step / 4.0 * Math.pow(10, i + 1));
+                            }
+                        } else {
+                            for (var i=minimum; i<maximum-1; i++) {
+                                c_range.push(Math.pow(10, i));
+                                c_range.push(4.0 * Math.pow(10, i));
+                            }
+                        }
+                    }
+
+                    current_q.concRange.forEach(function(value, index) {
+                        value.step = c_range[index];
+                    });
+
+                } else {
+                    scope.showAlert('Make sure number of controls, minimum concentration, and increment is filled out', true);
+                }
             };
         }
     }
@@ -135,6 +174,16 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
     };
     $scope.quads = {};
 
+    // quadrant visibility
+    $scope.quadrantVisible = [true, false, false, false];
+
+    $scope.selectQuadrant = function(q) {
+        $scope.quadrantVisible = [false, false, false, false];
+        $scope.quadrantVisible[q] = true;
+
+        console.log($scope.quadrantVisible);
+    }
+
     // alert settings
     $scope.alertSettings = {
         visible: false,
@@ -146,7 +195,7 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
         $scope.alertSettings.visible = false;
     };
 
-    var showAlert = function(msg, warning) {
+    $scope.showAlert = function(msg, warning) {
         $anchorScroll();
 
         $scope.alertSettings.message = msg;
@@ -173,7 +222,7 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
 
     $scope.refreshData = function() {
         $scope.getAllData();
-        showAlert('Virus stocks and drugs updated', warning=false);
+        $scope.showAlert('Virus stocks and drugs updated', warning=false);
     };
 
     $scope.getAllData();
@@ -183,11 +232,11 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
 
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
-                showAlert(resp.msg, warning=false);
+                $scope.showAlert(resp.msg, warning=false);
                 window.location = resp.next_url;
             })
             .error(function(resp) {
-                showAlert(resp.msg, warning=true);
+                $scope.showAlert(resp.msg, warning=true);
             });
     }
 });
@@ -358,7 +407,7 @@ bioApp.controller('AnalysisController', function($scope, $http) {
 
             for (var i=0; i<parsedVals.length; i++) {
                 $scope.absData.vals.push({
-                    x: $scope.quads[$scope.selQuad].Quadrant_conc_range[i],
+                    x: $scope.quads[$scope.selQuad].Quadrant_concentration_range[i],
                     y0: parsedVals[i][0],
                     y1: parsedVals[i][1]
                 });
@@ -381,7 +430,7 @@ bioApp.controller('AnalysisController', function($scope, $http) {
 
             for (var i=0; i<parsedVals.length; i++) {
                 $scope.absData.vals.push({
-                    x: $scope.quads[$scope.selQuad].Quadrant_conc_range[i],
+                    x: $scope.quads[$scope.selQuad].Quadrant_concentration_range[i],
                     y0: parsedVals[i][0],
                     y1: parsedVals[i][1]
                 });
