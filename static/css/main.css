@@ -121,3 +121,20 @@ form .ng-dirty.ng-valid {
     background-color: #f8f8f8;
     margin-bottom: 1em;
 }
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    a[href]:after {
+        content: none !important;
+    }
+    #results, #results * {
+        visibility: visible;
+    }
+    #results {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
