@@ -147,8 +147,8 @@ def add_drug(args):
 # adds a quadrant into the Quadrant table, given arguments
 def add_quadrant(args):
     try:
-        insert_db("INSERT INTO Quadrant(virus_stock, drug, min_c, concentration_inc, num_controls, q_abs)"
-                  " VALUES(?, ?, ?, ?, ?, ?)", args=args)
+        insert_db("INSERT INTO Quadrant(virus_stock, drug, concentration_range, num_controls, q_abs)"
+                  " VALUES(?, ?, ?, ?, ?)", args=args)
 
         return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
 
@@ -330,6 +330,7 @@ def create_drug():
 def create_plate():
     data = request.get_json(force=True)
 
+    pp.pprint(data)
     if data:
         try:
             file = data['file'].replace('\r', '').split('\n')
@@ -355,10 +356,16 @@ def create_plate():
         for i in range(0, 4):
             try:
                 info = data['quads'][quad_lbl[i]]
+
+                # deal with concRange
+                raw_conc_range = info['concRange']
+                conc_range = []
+                for x in raw_conc_range:
+                    conc_range.append(x['step'])
+
                 info_picked = [info['selectedClone']['id'],
                                info['drug']['id'],
-                               info['minDrug'],
-                               info['inc'],
+                               pickle.dumps(conc_range),
                                info['numControls'],
                                pickle.dumps(abs_by_quadrants[i])]
 
@@ -366,6 +373,9 @@ def create_plate():
                 quadrants.append(info_picked)
 
             except TypeError as e:
+                quadrants.append(None)
+                print(i, e)
+            except KeyError as e :
                 quadrants.append(None)
                 print(i, e)
 
@@ -386,7 +396,6 @@ def create_plate():
     else:
         return json.dumps({'success': False,
                            'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
-
 
 # GET request to get all stocks
 @app.route('/get_all_stocks', methods=["GET"])
@@ -435,16 +444,26 @@ def get_plate(plate_id):
 
         data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
+        pp.pprint(data_raw)
+        print('---')
+        pp.pprint(data_parsed)
+
         for index, q in enumerate(data_parsed):
-            q_data = list(data_raw[index][9:15])
-            q_data[-1] = pickle.loads(q_data[-1])
+            q_data = [q['Quadrant_virus_stock'],
+                      q['Quadrant_drug'],
+                      pickle.loads(q['Quadrant_concentration_range']),
+                      q['Quadrant_num_controls'],
+                      pickle.loads(q['Quadrant_q_abs'])]
+
             quad = quadrant.Quadrant(*q_data)
+
+            print(quad.calc_c_range())
 
             q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
             q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
             q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
             q['Quadrant_q_abs'] = quad.parse_vals()
-            q['Quadrant_conc_range'] = quad.calc_c_range()
+            q['Quadrant_concentration_range'] = quad.calc_c_range()
             q['regression'] = quad.sigmoidal_regression()
 
         # todo fix query problems

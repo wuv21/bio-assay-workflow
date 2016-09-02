@@ -46,7 +46,7 @@
         	<div class="form-group row">
         		<label class="control-label col-md-4"># of control rows</label>
         		<div class="col-md-8">
-        			<input type="number" min=0 max=12 name="" placeholder="Enter # of control rows" class="form-control" ng-model="quads[$id].numControls">
+        			<input type="number" min=1 max=12 name="" placeholder="Enter # of control rows" class="form-control" ng-model="quads[$id].numControls">
         		</div>
         	</div>
 
@@ -58,10 +58,12 @@
         			| orderBy: 'name'"></select>
         		</div>
         	</div>
+
+            <span><p class="btn btn-info btn-sm" ng-click="serialFill()">Serially fill in dilutions</p> (After inputting minimum concentration in row 1)</span>
         </div>
 
         <div class="col-xs-3">
-            <h4>Concentration range</h4>
+            <h4>Concentration range (nM)</h4>
             <div ng-repeat="cStep in quads[$id].concRange track by $index">
                 <label for="conc-input-{a $index a}" class="control-label col-md-5">row {a $index + 1 a}</label>
         		<div class="col-md-7 pull-left">
