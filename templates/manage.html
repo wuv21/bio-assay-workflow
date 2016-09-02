@@ -131,13 +131,5 @@
 			<p>* required</p>
 			<button type="submit" ng-disabled="drugForm.$invalid" class="btn btn-primary" ng-click="createDrug()">Create drug</button>
 		</form>
-
-        <h2>Testing out concentration enter</h2>
-        <form name="concForm" ng-model="concForm">
-            <table>
-                <tr ng-repeat="x in inputVars track by $index"><td><input type="number" step="any" min="0" id="conc_input_{a $index a}" ng-model="testConc[$index]"></td></tr>
-            </table>
-            <button class="btn btn-warning" ng-click="testConcRange()">Test me!</button>
-        </form>
     </div>
 {% endblock %}
