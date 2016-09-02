@@ -4,9 +4,14 @@
 {% set active_page = "enter_assay" %}
 
 {% block content %}
+    <div class="container-fluid heading">
+        <div class="container">
+            <h2>Enter assay data</h2>
+            <p>Fill out to submit a new 96-well plate reading. If you have added new stocks or drugs while on this page, please refresh page.</p>
+        </div>
+    </div>
+
 	<div class="container" ng-controller="QuadrantController">
-		<h2>Enter assay data</h2>
-        <p>Fill out the below form to submit a new 96-well plate reading. If you have added new stocks or drugs, please press <span class="btn btn-info btn-xs" ng-click="refreshData()">Refresh</span> to update this page.</p>
 		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
 			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 
@@ -17,14 +22,14 @@
 					<input type="text" name="plateNameInp" id="experimentInp" class="form-control" placeholder="Enter plate name" ng-model="plate.name" required>
 				</div>
 
+                <label for="plateLetterInp" class="col-xs-1">Plate letter</label>
+                <div class="col-xs-3">
+                    <input type="text" name="plateLetterInp" id="plateLetterInp" class="form-control" placeholder="Enter plate letter" ng-model="plate.letter" required>
+                </div>
+
 				<label for="plateDateInp" class="col-xs-1">Read Date</label>
 				<div class="col-xs-3">
 					<input type="text" name="plateDateInp" id="plateDateInp" class="form-control" placeholder="MM/DD/YYYY (01/02/2016)" ng-model="plate.date" check-date required>
-				</div>
-
-				<label for="plateLetterInp" class="col-xs-1">Plate letter</label>
-				<div class="col-xs-3">
-					<input type="text" name="plateLetterInp" id="plateLetterInp" class="form-control" placeholder="Enter plate letter" ng-model="plate.letter" required>
 				</div>
 			</div>
 
@@ -52,7 +57,7 @@
 			</div>
 
 			<span>
-				<button class="btn btn-danger">Reset</button>
+				<button type="reset" class="btn btn-danger">Reset</button>
 				<button class="btn btn-primary" ng-click="submitPlate()" ng-disabled="plateForm.$invalid">Submit</button>
 			</span>
 

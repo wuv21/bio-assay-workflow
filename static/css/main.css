@@ -116,3 +116,8 @@ form .ng-dirty.ng-valid {
 .centered-pills a {
     float:left;
 }
+
+.heading {
+    background-color: #f8f8f8;
+    margin-bottom: 1em;
+}

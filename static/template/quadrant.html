@@ -1,8 +1,6 @@
 <div class="quadrant">
 	<h3>Quadrant {a $id - 2 a}</h3>
 
-
-
     <div class="row">
         <div class="col-xs-9">
             <h4>Virus stock info</h4>
@@ -26,19 +24,13 @@
         	</div>
 
         	<h4>Quadrant layout info</h4>
-        	<!-- <div class="form-group row">
-        		<label class="control-label col-md-4">Min [drug] (nM)</label>
-        		<div class="col-md-8">
-        			<input type="number" step="any" min=0 name="" placeholder="Enter minimum concentration" class="form-control" ng-model="quads[$id].minDrug">
-        		</div>
-        	</div> -->
 
         	<div class="form-group row">
         		<label class="control-label col-md-4">Increment</label>
         		<div class="col-md-8">
         			<div class="radio">
         				<label><input type="radio" name="inc-{a $id a}" value="log10" ng-model="quads[$id].inc">log10</label>
-        				<label><input type="radio" name="inc-{a $id a}" value="halfLog10" ng-model="quads[$id].inc">Half log10</label>
+        				<label><input type="radio" name="inc-{a $id a}" value="halfLog10" ng-model="quads[$id].inc">half log10</label>
         			</div>
         		</div>
         	</div>
@@ -66,7 +58,7 @@
             <h4>Concentration range (nM)</h4>
             <div ng-repeat="cStep in quads[$id].concRange track by $index">
                 <label for="conc-input-{a $index a}" class="control-label col-md-5">row {a $index + 1 a}</label>
-        		<div class="col-md-7 pull-left">
+        		<div class="col-md-7">
 	                <input type="number" step="any" min="0" id="conc-input-{a $index a}" placeholder="row {a $index + 1 a}" ng-model="cStep.step" class="form-control input-sm">
         		</div>
             </div>

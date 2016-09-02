@@ -4,30 +4,38 @@
 {% set active_page = "manage" %}
 
 {% block content %}
+    <div class="container-fluid heading">
+        <div class="container">
+            <h2>Manage</h2>
+            <p>This page allows for the creation of new stocks - either from existing clones/isolates or new clones/isolates. New drugs can be inputted in a separate form.</p>
+        </div>
+    </div>
+
 	<div class="container" ng-controller="StockController">
-		<h2>Enter virus stocks</h2>
+		<h3>Enter virus stocks</h2>
 		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
 			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 		</p>
 
 		<div class="quad-stock-btns">
 				<span>
-					<p class="btn btn-primary" ng-click="newStockOldCloneOpen()">From old clone</p>
-					<p class="btn btn-info" ng-click="newStockNewCloneOpen()">From new clone</p>
+					<p class="btn" ng-class="toggleMenus.newStockOldClone ? 'btn-primary' : 'btn-default'" ng-click="newStockOldCloneOpen()">From old clone/isolate</p>
+					<p class="btn" ng-class="toggleMenus.newStockNewClone ? 'btn-info' : 'btn-default'" ng-click="newStockNewCloneOpen()">From new clone</p>
+					<p class="btn" ng-class="toggleMenus.newStockIsolate ? 'btn-warning' : 'btn-default'" ng-click="newStockIsolateOpen()">From new isolate</p>
 				</span>
 			</div>
 
 			<form name="newOldForm" ng-show="toggleMenus.newStockOldClone">
-				<p>Fill out form to create a new stock from an existing clone</p>
+				<p>Fill out form to create a new stock from an existing clone/isolate. All isolates can be filtered by entering a date of <code>11/11/1111</code></p>
 				<div class="form-group row">
-					<label for="oldCloneDateInp" class="control-label col-md-3">Filter by old clone date</label>
+					<label for="oldCloneDateInp" class="control-label col-md-3">Filter by old maxiprep date</label>
 					<div class="col-md-9">
 						<input type="text" name="oldCloneDateInp" id="oldCloneDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="stockData.cloneDate">
 					</div>
 				</div>
 
 				<div class="form-group row">
-					<label for="oldCloneSelect_newStock" class="control-label col-md-3">Select clone*</label>
+					<label for="oldCloneSelect_newStock" class="control-label col-md-3">Select clone/isolate*</label>
 					<div class="col-md-9">
 					    <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control"
 								ng-options="c.name + ' | ' + c.aa_changes + ' | maxiprepped on ' + c.purify_date group by c.type for c in clones
@@ -41,7 +49,7 @@
 				<div class="form-group row">
 					<label for="newOldHarvestDateInp" class="control-label col-md-3">Stock Harvest Date*</label>
 					<div class="col-md-9">
-						<input type="text" name="newOldHarvestDateInp" id="newOldHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="stockData.virusStockDate" check-date required>
+						<input type="text" name="newOldHarvestDateInp" id="newOldHarvestDateInp" placeholder="Enter harvest date (MM/DD/YYYY)" class="form-control" ng-model="stockData.virusStockDate" check-date required>
 					</div>
 				</div>
 
@@ -59,37 +67,37 @@
 			<form name="newNewForm" ng-show="toggleMenus.newStockNewClone">
 				<p>Fill out form to create a new stock from a new clone.</p>
 				<div class="form-group row">
-					<label for="newCloneNameInp" class="control-label col-md-3">New clone name*</label>
+					<label for="newCloneNameInp" class="control-label col-md-3">New clone identification*</label>
 					<div class="col-md-9">
-						<input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter name" class="form-control" ng-model="stockData.newCName" required>
+						<input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter id (i.e. 1-2 or 4-1)" class="form-control" ng-model="stockData.newCName" required>
 					</div>
 				</div>
 
 				<div class="form-group row">
-					<label for="newCloneDateInp" class="control-label col-md-3">New clone date*</label>
+					<label for="newCloneDateInp" class="control-label col-md-3">New clone maxiprep purify date*</label>
 					<div class="col-md-9">
-						<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter date" class="form-control" ng-model="stockData.newCDate" check-date required>
+						<input type="text" name="newCloneDateInp" id="newCloneDateInp" placeholder="Enter purify date (MM/DD/YYYY)" class="form-control" ng-model="stockData.newCDate" check-date required>
 					</div>
 				</div>
 
 				<div class="form-group row">
-					<label for="newCloneAAInp" class="control-label col-md-3">AA changes*</label>
+					<label for="newCloneAAInp" class="control-label col-md-3">AA changes (enter WT if no changes)*</label>
 					<div class="col-md-9">
-						<input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes" class="form-control" ng-model="stockData.newCAA" required>
+						<input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes (i.e. G140S+Q148K)" class="form-control" ng-model="stockData.newCAA" required>
 					</div>
 				</div>
 
 				<div class="form-group row">
 					<label for="newCloneTypeInp" class="control-label col-md-3">Plasmid Type*</label>
 					<div class="col-md-9">
-						<input type="text" name="newCloneTypeInp" id="newCloneTypeInp" placeholder="Enter vector type" class="form-control" ng-model="stockData.newCType" required>
+						<input type="text" name="newCloneTypeInp" id="newCloneTypeInp" placeholder="Enter plasmid type (i.e. pROD9 or pNL4-3)" class="form-control" ng-model="stockData.newCType" required>
 					</div>
 				</div>
 
 				<div class="form-group row">
 					<label for="newHarvestDateInp" class="control-label col-md-3">Stock Harvest Date*</label>
 					<div class="col-md-9">
-						<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date" class="form-control" ng-model="stockData.virusStockDate" check-date required>
+						<input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date (MM/DD/YYYY)" class="form-control" ng-model="stockData.virusStockDate" check-date required>
 					</div>
 				</div>
 
@@ -102,13 +110,53 @@
 
 				<p>* required</p>
 				<button type="submit" class="btn btn-info" ng-disabled="newNewForm.$invalid" ng-click="createStockAndClone()">Create clone and stock</button>
-		</form>
+            </form>
 
+            <form name="newIsolateForm" ng-show="toggleMenus.newStockIsolate">
+                <p>Fill out form to create a new stock from a new isolate.</p>
+                <div class="form-group row">
+                    <label for="newCloneNameInp" class="control-label col-md-3">New isolate identification*</label>
+                    <div class="col-md-9">
+                        <input type="text" name="newCloneNameInp" id="newCloneNameInp" placeholder="Enter isolate identification" class="form-control" ng-model="stockData.newCName" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="newCloneAAInp" class="control-label col-md-3">AA changes (enter WT if no changes)*</label>
+                    <div class="col-md-9">
+                        <input type="text" name="newCloneAAInp" id="newCloneAAInp" placeholder="Enter AA changes (i.e. G140S+Q148K)" class="form-control" ng-model="stockData.newCAA" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="newCloneTypeInp" class="control-label col-md-3">Plasmid Type*</label>
+                    <div class="col-md-9">
+                        <input type="text" name="newCloneTypeInp" id="newCloneTypeInp" placeholder="Enter plasmid type (i.e. pROD9 or pNL4-3)" class="form-control" ng-model="stockData.newCType" required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="newHarvestDateInp" class="control-label col-md-3">Stock Harvest Date*</label>
+                    <div class="col-md-9">
+                        <input type="text" name="newHarvestDateInp" id="newHarvestDateInp" placeholder="Enter harvest date (MM/DD/YYYY)" class="form-control" ng-model="stockData.virusStockDate" check-date required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="newFFUInp" class="control-label col-md-3">Stock FFU/ml*</label>
+                    <div class="col-md-9">
+                        <input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="stockData.virusStockFFU" required>
+                    </div>
+                </div>
+
+                <p>* required</p>
+                <button type="submit" class="btn btn-warning" ng-disabled="newIsolateForm.$invalid" ng-click="createStockAndIsolate()">Create isolate and stock</button>
+            </form>
         <hr>
 	</div>
 
 	<div class="container" ng-controller="DrugController">
-        <h2>Enter Drug</h2>
+        <h3>Enter Drug</h2>
 		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
 			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
 		</p>
@@ -124,7 +172,7 @@
 			<div class="form-group row">
 				<label for="drugAbbrevInp" class="control-label col-md-3">Drug abbreviation*</label>
 				<div class="col-md-9">
-					<input type="text" name="drugAbbrevInp" id="drugAbbrevInp" placeholder="Enter drug name" class="form-control" ng-model="newDrug.abbrev" required>
+					<input type="text" name="drugAbbrevInp" id="drugAbbrevInp" placeholder="Enter drug abbreviation" class="form-control" ng-model="newDrug.abbrev" required>
 				</div>
 			</div>
 

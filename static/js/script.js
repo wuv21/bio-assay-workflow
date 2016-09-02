@@ -179,8 +179,6 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
     $scope.selectQuadrant = function(q) {
         $scope.quadrantVisible = [false, false, false, false];
         $scope.quadrantVisible[q] = true;
-
-        console.log($scope.quadrantVisible);
     }
 
     // alert settings
@@ -228,6 +226,7 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
 
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
+        console.log($scope.plate);
 
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
@@ -243,7 +242,8 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
 bioApp.controller('StockController', function($scope, $http, $filter) {
     $scope.toggleMenus = {
         newStockOldClone: true,
-        newStockNewClone: false
+        newStockNewClone: false,
+        newStockIsolate: false,
     };
 
     $scope.stockData = {
@@ -276,12 +276,20 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
 
     $scope.newStockOldCloneOpen = function() {
         $scope.toggleMenus.newStockNewClone = false;
+        $scope.toggleMenus.newStockIsolate = false;
         $scope.toggleMenus.newStockOldClone = !$scope.toggleMenus.newStockOldClone;
     };
 
     $scope.newStockNewCloneOpen = function() {
         $scope.toggleMenus.newStockOldClone = false;
+        $scope.toggleMenus.newStockIsolate = false;
         $scope.toggleMenus.newStockNewClone = !$scope.toggleMenus.newStockNewClone;
+    };
+
+    $scope.newStockIsolateOpen = function() {
+        $scope.toggleMenus.newStockOldClone = false;
+        $scope.toggleMenus.newStockNewClone = false;
+        $scope.toggleMenus.newStockIsolate = !$scope.toggleMenus.newStockIsolate;
     };
 
     $http.get(baseAddress + '/get_all_clones')
@@ -300,7 +308,8 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
                     showAlert(resp.msg, warning=false);
-                    $scope.stockData = {}; // todo make sure this reset works after successful submission
+                    $scope.stockData = {};
+                    $scope.newOldForm.$setPristine();
                 })
                 .error(function(resp) {
                     showAlert(resp.msg, warning=true);
@@ -324,13 +333,39 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
                     showAlert($filter('htmlToText')(resp.msg), warning=false);
-                    $scope.stockData = {}; // todo make sure this reset works...
+                    $scope.stockData = {};
+                    $scope.newNewForm.$setPristine();
                 })
                 .error(function(resp) {
                     showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
             showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
+        }
+    };
+
+    $scope.createStockAndIsolate = function() {
+        var data = {
+            cName: $scope.stockData.newCName,
+            cDate: '11/11/1111',
+            cAA: $scope.stockData.newCAA,
+            cType: $scope.stockData.newCType,
+            stockDate: $scope.stockData.virusStockDate,
+            stockFFU: $scope.stockData.virusStockFFU
+        };
+
+        if (data.stockDate && data.stockFFU) {
+            $http.post(baseAddress + '/create_clone_and_stock', data)
+                .success(function(resp) {
+                    showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.stockData = {};
+                    $scope.newIsolateForm.$setPristine();
+                })
+                .error(function(resp) {
+                    showAlert($filter('htmlToText')(resp.msg), warning=true);
+                });
+        } else {
+            showAlert('Error in creating isolate and stock - please ensure data is inputted correctly', warning=true);
         }
     };
 });
@@ -363,6 +398,8 @@ bioApp.controller('DrugController', function($scope, $http, $filter) {
             $http.post(baseAddress + '/create_drug', $scope.newDrug)
                 .success(function(resp) {
                     showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.newDrug = {};
+                    $scope.drugForm.$setPristine();
                 })
                 .error(function(resp) {
                     showAlert($filter('htmlToText')(resp.msg), warning=true);
