@@ -150,7 +150,10 @@ def add_quadrant(args):
         insert_db("INSERT INTO Quadrant(virus_stock, drug, concentration_range, num_controls, q_abs)"
                   " VALUES(?, ?, ?, ?, ?)", args=args)
 
+        print("entering into quadrant", query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0])
+
         return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
+
 
     except Exception as e:
         raise BadRequest("OH NO...I'm in add_quadrant")
@@ -161,6 +164,8 @@ def add_plate(args):
     try:
         insert_db("INSERT INTO Plate_Reading(name, read_date, letter) VALUES(?, ?, ?)",
                   args=args)
+
+        print("entering into plate_reading", query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0])
 
         return query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0]
 
@@ -258,15 +263,19 @@ def get_all_plates_quadrants():
     data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
     for index, q in enumerate(data_parsed):
-        q_data = list(data_raw[index][9:15])
-        q_data[-1] = pickle.loads(q_data[-1])
+        q_data = [q['Quadrant_virus_stock'],
+                  q['Quadrant_drug'],
+                  pickle.loads(q['Quadrant_concentration_range']),
+                  q['Quadrant_num_controls'],
+                  pickle.loads(q['Quadrant_q_abs'])]
+
         quad = quadrant.Quadrant(*q_data)
 
         q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
         q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
         q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
         q['Quadrant_q_abs'] = quad.parse_vals()
-        q['Quadrant_conc_range'] = quad.calc_c_range()
+        q['Quadrant_concentration_range'] = quad.calc_c_range()
         q['regression'] = quad.sigmoidal_regression()
 
     return json.dumps(data_parsed)
@@ -299,14 +308,22 @@ def create_clone_and_stock():
     data = request.get_json(force=True)
 
     clone_id = add_clone([data["cName"], data["cAA"], data["cType"], format_date(data["cDate"])])
+    isolate_toggle = format_date(data["cDate"]) == datetime.date(1111, 11, 11)
+
     if not clone_id:
-        return json.dumps({'success': False, 'msg': "Clone already exists"}), 404, {'ContentType': 'application/json'}
+        if isolate_toggle:
+            return json.dumps({'success': False, 'msg': "Isolate already exists"}), 404, {'ContentType': 'application/json'}
+        else:
+            return json.dumps({'success': False, 'msg': "Clone already exists"}), 404, {'ContentType': 'application/json'}
 
     stock = add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
     if not stock:
         return json.dumps({'success': False, 'msg': "Stock already exists"}), 404, {'ContentType': 'application/json'}
 
-    return json.dumps({'success': True, 'msg': "Clone and stock created successfully"}), 200, {'ContentType': 'application/json'}
+    if isolate_toggle:
+        return json.dumps({'success': True, 'msg': "Isolate and stock created successfully"}), 200, {'ContentType': 'application/json'}
+    else:
+        return json.dumps({'success': True, 'msg': "Clone and stock created successfully"}), 200, {'ContentType': 'application/json'}
 
 
 # POST request to enter a new drug
@@ -444,8 +461,6 @@ def get_plate(plate_id):
 
         data_parsed = format_resp(data_raw, ['Plate_Reading', 'Plate_to_Quadrant', 'Quadrant', 'Virus_Stock', 'Clone', 'Drug'], True)
 
-        pp.pprint(data_raw)
-        print('---')
         pp.pprint(data_parsed)
 
         for index, q in enumerate(data_parsed):

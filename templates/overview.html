@@ -4,15 +4,19 @@
 {% set active_page = "overview" %}
 
 {% block content %}
+    <div class="container-fluid heading">
+        <div class="container">
+            <h2>Overview</h2>
+            <p>View results from any selected quadrants.</p>
+            <ol>
+                <li>Filter plates by read date and select a plate, which will then display all quadrants from that plate.</li>
+                <li>Select any quadrant(s) that you want. Click <span class="text-primary">Add</span> to show quadrant data in below table.</li>
+                <li>Select any quadrant(s) from "Chosen Quadrant(s)" table. Click <span class="text-danger">Remove</span> to remove selected quadrants from table.</li>
+                <li>To print results, press <kbd>cmd </kbd> + <kbd>p</kbd> or <kbd>ctrl</kbd> + <kbd>p</kbd> which will automatically print just the results table.</li>
+            </ol>
+        </div>
+    </div>
     <div class="container" ng-controller="OverviewController">
-        <h2>Overview</h2>
-        <p>View results from any selected quadrants.</p>
-        <ol>
-            <li>Filter plates by read date and select a plate, which will then display all quadrants from that plate.</li>
-            <li>Select any quadrant(s) that you want. Click <span class="text-primary">Add</span> to show quadrant data in below table.</li>
-            <li>Select any quadrant(s) from "Chosen Quadrant(s)" table. Click <span class="text-danger">Remove</span> to remove selected quadrants from table.</li>
-        </ol>
-
         <p ng-show="loadingDisplay">
             <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
             <span class="sr-only">Loading...</span>
@@ -57,7 +61,7 @@
 
         <h3>Results</h3>
 
-        <table class="table table-hover table-condensed">
+        <table class="table table-hover table-condensed" id="results">
             <thead>
                 <tr>
                     <th>Experiment name</th>
