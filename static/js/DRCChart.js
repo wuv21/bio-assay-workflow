@@ -21,7 +21,7 @@ function DRCChart() {
 
             var xMax = d3.max(x);
             var xScale = d3.scale.log().domain([d3.min(x) * 0.1, d3.max(x) * 10]).range([margin.left, width - margin.left -  margin.right]);
-            var yScale = d3.scale.linear().domain([d3.min(regr) * 1.5, d3.max(_.concat(y, regr)) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
+            var yScale = d3.scale.linear().domain([d3.min(_.concat(regr, [0])) * 1.5, d3.max(_.concat(y, regr)) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
 
             var superscript = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 
@@ -116,6 +116,7 @@ function DRCChart() {
                     .attr('r', 3)
                     .attr('cx', function(i) {return xScale(i.x)})
                     .attr('cy', function(i) {return yScale(_.mean([i.y0, i.y1]))})
+                    .attr('id', function(i) {return i.x + ' ' + _.mean([i.y0, i.y1])})
                     .style('fill', '#FFF')
                     .transition()
                     .duration(1000)

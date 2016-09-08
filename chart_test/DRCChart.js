@@ -32,7 +32,7 @@ function DRCChart() {
 
             var svg = d3.select(this)
                 .selectAll('.DRCChart')
-                .data(data, function(d) {return Math.random(10007)});
+                .data(data, function(d) {return d.id});
 
             svg.exit().remove();
 
@@ -100,6 +100,17 @@ function DRCChart() {
                 .attr('cy', function(i) {return yScale(_.mean([i.y0, i.y1]))})
                 .attr('id', function(i) {return i.x + ',' + _.mean([i.y0, i.y1])});
 
+            // todo no data being entered...
+            var ec50_point = seriesEnter.selectAll('.ec50')
+                .data(function(d) {return d})
+                .enter()
+                .append('circle')
+                .attr('class', 'ec50')
+                .attr('r', 3)
+                .attr('cx', function(i) {return xScale(i.ec)})
+                .attr('cy', function(i) {return yScale(sigmoid(Math.log10(i.ec), i.top, i.bottom, i.ec))})
+                .style('fill', 'red')
+
             var regression_line = seriesEnter.append('path')
                 .datum(function(d) {
                     var generated = [];
@@ -115,7 +126,6 @@ function DRCChart() {
                         x: xScale(xMax),
                         y: yScale(sigmoid(Math.log10(x.Max), d.top, d.bottom, d.ec))
                     });
-                    console.log(generated);
                     return generated;
                 })
                 .attr('class', 'line')
@@ -124,10 +134,10 @@ function DRCChart() {
 
             var text = seriesEnter.append("text")
                 .datum(function(d) {return d})
-                .attr("x", xScale(xMax * 1.5))
+                .attr("x", xScale(xMax * 1.25))
                 .attr("y", function(i) {return yScale(i.top)})
                 .style("font", "10px")
-                .text("test label");
+                .text(function(d) {return d.name});
 
             // var ec50_point = svgEnter.append('circle')
             //     .attr('r', 3)
