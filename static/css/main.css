@@ -129,10 +129,10 @@ form .ng-dirty.ng-valid {
     a[href]:after {
         content: none !important;
     }
-    #results, #results * {
+    .to-print, #results, #results * {
         visibility: visible;
     }
-    #results {
+    .to-print, #results {
         position: absolute;
         left: 0;
         top: 0;

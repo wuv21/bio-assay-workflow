@@ -167,9 +167,9 @@ bioApp.directive('checkDate', function() {
 
 bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
     $scope.plate = {
-        name: "Test",
-        date: "01/01/0001",
-        letter: "A"
+        name: "",
+        date: "",
+        letter: ""
     };
     $scope.quads = {};
 
@@ -497,6 +497,11 @@ bioApp.controller('OverviewController', function($scope, $http) {
         visible: false,
         message: "",
         warning: false
+    };
+
+    $scope.sortSettings = {
+        type: 'Plate_Reading_read_name',
+        reverse: false
     };
 
     $scope.closeAlert = function() {

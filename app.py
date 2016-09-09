@@ -252,7 +252,7 @@ def get_all_plates():
 
 
 @app.route('/get_all_plate_quadrants', methods=['GET'])
-def get_all_plates_quadrants():
+def get_all_plate_quadrants():
     data_raw = query_db("SELECT * FROM Plate_Reading AS a "
                         "JOIN Plate_to_Quadrant AS b ON a.id=b.plate_id "
                         "JOIN Quadrant AS c ON b.quad=c.id "

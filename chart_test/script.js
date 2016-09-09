@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
         vals: raw_vals,
         bottom: 121.2,
         top: 5.215,
-        ec: 6.699
+        ec: 6.699,
+        name: "WT NL4-3"
     });
 
     sampleData.datasets.push({
@@ -53,7 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
         vals: raw_vals_0,
         bottom: 133.844,
         top: 47.809,
-        ec: 374.312
+        ec: 374.312,
+        name: "Q148K NL4-3"
     });
 
 
@@ -62,7 +64,8 @@ document.addEventListener('DOMContentLoaded', function() {
         vals: raw_vals_1,
         bottom: 105.871,
         top: 12.9876,
-        ec: 37.84
+        ec: 37.84,
+        name: "G140S+Q148K NL4-3"
     });
 
     var myChart = DRCChart();
@@ -70,8 +73,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var btn_change = document.getElementById('test-btn');
     btn_change.addEventListener('click', function() {
-        sampleData.datasets.pop();
-        sampleData.id = 100000;
+        if (sampleData.datasets.length == 2) {
+            sampleData = {id: 0, datasets:sampleData.datasets};
+
+            sampleData.datasets.push({
+                id: 2,
+                vals: raw_vals_1,
+                bottom: 105.871,
+                top: 12.9876,
+                ec: 37.84,
+                name: "G140S+Q148K NL4-3"
+            });
+        } else {
+            sampleData = {id: 0, datasets:sampleData.datasets};
+            sampleData.datasets.pop();
+        }
+        sampleData.id = Math.random() * 10007;
         chartWrapper.datum([sampleData]).call(myChart);
     });
 });
