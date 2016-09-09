@@ -499,6 +499,11 @@ bioApp.controller('OverviewController', function($scope, $http) {
         warning: false
     };
 
+    $scope.sortSettings = {
+        type: 'Plate_Reading_read_name',
+        reverse: false
+    };
+
     $scope.closeAlert = function() {
         $scope.alertSettings.visible = false;
     };
