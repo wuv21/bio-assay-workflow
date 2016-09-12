@@ -1,5 +1,19 @@
 <div class="quadrant">
-	<h3>Quadrant {a $id - 2 a}</h3>
+    <div class="row">
+        <div class="col-xs-9">
+        	<h3>Quadrant {a $id - 2 a}
+                <small>
+                    <p ng-class="quads[$id].disabled ? 'btn-primary' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = false">Enable</p>
+                    <p ng-class="!quads[$id].disabled ? 'btn-danger' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = true">Disable</p>
+                </small>
+            </h3>
+        </div>
+
+        <div class="col-xs-3">
+            <!-- <label><input type="radio" name="disabled-{a $id a}" ng-value="true" ng-model="quads[$id].disabled">Disable</label>
+            <label><input type="radio" name="disabled-{a $id a}" ng-value="false" ng-model="quads[$id].disabled">Enable</label> -->
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-9">
@@ -7,7 +21,7 @@
             <div class="form-group row">
                 <label for="virusStockDateInp" class="control-label col-md-4">Filter by stock harvest date</label>
                 <div class="col-md-8">
-                    <input type="text" name="virusStockDateInp" id="virusStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate">
+                    <input type="text" name="virusStockDateInp" id="virusStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">
                 </div>
             </div>
 
@@ -18,7 +32,8 @@
         					ng-change="updateStockDate(quads[$id].selectedClone)"
         					ng-options="c.name + ' | ' + c.aa_changes + ' | purified on ' + c.purify_date group by c.harvest_date for c in stockClones
         					 | filter: {harvest_date: quads[$id].virusStockDate}
-        					 | orderBy: 'harvest_date'" ng-model="quads[$id].selectedClone">
+        					 | orderBy: 'harvest_date'" ng-model="quads[$id].selectedClone"
+                            ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">
         			</select>
         		</div>
         	</div>
@@ -29,8 +44,8 @@
         		<label class="control-label col-md-4">Increment</label>
         		<div class="col-md-8">
         			<div class="radio">
-        				<label><input type="radio" name="inc-{a $id a}" value="log10" ng-model="quads[$id].inc">log10</label>
-        				<label><input type="radio" name="inc-{a $id a}" value="halfLog10" ng-model="quads[$id].inc">half log10</label>
+        				<label><input type="radio" name="inc-{a $id a}" value="log10" ng-model="quads[$id].inc" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">log10</label>
+        				<label><input type="radio" name="inc-{a $id a}" value="halfLog10" ng-model="quads[$id].inc" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">half log10</label>
         			</div>
         		</div>
         	</div>
@@ -38,7 +53,7 @@
         	<div class="form-group row">
         		<label class="control-label col-md-4"># of control rows</label>
         		<div class="col-md-8">
-        			<input type="number" min=1 max=12 name="" placeholder="Enter # of control rows" class="form-control" ng-model="quads[$id].numControls">
+        			<input type="number" min=1 max=12 name="" placeholder="Enter # of control rows" class="form-control" ng-model="quads[$id].numControls" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">
         		</div>
         	</div>
 
@@ -47,7 +62,7 @@
         		<div class="col-md-8">
         			<select name="drugInp" id="drugInp" class="form-control" ng-model="quads[$id].drug"
         			ng-options="d.name + ' (' + d.abbreviation + ')' for d in allDrugs
-        			| orderBy: 'name'"></select>
+        			| orderBy: 'name'" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled"></select>
         		</div>
         	</div>
 
@@ -56,15 +71,15 @@
 
         <div class="col-xs-3">
             <h4>Concentration range (nM)</h4>
-            <div ng-repeat="cStep in quads[$id].concRange track by $index">
-                <label for="conc-input-{a $index a}" class="control-label col-md-5">row {a $index + 1 a}</label>
-        		<div class="col-md-7">
-	                <input type="number" step="any" min="0" id="conc-input-{a $index a}" placeholder="row {a $index + 1 a}" ng-model="cStep.step" class="form-control input-sm">
-        		</div>
+            <div ng-if="!quads[$id].disabled">
+                <p>{a test.selected a}</p>
+                <div ng-repeat="cStep in quads[$id].concRange track by $index">
+                    <label for="conc-input-{a $index a}" class="control-label col-md-5">row {a $index + 1 a}</label>
+            		<div class="col-md-7">
+    	                <input type="number" step="any" min="0" id="conc-input-{a $index a}" placeholder="row {a $index + 1 a}" name="conc-input-{a $index a}" ng-model="cStep.step" class="form-control input-sm" required>
+            		</div>
+                </div>
             </div>
         </div>
     </div>
-
-
-
 </div>

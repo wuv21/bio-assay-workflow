@@ -36,7 +36,8 @@ bioApp.directive('quadrant', function() {
                 inc: null,
                 numControls: 1,
                 drug: null,
-                concRange: []
+                concRange: [],
+                disabled: true
             };
 
             scope.$watch('quads[$id].numControls', function() {
@@ -47,8 +48,12 @@ bioApp.directive('quadrant', function() {
             });
 
             scope.updateStockDate = function(option) {
-                scope.quads[scope.$id].virusStockDate = option.harvest_date;
+                if (option) {
+                    scope.quads[scope.$id].virusStockDate = option.harvest_date;
+                }
             };
+
+            scope.test = {selected: scope.quads[scope.$id] };
 
             var current_q = scope.quads[scope.$id];
             scope.serialFill = function() {
