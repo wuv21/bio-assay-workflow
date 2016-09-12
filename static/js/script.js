@@ -53,6 +53,7 @@ bioApp.directive('quadrant', function() {
                 }
             };
 
+            // todo fix naming
             scope.test = {selected: scope.quads[scope.$id] };
 
             var current_q = scope.quads[scope.$id];
