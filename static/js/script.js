@@ -500,7 +500,7 @@ bioApp.controller('OverviewController', function($scope, $http) {
     };
 
     $scope.sortSettings = {
-        type: 'Plate_Reading_read_name',
+        type: 'Plate_Reading_name',
         reverse: false
     };
 
