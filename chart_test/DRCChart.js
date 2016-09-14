@@ -25,6 +25,7 @@ function DRCChart() {
             var xMax = d3.max(x);
             var xScale = d3.scale.log().domain([d3.min(x) * 0.1, d3.max(x) * 10]).range([margin.left, width - margin.left -  margin.right]);
             var yScale = d3.scale.linear().domain([d3.min(_.concat(regr, [0])) * 1.5, d3.max(_.concat(y, regr)) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
+            var colors = d3.scale.category10();
 
             var superscript = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 
@@ -58,6 +59,38 @@ function DRCChart() {
                 .attr('transform', 'translate(' + 12 + ', ' + ((height + margin.top + margin.bottom + 50) / 2) + ') rotate(-90)')
                 .text("% control");
 
+            var legend = svgEnter.selectAll('.legend')
+                .data(function(d) {
+                    return _.map(d.datasets, _.property('name'));
+                })
+
+            var legendG = legend.enter()
+                .append('g')
+                .attr('class', 'legend')
+                .attr('transform', function(d, i) {
+                    return 'translate(' + (width - 23 * margin.right) + ',' + (50 + (i) * 20) + ')';
+                });
+
+            legendG.append('rect')
+                .attr('x', 10)
+                .attr('y', 0)
+                .attr('width', 14)
+                .attr('height', 14)
+                .style('fill', '#fff')
+                .transition()
+                .duration(500)
+                .style('fill', function(d, i) {return colors(i)})
+
+            legendG.append('text')
+                .attr('x', 30)
+                .attr('y', 12)
+                .style('text-anchor', 'start')
+                .text(function(e) {return e})
+                .style('fill', '#fff')
+                .transition()
+                .duration(500)
+                .style('fill', '#404040');
+
             function setAxes() {
                 var xAxis = d3.svg.axis().scale(xScale)
                     .orient('bottom')
@@ -79,7 +112,6 @@ function DRCChart() {
                 .y(function(i) {return i.y});
 
             var series = svgEnter.selectAll('.series').data(data[0].datasets, function(d) {return d.id});
-            var colors = d3.scale.category10();
 
             var seriesEnter = series.enter()
                 .append('g')
@@ -131,13 +163,6 @@ function DRCChart() {
                 .attr('class', 'line')
                 .attr('d', line)
                 .style('fill', 'none');
-
-            var text = seriesEnter.append("text")
-                .datum(function(d) {return d})
-                .attr("x", xScale(xMax * 1.25))
-                .attr("y", function(i) {return yScale(i.top)})
-                .style("font", "10px")
-                .text(function(d) {return d.name});
 
             // var ec50_point = svgEnter.append('circle')
             //     .attr('r', 3)

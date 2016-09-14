@@ -51,21 +51,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     sampleData.datasets.push({
         id: 1,
-        vals: raw_vals_0,
-        bottom: 133.844,
-        top: 47.809,
-        ec: 374.312,
-        name: "Q148K NL4-3"
-    });
-
-
-    sampleData.datasets.push({
-        id: 2,
         vals: raw_vals_1,
         bottom: 105.871,
         top: 12.9876,
         ec: 37.84,
         name: "G140S+Q148K NL4-3"
+    });
+
+    sampleData.datasets.push({
+        id: 2,
+        vals: raw_vals_0,
+        bottom: 133.844,
+        top: 47.809,
+        ec: 374.312,
+        name: "Q148K NL4-3"
     });
 
     var myChart = DRCChart();
@@ -78,11 +77,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
             sampleData.datasets.push({
                 id: 2,
-                vals: raw_vals_1,
-                bottom: 105.871,
-                top: 12.9876,
-                ec: 37.84,
-                name: "G140S+Q148K NL4-3"
+                vals: raw_vals_0,
+                bottom: 133.844,
+                top: 47.809,
+                ec: 374.312,
+                name: "Q148K NL4-3"
             });
         } else {
             sampleData = {id: 0, datasets:sampleData.datasets};
