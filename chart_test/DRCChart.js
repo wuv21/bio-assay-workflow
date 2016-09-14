@@ -1,8 +1,8 @@
 function DRCChart() {
-    var width = 900,
+    var width = 960,
         height = 500;
 
-    var margin = {left:50, top:10, bottom:20, right:10};
+    var margin = {left:50, top:10, bottom:20, right:45};
 
     function my(selection) {
         selection.each(function(data) {
@@ -68,7 +68,7 @@ function DRCChart() {
                 .append('g')
                 .attr('class', 'legend')
                 .attr('transform', function(d, i) {
-                    return 'translate(' + (width - 23 * margin.right) + ',' + (50 + (i) * 20) + ')';
+                    return 'translate(' + (width - 6 * margin.right) + ',' + (margin.top + (i) * 20) + ')';
                 });
 
             legendG.append('rect')
@@ -83,7 +83,7 @@ function DRCChart() {
 
             legendG.append('text')
                 .attr('x', 30)
-                .attr('y', 12)
+                .attr('y', 13)
                 .style('text-anchor', 'start')
                 .text(function(e) {return e})
                 .style('fill', '#fff')
@@ -132,17 +132,6 @@ function DRCChart() {
                 .attr('cy', function(i) {return yScale(_.mean([i.y0, i.y1]))})
                 .attr('id', function(i) {return i.x + ',' + _.mean([i.y0, i.y1])});
 
-            // todo no data being entered...
-            var ec50_point = seriesEnter.selectAll('.ec50')
-                .data(function(d) {return d})
-                .enter()
-                .append('circle')
-                .attr('class', 'ec50')
-                .attr('r', 3)
-                .attr('cx', function(i) {return xScale(i.ec)})
-                .attr('cy', function(i) {return yScale(sigmoid(Math.log10(i.ec), i.top, i.bottom, i.ec))})
-                .style('fill', 'red')
-
             var regression_line = seriesEnter.append('path')
                 .datum(function(d) {
                     var generated = [];
@@ -151,7 +140,6 @@ function DRCChart() {
                             x: xScale(j),
                             y: yScale(sigmoid(Math.log10(j), d.top, d.bottom, d.ec))
                         });
-
                     };
 
                     generated.push({
@@ -163,6 +151,19 @@ function DRCChart() {
                 .attr('class', 'line')
                 .attr('d', line)
                 .style('fill', 'none');
+
+            var ec50_point = seriesEnter.append('circle')
+                .attr('class', 'ec50')
+                .attr('r', 3)
+                .attr('cx', function(i) {return xScale(i.ec)})
+                .attr('cy', function(i) {return yScale(sigmoid(Math.log10(i.ec), i.top, i.bottom, i.ec))})
+                .style('fill', 'red')
+
+            var ec50_label = seriesEnter.append('text')
+                .attr("x", function(i) {return xScale(i.ec) + 8})
+                .attr("y", function(i) {return yScale(sigmoid(Math.log10(i.ec), i.top, i.bottom, i.ec))})
+                .style('font-size', '12px')
+                .text(function(i) {return i.ec.toFixed(4)});
 
             // var ec50_point = svgEnter.append('circle')
             //     .attr('r', 3)

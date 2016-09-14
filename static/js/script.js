@@ -23,6 +23,21 @@ bioApp.filter('convertFromSqlDate', function() {
   };
 });
 
+bioApp.directive('validFile',function(){
+  return {
+    require:'ngModel',
+    link:function(scope,el,attrs,ngModel){
+      //change event is fired when file is selected
+      el.bind('change',function(){
+        scope.$apply(function(){
+          ngModel.$setViewValue(el.val());
+          ngModel.$render();
+        });
+      });
+    }
+  }
+});
+
 bioApp.directive('quadrant', function() {
     return {
         restrict: "E",
@@ -54,7 +69,7 @@ bioApp.directive('quadrant', function() {
             };
 
             // todo fix naming
-            scope.test = {selected: scope.quads[scope.$id] };
+            scope.cSelection = {selected: scope.quads[scope.$id] };
 
             var current_q = scope.quads[scope.$id];
             scope.serialFill = function() {
@@ -102,7 +117,7 @@ bioApp.directive("fileread", [function () {
         scope: {
             fileread: "="
         },
-        link: function (scope, element, attrs) {
+        link: function(scope, element, attrs) {
             element.bind("change", function (changeEvent) {
                 var reader = new FileReader();
                 reader.onload = function (loadEvent) {
@@ -122,13 +137,13 @@ bioApp.directive('drcChart', function() {
         scope: false,
         link: function(scope, elem) {
             var myChart = DRCChart()
-                .width(800)
+                .width(960)
                 .height(500);
 
             var chart = d3.select(elem[0]);
 
             scope.$watch('absData', function() {
-                if (scope.absData.vals) {
+                if (scope.absData.datasets.length > 0) {
                     chart.datum([scope.absData])
                         .call(myChart);
                 }
@@ -439,25 +454,33 @@ bioApp.controller('AnalysisController', function($scope, $http) {
     };
 
     $scope.selQuad = 0;
-    $scope.absData = {};
+    $scope.absData = {
+        id: 0,
+        datasets: []
+    };
 
     $scope.$watch('selQuad', function() {
         if ($scope.quads && $scope.quads[$scope.selQuad]) {
             var parsedVals = $scope.quads[$scope.selQuad].Quadrant_q_abs;
-            $scope.absData.id = Number($scope.selQuad);
-            $scope.absData.vals = [];
+
+            var sample = {
+                id: Number($scope.selQuad),
+                vals: [],
+                bottom: $scope.quads[$scope.selQuad].regression[1],
+                top: $scope.quads[$scope.selQuad].regression[0],
+                ec: $scope.quads[$scope.selQuad].regression[2],
+                name: $scope.quads[$scope.selQuad].Clone_aa_changes + '(' + $scope.quads[$scope.selQuad].Clone_type + ')'
+            };
 
             for (var i=0; i<parsedVals.length; i++) {
-                $scope.absData.vals.push({
+                sample.vals.push({
                     x: $scope.quads[$scope.selQuad].Quadrant_concentration_range[i],
                     y0: parsedVals[i][0],
                     y1: parsedVals[i][1]
                 });
             }
 
-            $scope.absData.bottom = $scope.quads[$scope.selQuad].regression[1];
-            $scope.absData.top = $scope.quads[$scope.selQuad].regression[0];
-            $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
+            $scope.absData = {id: Number($scope.selQuad), datasets:[sample]};
         }
     });
 
@@ -467,21 +490,28 @@ bioApp.controller('AnalysisController', function($scope, $http) {
             $scope.quads = _.orderBy(resp, 'Quadrant_id');
 
             var parsedVals = $scope.quads[$scope.selQuad].Quadrant_q_abs;
-            $scope.absData.id = 0;
-            $scope.absData.vals = [];
+
+            var sample = {
+                id: Number($scope.selQuad),
+                vals: [],
+                bottom: $scope.quads[$scope.selQuad].regression[1],
+                top: $scope.quads[$scope.selQuad].regression[0],
+                ec: $scope.quads[$scope.selQuad].regression[2],
+                name: $scope.quads[$scope.selQuad].Clone_aa_changes + ' (' + $scope.quads[$scope.selQuad].Clone_type + ')'
+            };
 
             for (var i=0; i<parsedVals.length; i++) {
-                $scope.absData.vals.push({
+                sample.vals.push({
                     x: $scope.quads[$scope.selQuad].Quadrant_concentration_range[i],
                     y0: parsedVals[i][0],
                     y1: parsedVals[i][1]
                 });
             }
 
+            $scope.absData = {id: 0, datasets:[sample]};
+
             if ($scope.quads[$scope.selQuad].regression) {
-                $scope.absData.bottom = $scope.quads[$scope.selQuad].regression[1];
-                $scope.absData.top = $scope.quads[$scope.selQuad].regression[0];
-                $scope.absData.ec = $scope.quads[$scope.selQuad].regression[2];
+                console.log('regression success');
             } else {
                 showAlert("Unable to calculate regression", warning=true);
             }

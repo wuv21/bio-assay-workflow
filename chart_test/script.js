@@ -91,3 +91,31 @@ document.addEventListener('DOMContentLoaded', function() {
         chartWrapper.datum([sampleData]).call(myChart);
     });
 });
+
+// var hoverG = svgEnter.append('g')
+//     .attr('id', 'mouseHover');
+//
+// hoverG.append('line')
+//     .attr('x1', margin.left)
+//     .attr('x2', width - margin.left - margin.right)
+//     .attr('y1', 0)
+//     .attr('y2', 0)
+//     .attr('id', 'mouseHoverY')
+//     .style('stroke-width', 2)
+//     .style('stroke', '#FFF');
+//
+// hoverG.append('line')
+//     .attr('x1', 0)
+//     .attr('x2', 0)
+//     .attr('y1', margin.top)
+//     .attr('y2', height-margin.top-margin.bottom)
+//     .attr('id', 'mouseHoverX')
+//     .style('stroke-width', 2)
+//     .style('stroke', '#FFF');
+//
+// hoverG.append('text')
+//     .attr('id', 'hoverText')
+//     .attr('x', 0)
+//     .attr('y', 0)
+//     .attr('font-size', 14)
+//     .fill("#CCC");

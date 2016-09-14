@@ -72,7 +72,7 @@
         <div class="col-xs-3">
             <h4>Concentration range (nM)</h4>
             <div ng-if="!quads[$id].disabled">
-                <div ng-repeat="cStep in test.selected.concRange track by $index">
+                <div ng-repeat="cStep in cSelection.selected.concRange track by $index">
                     <label for="conc-input-{a $index a}" class="control-label col-md-5">row {a $index + 1 a}</label>
             		<div class="col-md-7">
     	                <input type="number" step="any" min="0" id="conc-input-{a $index a}" placeholder="row {a $index + 1 a}" name="conc-input-{a $index a}" ng-model="cStep.step" class="form-control input-sm" required>
