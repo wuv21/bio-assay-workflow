@@ -240,6 +240,13 @@ def overview():
     return render_template('overview.html')
 
 
+# test.html
+# prototyping multiple inputs and editing
+@app.route('/test')
+def test():
+    return render_template('test.html')
+
+
 @app.route('/get_all_plates', methods=['GET'])
 def get_all_plates():
     q = query_db("SELECT * FROM Plate_Reading");

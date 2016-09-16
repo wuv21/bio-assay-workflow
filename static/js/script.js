@@ -38,6 +38,32 @@ bioApp.directive('validFile',function(){
   }
 });
 
+bioApp.directive('alert', function() {
+    return {
+        restrict: "E",
+        scope: false,
+        templateUrl: "/static/template/alert.html",
+        link: function(scope) {
+            // alert settings
+            scope.alertSettings = {
+                visible: false,
+                message: "",
+                warning: false
+            };
+
+            scope.closeAlert = function() {
+                scope.alertSettings.visible = false;
+            };
+
+            scope.showAlert = function(msg, warning) {
+                scope.alertSettings.message = msg;
+                scope.alertSettings.warning = warning;
+                scope.alertSettings.visible = true;
+            };
+        }
+    }
+});
+
 bioApp.directive('quadrant', function() {
     return {
         restrict: "E",
@@ -47,7 +73,6 @@ bioApp.directive('quadrant', function() {
             scope.quads[scope.$id] = {
                 virusStockDate: '',
                 selectedClone: null,
-                // minDrug: null,
                 inc: null,
                 numControls: 1,
                 drug: null,
@@ -200,25 +225,6 @@ bioApp.controller('QuadrantController', function($scope, $http, $anchorScroll) {
     $scope.selectQuadrant = function(q) {
         $scope.quadrantVisible = [false, false, false, false];
         $scope.quadrantVisible[q] = true;
-    }
-
-    // alert settings
-    $scope.alertSettings = {
-        visible: false,
-        message: "",
-        warning: false
-    };
-
-    $scope.closeAlert = function() {
-        $scope.alertSettings.visible = false;
-    };
-
-    $scope.showAlert = function(msg, warning) {
-        $anchorScroll();
-
-        $scope.alertSettings.message = msg;
-        $scope.alertSettings.warning = warning;
-        $scope.alertSettings.visible = true;
     };
 
     $scope.getAllData = function() {
@@ -278,23 +284,6 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
         newCType: ''
     };
 
-    // alert settings
-    $scope.alertSettings = {
-        visible: false,
-        message: "",
-        warning: false
-    };
-
-    $scope.closeAlert = function() {
-        $scope.alertSettings.visible = false;
-    };
-
-    var showAlert = function(msg, warning) {
-        $scope.alertSettings.message = msg;
-        $scope.alertSettings.warning = warning;
-        $scope.alertSettings.visible = true;
-    };
-
     $scope.newStockOldCloneOpen = function() {
         $scope.toggleMenus.newStockNewClone = false;
         $scope.toggleMenus.newStockIsolate = false;
@@ -328,15 +317,15 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
         if (data.stockDate && data.stockFFU && data.clone) {
             $http.post(baseAddress + '/create_stock', data)
                 .success(function(resp) {
-                    showAlert(resp.msg, warning=false);
+                    $scope.showAlert(resp.msg, warning=false);
                     $scope.stockData = {};
                     $scope.newOldForm.$setPristine();
                 })
                 .error(function(resp) {
-                    showAlert(resp.msg, warning=true);
+                    $scope.showAlert(resp.msg, warning=true);
                 });
         } else {
-            showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
+            $scope.showAlert('Error in creating stock - please ensure data is inputted correctly', warning=true);
         }
     };
 
@@ -353,15 +342,15 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
         if (data.stockDate && data.stockFFU) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=false);
                     $scope.stockData = {};
                     $scope.newNewForm.$setPristine();
                 })
                 .error(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=true);
+                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
-            showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
+            $scope.showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
         }
     };
 
@@ -378,37 +367,20 @@ bioApp.controller('StockController', function($scope, $http, $filter) {
         if (data.stockDate && data.stockFFU) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=false);
                     $scope.stockData = {};
                     $scope.newIsolateForm.$setPristine();
                 })
                 .error(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=true);
+                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
-            showAlert('Error in creating isolate and stock - please ensure data is inputted correctly', warning=true);
+            $scope.showAlert('Error in creating isolate and stock - please ensure data is inputted correctly', warning=true);
         }
     };
 });
 
 bioApp.controller('DrugController', function($scope, $http, $filter) {
-    // alert settings
-    $scope.alertSettings = {
-        visible: false,
-        message: "",
-        warning: false
-    };
-
-    $scope.closeAlert = function() {
-        $scope.alertSettings.visible = false;
-    };
-
-    var showAlert = function(msg, warning) {
-        $scope.alertSettings.message = msg;
-        $scope.alertSettings.warning = warning;
-        $scope.alertSettings.visible = true;
-    };
-
     $scope.newDrug = {
         name: '',
         abbrev: ''
@@ -418,40 +390,22 @@ bioApp.controller('DrugController', function($scope, $http, $filter) {
         if ($scope.newDrug.name && $scope.newDrug.abbrev) {
             $http.post(baseAddress + '/create_drug', $scope.newDrug)
                 .success(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=false);
                     $scope.newDrug = {};
                     $scope.drugForm.$setPristine();
                 })
                 .error(function(resp) {
-                    showAlert($filter('htmlToText')(resp.msg), warning=true);
+                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=true);
                 });
         } else {
-            showAlert('Error in creating drug - please ensure data is inputted correctly', warning=true);
+            $scope.showAlert('Error in creating drug - please ensure data is inputted correctly', warning=true);
         }
     };
 });
 
 bioApp.controller('AnalysisController', function($scope, $http) {
     var currentURL = window.location.href.split('/')
-    var plateID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1
-
-    $scope.test = 4;
-    // alert settings
-    $scope.alertSettings = {
-        visible: false,
-        message: "",
-        warning: false
-    };
-
-    $scope.closeAlert = function() {
-        $scope.alertSettings.visible = false;
-    };
-
-    var showAlert = function(msg, warning) {
-        $scope.alertSettings.message = msg;
-        $scope.alertSettings.warning = warning;
-        $scope.alertSettings.visible = true;
-    };
+    var plateID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
 
     $scope.selQuad = 0;
     $scope.absData = {
@@ -513,41 +467,24 @@ bioApp.controller('AnalysisController', function($scope, $http) {
             if ($scope.quads[$scope.selQuad].regression) {
                 console.log('regression success');
             } else {
-                showAlert("Unable to calculate regression", warning=true);
+                $scope.showAlert("Unable to calculate regression", warning=true);
             }
 
         })
         .error(function(resp) {
             if (resp.msg) {
-                showAlert(resp.msg, warning=true);
+                $scope.showAlert(resp.msg, warning=true);
             } else {
-                showAlert("No plate to show", warning=true);
+                $scope.showAlert("No plate to show", warning=true);
             }
 
         });
 });
 
 bioApp.controller('OverviewController', function($scope, $http) {
-    // alert settings
-    $scope.alertSettings = {
-        visible: false,
-        message: "",
-        warning: false
-    };
-
     $scope.sortSettings = {
         type: 'Plate_Reading_name',
         reverse: false
-    };
-
-    $scope.closeAlert = function() {
-        $scope.alertSettings.visible = false;
-    };
-
-    var showAlert = function(msg, warning) {
-        $scope.alertSettings.message = msg;
-        $scope.alertSettings.warning = warning;
-        $scope.alertSettings.visible = true;
     };
 
     $scope.loadingDisplay = true;

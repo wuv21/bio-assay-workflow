@@ -12,7 +12,7 @@
                 <li>Filter plates by read date and select a plate, which will then display all quadrants from that plate.</li>
                 <li>Select any quadrant(s) that you want. Click <span class="text-primary">Add</span> to show quadrant data in below table.</li>
                 <li>Select any quadrant(s) from "Chosen Quadrant(s)" table. Click <span class="text-danger">Remove</span> to remove selected quadrants from table.</li>
-                <li>To print results, press <kbd>cmd </kbd> + <kbd>p</kbd> or <kbd>ctrl</kbd> + <kbd>p</kbd> which will automatically print just the results table.</li>
+                <li>To print results, press <kbd>cmd</kbd> + <kbd>p</kbd> or <kbd>ctrl</kbd> + <kbd>p</kbd> which will automatically print just the results table.</li>
             </ol>
         </div>
     </div>
@@ -23,8 +23,7 @@
             Loading in experiements...please wait
         </p>
 
-        <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
-        {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
+        <alert></alert>
 
         <div class="row overview-controls">
             <div class="col-md-4">

@@ -1,19 +1,10 @@
 <div class="quadrant">
-    <div class="row">
-        <div class="col-xs-9">
-        	<h3>Quadrant {a $id - 2 a}
-                <small>
-                    <p ng-class="quads[$id].disabled ? 'btn-primary' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = false">Enable</p>
-                    <p ng-class="!quads[$id].disabled ? 'btn-danger' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = true">Disable</p>
-                </small>
-            </h3>
-        </div>
-
-        <div class="col-xs-3">
-            <!-- <label><input type="radio" name="disabled-{a $id a}" ng-value="true" ng-model="quads[$id].disabled">Disable</label>
-            <label><input type="radio" name="disabled-{a $id a}" ng-value="false" ng-model="quads[$id].disabled">Enable</label> -->
-        </div>
-    </div>
+    <h3>Quadrant {a $id - 2 a}
+        <small>
+            <p ng-class="!quads[$id].disabled ? 'btn-primary' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = false">Enabled</p>
+            <p ng-class="quads[$id].disabled ? 'btn-danger' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = true">Disabled</p>
+        </small>
+    </h3>
 
     <div class="row">
         <div class="col-xs-9">
