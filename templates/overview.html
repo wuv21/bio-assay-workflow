@@ -12,7 +12,7 @@
                 <li>Filter plates by read date and select a plate, which will then display all quadrants from that plate.</li>
                 <li>Select any quadrant(s) that you want. Click <span class="text-primary">Add</span> to show quadrant data in below table.</li>
                 <li>Select any quadrant(s) from "Chosen Quadrant(s)" table. Click <span class="text-danger">Remove</span> to remove selected quadrants from table.</li>
-                <li>To print results, press <kbd>cmd </kbd> + <kbd>p</kbd> or <kbd>ctrl</kbd> + <kbd>p</kbd> which will automatically print just the results table.</li>
+                <li>To print results, press <kbd>cmd</kbd> + <kbd>p</kbd> or <kbd>ctrl</kbd> + <kbd>p</kbd> which will automatically print just the results table.</li>
             </ol>
         </div>
     </div>
@@ -23,8 +23,7 @@
             Loading in experiements...please wait
         </p>
 
-        <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
-        {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
+        <alert></alert>
 
         <div class="row overview-controls">
             <div class="col-md-4">
@@ -65,19 +64,59 @@
             <thead>
                 <tr>
                     <th>
-                        Exp Name
+                        <a href="#" ng-click="sortSettings.type = 'Plate_Reading_name'; sortSettings.reverse = !sortSettings.reverse">
+                            Exp name
+                            <i ng-show="sortSettings.type == 'Plate_Reading_name' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
+                            <i ng-show="sortSettings.type == 'Plate_Reading_name' && sortSettings.reverse" class="fa fa-caret-up"></i>
+                        </a>
                     </th>
-                    <th>Read date</th>
-                    <th>Clone name</th>
-                    <th>Genotype</th>
-                    <th>Type</th>
-                    <th>Drug</th>
-                    <th>EC<sub>50</sub></th>
+                    <th>
+                        <a href="#" ng-click="sortSettings.type = 'Plate_Reading_read_date'; sortSettings.reverse = !sortSettings.reverse">
+                            Read date
+                            <i ng-show="sortSettings.type == 'Plate_Reading_read_date' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
+                            <i ng-show="sortSettings.type == 'Plate_Reading_read_date' && sortSettings.reverse" class="fa fa-caret-up"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="sortSettings.type = 'Clone_name'; sortSettings.reverse = !sortSettings.reverse">
+                            Clone name
+                            <i ng-show="sortSettings.type == 'Clone_name' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
+                            <i ng-show="sortSettings.type == 'Clone_name' && sortSettings.reverse" class="fa fa-caret-up"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="sortSettings.type = 'Clone_aa_changes'; sortSettings.reverse = !sortSettings.reverse">
+                            aa change(s)
+                            <i ng-show="sortSettings.type == 'Clone_aa_changes' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
+                            <i ng-show="sortSettings.type == 'Clone_aa_changes' && sortSettings.reverse" class="fa fa-caret-up"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="sortSettings.type = 'Clone_type'; sortSettings.reverse = !sortSettings.reverse">
+                            Plasmid
+                            <i ng-show="sortSettings.type == 'Clone_type' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
+                            <i ng-show="sortSettings.type == 'Clone_type' && sortSettings.reverse" class="fa fa-caret-up"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="sortSettings.type = 'Drug_abbreviation'; sortSettings.reverse = !sortSettings.reverse">
+                            Drug
+                            <i ng-show="sortSettings.type == 'Drug_abbreviation' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
+                            <i ng-show="sortSettings.type == 'Drug_abbreviation' && sortSettings.reverse" class="fa fa-caret-up"></i>
+                        </a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="sortSettings.type = 'regression[2]'; sortSettings.reverse = !sortSettings.reverse">
+                            EC<sub>50</sub>
+                            <i ng-show="sortSettings.type == 'regression[2]' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
+                            <i ng-show="sortSettings.type == 'regression[2]' && sortSettings.reverse" class="fa fa-caret-up"></i>
+                        </a>
+                    </th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr ng-repeat="q in stagedQuads track by $index">
+                <tr ng-repeat="q in stagedQuads | orderBy:sortSettings.type : sortSettings.reverse track by $index">
                     <td><a ng-href="{a experimentRedirect + q.Plate_Reading_id a}" target="_blank">{a q.Plate_Reading_name + ' (' + q.Plate_Reading_letter + ')' a} </a></td>
                     <td>{a q.Plate_Reading_read_date a}</td>
                     <td>{a q.Clone_name a}</td>

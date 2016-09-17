@@ -13,9 +13,7 @@
 
 	<div class="container" ng-controller="StockController">
 		<h3>Enter virus stocks</h2>
-		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
-			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
-		</p>
+        <alert></alert>
 
 		<div class="quad-stock-btns">
 				<span>
@@ -157,9 +155,8 @@
 
 	<div class="container" ng-controller="DrugController">
         <h3>Enter Drug</h2>
-		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
-			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
-		</p>
+		<alert></alert>
+        
 		<form name="drugForm">
 			<p>Fill out form to create a new drug</p>
 			<div class="form-group row">
