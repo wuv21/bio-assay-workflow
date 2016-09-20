@@ -1,8 +1,8 @@
 <div class="quadrant">
     <h3>Quadrant {a $id - 2 a}
         <small>
-            <p ng-class="!quads[$id].disabled ? 'btn-primary' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = false">Enabled</p>
-            <p ng-class="quads[$id].disabled ? 'btn-danger' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = true">Disabled</p>
+            <p ng-class="!quads[$id].disabled ? 'btn-primary' : 'btn-default'" class="btn btn-sm" ng-disabled="!quads[$id].disabled" ng-click="quads[$id].disabled = false">Enabled</p>
+            <p ng-class="quads[$id].disabled ? 'btn-danger' : 'btn-default'" class="btn btn-sm" ng-disabled="quads[$id].disabled" ng-click="quads[$id].disabled = true">Disabled</p>
         </small>
     </h3>
 
