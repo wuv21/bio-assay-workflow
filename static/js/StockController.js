@@ -5,6 +5,11 @@ angular.module('bioApp').controller('StockController', ['$scope', '$http', '$fil
         newStockIsolate: false,
     };
 
+    $scope.modalShown = false;
+    $scope.toggleModal = function() {
+        $scope.modalShown = !$scope.modalShown;
+    };
+
     $scope.stockData = {
         cloneDate: '',
         selectedClone: null,
@@ -65,7 +70,7 @@ angular.module('bioApp').controller('StockController', ['$scope', '$http', '$fil
         var data = {
             cName: $scope.stockData.newCName,
             cDate: $scope.stockData.newCDate,
-            cAA: $scope.stockData.newCAA,
+            cAA: $scope.stockData.newCAA.toUpperCase(),
             cType: $scope.stockData.newCType,
             stockDate: $scope.stockData.virusStockDate,
             stockFFU: $scope.stockData.virusStockFFU
@@ -90,7 +95,7 @@ angular.module('bioApp').controller('StockController', ['$scope', '$http', '$fil
         var data = {
             cName: $scope.stockData.newCName,
             cDate: '11/11/1111',
-            cAA: $scope.stockData.newCAA,
+            cAA: $scope.stockData.newCAA.toUpperCase(),
             cType: $scope.stockData.newCType,
             stockDate: $scope.stockData.virusStockDate,
             stockFFU: $scope.stockData.virusStockFFU

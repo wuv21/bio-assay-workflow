@@ -12,8 +12,7 @@
     </div>
 
 	<div class="container" ng-controller="QuadrantController">
-		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
-			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
+		<alert></alert>
 
 		<form name="plateForm">
 			<div class="row">
@@ -62,6 +61,15 @@
 			</span>
 
 		</form>
-
 	</div>
+
+    <br>
+
+    <!-- todo work on modal controller -->
+    <div class="container" ng-controller="StockController">
+        <button class="btn btn-info" ng-click='toggleModal()'>Create new stock</button>
+        <modal-dialog show='modalShown' width='750px' height='60%'>
+            <h3>Enter new clone</h3>
+        </modal-dialog>
+    </div>
 {% endblock %}

@@ -117,7 +117,7 @@ def add_clone(args):
 # adds a virus stock into the Virus stock if not exists, given arguments
 def add_stock(args):
     try:
-        check = query_db("SELECT id FROM Virus_Stock WHERE harvest_date=? AND clone=? AND ffu_per_ml=?", args=args)
+        check = query_db("SELECT id FROM Virus_Stock WHERE harvest_date=? AND clone=?", args=args[0:len(args) - 1])
         if len(check) > 0:
             return False
 

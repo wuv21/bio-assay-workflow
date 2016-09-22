@@ -26,18 +26,11 @@ bioApp.filter('convertFromSqlDate', function() {
 
 bioApp.directive('validFile',function() {
   return {
-<<<<<<< HEAD
     require: 'ngModel',
     link: function(scope,el,attrs,ngModel){
       //change event is fired when file is selected
       el.bind('change', function() {
         scope.$apply(function() {
-=======
-    require:'ngModel',
-    link:function(scope,el,attrs,ngModel){
-      el.bind('change',function(){
-        scope.$apply(function(){
->>>>>>> 10ee05680ea4a5346ca054e3d5415ca82cec385a
           ngModel.$setViewValue(el.val());
           ngModel.$render();
         });
@@ -97,8 +90,15 @@ bioApp.directive('quadrant', function() {
             scope.updateStockDate = function(option) {
                 if (option) {
                     scope.quads[scope.$id].virusStockDate = option.harvest_date;
+                    scope.quads[scope.$id].aaChanges = option.aa_changes;
                 }
             };
+
+            scope.resetFilters = function() {
+                scope.quads[scope.$id].virusStockDate = '';
+                scope.quads[scope.$id].aaChanges = '';
+                scope.quads[scope.$id].selectedClone = '';
+            }
 
             // todo fix naming
             scope.cSelection = {selected: scope.quads[scope.$id] };
@@ -214,5 +214,27 @@ bioApp.directive('checkDate', function() {
                 return true;
             }
         }
+    }
+});
+
+bioApp.directive('modalDialog', function() {
+    return {
+        restrict: "E",
+        scope: {
+            show: "="
+        },
+        replace: true,
+        transclude: true,
+        link: function(scope, element, attrs) {
+            scope.dialogStyle = {};
+            if (attrs.width)
+              scope.dialogStyle.width = attrs.width;
+            if (attrs.height)
+              scope.dialogStyle.height = attrs.height;
+            scope.hideModal = function() {
+              scope.show = false;
+            };
+        },
+        templateUrl: "/static/template/modalDialog.html"
     }
 });
