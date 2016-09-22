@@ -5,7 +5,7 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
         letter: ""
     };
     $scope.quads = {};
-    
+
     // quadrant visibility
     $scope.quadrantVisible = [true, false, false, false];
 

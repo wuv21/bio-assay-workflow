@@ -28,10 +28,10 @@
         		<div class="col-md-8">
         		    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control user-select"
         					ng-change="updateStockDate(quads[$id].selectedClone)"
-        					ng-options="c.name + ' | ' + c.aa_changes + ' | purified on ' + c.purify_date group by c.harvest_date for c in stockClones
-        					 | filter: {aa_changes: quads[$id].aaChanges}
-                             | filter: {harvest_date: quads[$id].virusStockDate}
-        					 | orderBy: 'harvest_date'" ng-model="quads[$id].selectedClone"
+        					ng-options="c.Clone_name + ' | ' + c.Clone_aa_changes + ' | purified on ' + c.Clone_purify_date group by c.Virus_Stock_harvest_date for c in stockClones
+        					 | filter: {Clone_aa_changes: quads[$id].aaChanges}
+                             | filter: {Virus_Stock_harvest_date: quads[$id].virusStockDate}
+        					 | orderBy: 'Virus_Stock_harvest_date'" ng-model="quads[$id].selectedClone"
                             ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled"
                             size="6">
         			</select>

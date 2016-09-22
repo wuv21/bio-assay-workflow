@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %} - Overview {% endblock %}
-{% set active_page = "overview" %}
+{% block title %} - Test {% endblock %}
+<!-- {% set active_page = "overview" %} -->
 
 {% block content %}
     <div class="container-fluid heading">
@@ -10,17 +10,54 @@
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         </div>
     </div>
-    <div class="container" ng-controller="OverviewController">
-        <p ng-show="loadingDisplay">
-            <i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i>
-            <span class="sr-only">Loading...</span>
-            Loading in experiements...please wait
-        </p>
-
+    <div class="container" ng-controller="MultipleController">
         <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
         {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
 
-        
+        <div>
+            <h3>Clones</h3>
+            <table class="table table-condensed table-hover">
+                <tr>
+                    <th>Clone ID</th>
+                    <th>Name</th>
+                    <th>AA changes</th>
+                    <th>Type</th>
+                    <th>Purify Date</th>
+                    <th>Edit</th>
+                </tr>
+
+                <tr ng-repeat="c in clones">
+                    <td>{a c.id a}</td>
+                    <td>{a c.name a}</td>
+                    <td>{a c.aa_changes a}</td>
+                    <td>{a c.type a}</td>
+                    <td>{a c.purify_date a}</td>
+                    <td><a ng-href="{a redirect.clone + c.id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <h3>Stocks</h3>
+            <table class="table table-condensed table-hover">
+                <tr>
+                    <th>Stock ID</th>
+                    <th>Harvest Date</th>
+                    <th>Clone info</th>
+                    <th>FFU / ml</th>
+                    <th>Edit</th>
+                </tr>
+
+                <tr ng-repeat="s in stocks">
+                    <td>{a s.Virus_Stock_id a}</td>
+                    <td>{a s.Virus_Stock_harvest_date a}</td>
+                    <td>{a s.Clone_name + " | " + s.Clone_aa_changes + " | " + s.Clone_type a}</td>
+                    <td>{a s.Virus_Stock_ffu_per_ml a}</td>
+                    <td><a ng-href="{a redirect.stock + s.Virus_Stock_id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                </tr>
+            </table>
+        </div>
+
     </div>
 
 {% endblock %}

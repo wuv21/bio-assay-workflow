@@ -425,11 +425,11 @@ def create_plate():
 @app.route('/get_all_stocks', methods=["GET"])
 def get_all_stocks():
     resp = format_resp(query_db("SELECT * FROM Virus_Stock JOIN Clone ON Virus_Stock.clone = Clone.id"),
-                       ["Virus_Stock", "Clone"])
+                       ["Virus_Stock", "Clone"], True)
 
     for i in range(0, len(resp)):
-        resp[i]['harvest_date'] = convert_date(resp[i]['harvest_date'])
-        resp[i]['purify_date'] = convert_date(resp[i]['purify_date'])
+        resp[i]['Virus_Stock_harvest_date'] = convert_date(resp[i]['Virus_Stock_harvest_date'])
+        resp[i]['Clone_purify_date'] = convert_date(resp[i]['Clone_purify_date'])
 
     return json.dumps(resp)
 
