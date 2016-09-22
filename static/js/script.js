@@ -80,17 +80,13 @@ bioApp.directive('quadrant', function() {
                 disabled: true
             };
 
-            scope.$watch('quads[$id].numControls', function() {
-                scope.quads[scope.$id].concRange = [];
-                for (var i=0; i<12 - scope.quads[scope.$id].numControls - 1; i++) {
-                    scope.quads[scope.$id].concRange.push({});
-                }
-            });
 
+
+            // selection filter code
             scope.updateStockDate = function(option) {
                 if (option) {
-                    scope.quads[scope.$id].virusStockDate = option.harvest_date;
-                    scope.quads[scope.$id].aaChanges = option.aa_changes;
+                    scope.quads[scope.$id].virusStockDate = option.Virus_Stock_harvest_date;
+                    scope.quads[scope.$id].aaChanges = option.Clone_aa_changes;
                 }
             };
 
@@ -100,7 +96,25 @@ bioApp.directive('quadrant', function() {
                 scope.quads[scope.$id].selectedClone = '';
             }
 
-            // todo fix naming
+            // format option string in clone selection
+            scope.formatCloneSelect = function(c) {
+                var baseInfo = c.Clone_name + " | " + c.Clone_aa_changes + " | ";
+
+                if (c.Clone_purify_date == "11/11/1111") {
+                    return baseInfo + "Isolate";
+                } else {
+                    return baseInfo + "purified on " + c.Clone_purify_date;
+                }
+            };
+
+            // concentration range settings
+            scope.$watch('quads[$id].numControls', function() {
+                scope.quads[scope.$id].concRange = [];
+                for (var i=0; i<12 - scope.quads[scope.$id].numControls - 1; i++) {
+                    scope.quads[scope.$id].concRange.push({});
+                }
+            });
+
             scope.cSelection = {selected: scope.quads[scope.$id] };
 
             var current_q = scope.quads[scope.$id];

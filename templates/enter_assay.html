@@ -27,9 +27,12 @@
                 </div>
 
 				<label for="plateDateInp" class="col-xs-1">Read Date</label>
-				<div class="col-xs-3">
-					<input type="text" name="plateDateInp" id="plateDateInp" class="form-control" placeholder="MM/DD/YYYY (01/02/2016)" ng-model="plate.date" check-date required>
+				<div class="col-xs-2">
+					<input type="text" name="plateDateInp" id="plateDateInp" class="form-control" placeholder="MM/DD/YYYY" ng-model="plate.date" check-date required>
 				</div>
+                <div class="col-xs-1">
+                    <p class="btn btn-sm btn-default" ng-click="todayDate()">Today</p>
+                </div>
 			</div>
 
             <div class="row">

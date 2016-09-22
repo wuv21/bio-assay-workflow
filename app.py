@@ -247,6 +247,7 @@ def test():
     return render_template('test.html')
 
 
+# GET request to get all plates
 @app.route('/get_all_plates', methods=['GET'])
 def get_all_plates():
     q = query_db("SELECT * FROM Plate_Reading");
@@ -258,6 +259,7 @@ def get_all_plates():
     return json.dumps(resp)
 
 
+# GET request to get all plates with complete information
 @app.route('/get_all_plate_quadrants', methods=['GET'])
 def get_all_plate_quadrants():
     data_raw = query_db("SELECT * FROM Plate_Reading AS a "
@@ -453,6 +455,7 @@ def get_all_drugs():
     return json.dumps(resp)
 
 
+# GET request to get specific plate
 @app.route('/get_plate/<int:plate_id>', methods=["GET"])
 def get_plate(plate_id):
     try:

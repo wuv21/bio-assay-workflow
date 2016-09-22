@@ -38,6 +38,19 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
 
     $scope.getAllData();
 
+    $scope.todayDate = function() {
+        var date = new Date();
+        var day = String(date.getDate());
+        day = day.length < 2 ? "0" + day : day;
+
+        var month = String(date.getMonth() + 1);
+        month = month.length < 2 ? "0" + month : month;
+
+        var year = String(date.getFullYear());
+
+        $scope.plate.date = month + "/" + day + "/" + year;
+    };
+
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
         console.log($scope.plate);
