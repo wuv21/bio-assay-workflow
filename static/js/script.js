@@ -80,8 +80,6 @@ bioApp.directive('quadrant', function() {
                 disabled: true
             };
 
-
-
             // selection filter code
             scope.updateStockDate = function(option) {
                 if (option) {
