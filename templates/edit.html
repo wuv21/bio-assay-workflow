@@ -4,70 +4,60 @@
 {% set active_page = "edit" %}
 
 {% block content %}
-<div class="container" ng-controller="MainController">
-    <h3>Clone form</h3>
-    <form method="POST" action="{{ url_for('add_clone') }}" ng-model="clone" class="form-horizontal cloneForm" name="cloneForm">
-        <div class="form-group">
-            <label for="nameInp" class="control-label col-md-2">Clone Name</label>
-            <div class="col-md-10">
-                <input type="text" class="form-control" name="nameInp" placeholder="Enter Clone Name" ng-model="clone.name" required>
-            </div>
+    <div class="container-fluid heading">
+        <div class="container">
+            <h2>Edit</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+    </div>
+    <div class="container" ng-controller="MultipleController">
+        <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
+        {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
 
-            <div class="col-md-offset-2 col-md-10">
-                <p class="validation-error" ng-if="cloneForm.nameInp.$dirty && cloneForm.nameInp.$error.required" id="cloneNameAlert">
-                    Please enter a clone name
-                </p>
-            </div>
+        <div>
+            <h3>Clones</h3>
+            <table class="table table-condensed table-hover">
+                <tr>
+                    <th>Clone ID</th>
+                    <th>Name</th>
+                    <th>AA changes</th>
+                    <th>Type</th>
+                    <th>Purify Date</th>
+                    <th>Edit</th>
+                </tr>
+
+                <tr ng-repeat="c in clones">
+                    <td>{a c.id a}</td>
+                    <td>{a c.name a}</td>
+                    <td>{a c.aa_changes a}</td>
+                    <td>{a c.type a}</td>
+                    <td>{a c.purify_date | isolateDate a}</td>
+                    <td><a ng-href="{a redirect.clone + c.id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                </tr>
+            </table>
         </div>
 
-        <div class="form-group">
-            <label for="aaChangesInp" class="control-label col-md-2">AA changes</label>
-            <div class="col-md-10">
-                <input type="text" class="form-control" name="aaChangesInp" placeholder="Enter Amino Acid Changes" ng-model="clone.aaChanges">
-            </div>
-        </div>
+        <!-- <div>
+            <h3>Stocks</h3>
+            <table class="table table-condensed table-hover">
+                <tr>
+                    <th>Stock ID</th>
+                    <th>Harvest Date</th>
+                    <th>Clone info</th>
+                    <th>FFU / ml</th>
+                    <th>Edit</th>
+                </tr>
 
-        <div class="form-group">
-            <label for="typeInp" class="control-label col-md-2">Type</label>
-            <div class="col-md-10">
-                <input type="text" class="form-control" name="typeInp" placeholder="Input type" ng-model="clone.type">
-            </div>
-        </div>
+                <tr ng-repeat="s in stocks">
+                    <td>{a s.Virus_Stock_id a}</td>
+                    <td>{a s.Virus_Stock_harvest_date a}</td>
+                    <td>{a s.Clone_name + " | " + s.Clone_aa_changes + " | " + s.Clone_type a}</td>
+                    <td>{a s.Virus_Stock_ffu_per_ml a}</td>
+                    <td><a ng-href="{a redirect.stock + s.Virus_Stock_id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                </tr>
+            </table>
+        </div> -->
 
-        <div class="form-group">
-            <label for="dateInp" class="control-label col-md-2">Maxiprep date</label>
-            <div class="col-md-10">
-                <input type="text" class="form-control" ng-model="clone.date"
-                       name="dateInp" placeholder="MM/DD/YYYY (01/02/2016)"
-                       check-date required>
-            </div>
+    </div>
 
-            <div class="col-md-offset-2 col-md-10">
-                <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && cloneForm.dateInp.$error.required">Date is required</p>
-                <p class="validation-error" ng-if="cloneForm.dateInp.$dirty && !cloneForm.dateInp.checkDate">Please input date as MM/DD/YYYY (01/10/2016)</p>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <button type="reset" class="btn btn-danger">Reset</button>
-                <button type="submit" ng-disabled="cloneForm.$invalid" class="btn btn-primary">Submit</button>
-            </div>
-        </div>
-    </form>
-
-    <hr>
-    <form method="POST" action="{{ url_for('clear_db') }}">
-        <button type="submit" class="btn btn-danger">Clear database</button>
-    </form>
-</div>
-
-<div class="container">
-    <select name="" id="" class="form-control">
-        <option value="" disabled selected>Select a clone:</option>
-        {% for clone in c %}
-            <option value="{{ clone.name }}">{{ clone }}</option>
-        {% endfor %}
-    </select>
-</div>
 {% endblock %}

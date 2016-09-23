@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %} - Edit Clone {% endblock %}
+{% set active_page = "edit" %}
+
+{% block content %}
+    <div class="container-fluid heading">
+        <div class="container">
+            <h2>Edit clone</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+    </div>
+
+	<div class="container" ng-controller="EditCloneController">
+        <alert></alert>
+
+        <form name="editIsolateForm">
+            <div class="form-group row">
+                <label for="cloneNameInp" class="control-label col-md-3">Clone/Isolate identification*</label>
+                <div class="col-md-9">
+                    <input type="text" name="cloneNameInp" id="cloneNameInp" placeholder="Enter isolate identification" class="form-control" ng-model="clone.name" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cloneAAInp" class="control-label col-md-3">AA changes (enter WT if no changes)*</label>
+                <div class="col-md-9">
+                    <input type="text" name="cloneAAInp" id="cloneAAInp" placeholder="Enter AA changes (i.e. G140S+Q148K)" class="form-control" ng-model="clone.aa_changes" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cloneType" class="control-label col-md-3">Plasmid Type*</label>
+                <div class="col-md-9">
+                    <input type="text" name="cloneType" id="cloneType" placeholder="Enter plasmid type (i.e. pROD9 or pNL4-3)" class="form-control" ng-model="clone.type" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cloneAAInp" class="control-label col-md-3">Purify date*</label>
+                <div class="col-md-9">
+                    <input type="text" name="cloneAAInp" id="cloneAAInp" placeholder="MM/DD/YYYY" class="form-control" ng-model="clone.purify_date" checkDate required>
+                </div>
+            </div>
+
+            <p>* required</p>
+            <button type="submit" class="btn btn-primary" ng-disabled="editIsolateForm.$invalid" ng-click="">Edit clone/isolate</button>
+        </form>
+    </div>
+{% endblock %}

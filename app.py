@@ -240,12 +240,17 @@ def overview():
     return render_template('overview.html')
 
 
-# test.html
+# edit.html
 # prototyping multiple inputs and editing
-@app.route('/test')
-def test():
-    return render_template('test.html')
+@app.route('/edit')
+def edit():
+    return render_template('edit.html')
 
+
+# edit_clone.html
+@app.route('/edit_clone/<int:clone_id>')
+def edit_clone(clone_id):
+    return render_template('edit_clone.html')
 
 # GET request to get all plates
 @app.route('/get_all_plates', methods=['GET'])
@@ -499,6 +504,27 @@ def get_plate(plate_id):
     except IndexError as e:
         return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
 
+
+# GET request to get specific clone
+@app.route('/get_clone/<int:clone_id>', methods=["GET"])
+def get_clone(clone_id):
+    try:
+        data_raw = query_db("SELECT * FROM Clone WHERE id=?", args=[clone_id])
+
+        if len(data_raw) == 0:
+            raise IndexError()
+
+        data_parsed = format_resp(data_raw, ['Clone'])[0]
+
+        print(data_parsed)
+        data_parsed['purify_date'] = convert_date(data_parsed['purify_date'])
+
+        return json.dumps(data_parsed)
+
+    except ValueError as e:
+        return json.dumps(data_parsed)
+    except IndexError as e:
+        return json.dumps({'success': False, 'msg': "Clone does not exist"}), 404, {'ContentType': 'application/json'}
 
 # initializes app
 if __name__ == "__main__":

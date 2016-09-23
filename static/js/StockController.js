@@ -44,6 +44,17 @@ angular.module('bioApp').controller('StockController', ['$scope', '$http', '$fil
             $scope.clones = resp;
     });
 
+    // format option string in clone selection
+    $scope.formatCloneSelect = function(c) {
+        var baseInfo = c.name + " | " + c.aa_changes + " | ";
+
+        if (c.purify_date == "11/11/1111") {
+            return baseInfo + "Isolate";
+        } else {
+            return baseInfo + "purified on " + c.purify_date;
+        }
+    };
+
     $scope.createStock = function() {
         var data = {
             stockDate: $scope.stockData.virusStockDate,

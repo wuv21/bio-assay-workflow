@@ -13,6 +13,13 @@ bioApp.filter('htmlToText', function() {
     };
 });
 
+bioApp.filter('isolateDate', function() {
+    return function(text) {
+      return text == "11/11/1111" ? "Isolate" : text;
+    };
+});
+
+
 bioApp.filter('convertFromSqlDate', function() {
   return function(date) {
     var decomp = date.split('-');
