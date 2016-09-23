@@ -112,6 +112,9 @@
                             <i ng-show="sortSettings.type == 'regression[2]' && sortSettings.reverse" class="fa fa-caret-up"></i>
                         </a>
                     </th>
+                    <th>
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+                    </th>
                 </tr>
             </thead>
 
@@ -124,9 +127,14 @@
                     <td>{a q.Clone_type a}</td>
                     <td>{a q.Drug_abbreviation a}</td>
                     <td>{a q.regression[2] | number: 4 a}</td>
+                    <td><input type="checkbox" name="{a 'selected_' + q.Quadrant_id a}" ng-click="stageCharts(q)"></td>
                 </tr>
             </tbody>
         </table>
+
+        <br>
+        <h3>Graphs</h3>
+        <drc-chart></drc-chart>
     </div>
 
 {% endblock %}

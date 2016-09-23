@@ -6,7 +6,7 @@ angular.module('bioApp').controller('EditCloneController', ['$scope', '$http', '
         .success(function(resp) {
             $scope.clone = resp;
 
-            console.log(resp);
+            console.log(resp);  
         })
         .error(function(resp) {
             $scope.showAlert(resp.msg, warning=true);
