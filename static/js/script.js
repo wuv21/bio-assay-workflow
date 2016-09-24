@@ -13,6 +13,13 @@ bioApp.filter('htmlToText', function() {
     };
 });
 
+bioApp.filter('isolateDate', function() {
+    return function(text) {
+      return text == "11/11/1111" ? "Isolate" : text;
+    };
+});
+
+
 bioApp.filter('convertFromSqlDate', function() {
   return function(date) {
     var decomp = date.split('-');
@@ -24,12 +31,13 @@ bioApp.filter('convertFromSqlDate', function() {
   };
 });
 
-bioApp.directive('validFile',function(){
+bioApp.directive('validFile',function() {
   return {
-    require:'ngModel',
-    link:function(scope,el,attrs,ngModel){
-      el.bind('change',function(){
-        scope.$apply(function(){
+    require: 'ngModel',
+    link: function(scope,el,attrs,ngModel){
+      //change event is fired when file is selected
+      el.bind('change', function() {
+        scope.$apply(function() {
           ngModel.$setViewValue(el.val());
           ngModel.$render();
         });
@@ -79,6 +87,32 @@ bioApp.directive('quadrant', function() {
                 disabled: true
             };
 
+            // selection filter code
+            scope.updateStockDate = function(option) {
+                if (option) {
+                    scope.quads[scope.$id].virusStockDate = option.Virus_Stock_harvest_date;
+                    scope.quads[scope.$id].aaChanges = option.Clone_aa_changes;
+                }
+            };
+
+            scope.resetFilters = function() {
+                scope.quads[scope.$id].virusStockDate = '';
+                scope.quads[scope.$id].aaChanges = '';
+                scope.quads[scope.$id].selectedClone = '';
+            }
+
+            // format option string in clone selection
+            scope.formatCloneSelect = function(c) {
+                var baseInfo = c.Clone_name + " | " + c.Clone_aa_changes + " | ";
+
+                if (c.Clone_purify_date == "11/11/1111") {
+                    return baseInfo + "Isolate";
+                } else {
+                    return baseInfo + "purified on " + c.Clone_purify_date;
+                }
+            };
+
+            // concentration range settings
             scope.$watch('quads[$id].numControls', function() {
                 scope.quads[scope.$id].concRange = [];
                 for (var i=0; i<12 - scope.quads[scope.$id].numControls - 1; i++) {
@@ -86,13 +120,6 @@ bioApp.directive('quadrant', function() {
                 }
             });
 
-            scope.updateStockDate = function(option) {
-                if (option) {
-                    scope.quads[scope.$id].virusStockDate = option.harvest_date;
-                }
-            };
-
-            // todo fix naming
             scope.cSelection = {selected: scope.quads[scope.$id] };
 
             var current_q = scope.quads[scope.$id];
@@ -206,5 +233,27 @@ bioApp.directive('checkDate', function() {
                 return true;
             }
         }
+    }
+});
+
+bioApp.directive('modalDialog', function() {
+    return {
+        restrict: "E",
+        scope: {
+            show: "="
+        },
+        replace: true,
+        transclude: true,
+        link: function(scope, element, attrs) {
+            scope.dialogStyle = {};
+            if (attrs.width)
+              scope.dialogStyle.width = attrs.width;
+            if (attrs.height)
+              scope.dialogStyle.height = attrs.height;
+            scope.hideModal = function() {
+              scope.show = false;
+            };
+        },
+        templateUrl: "/static/template/modalDialog.html"
     }
 });

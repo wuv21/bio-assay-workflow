@@ -36,7 +36,7 @@
 					<label for="oldCloneSelect_newStock" class="control-label col-md-3">Select clone/isolate*</label>
 					<div class="col-md-9">
 					    <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control"
-								ng-options="c.name + ' | ' + c.aa_changes + ' | maxiprepped on ' + c.purify_date group by c.type for c in clones
+								ng-options="formatCloneSelect(c) group by c.type for c in clones
 								| filter: {purify_date: stockData.cloneDate}"
 								ng-model="stockData.selectedClone"
 								required>
@@ -156,7 +156,7 @@
 	<div class="container" ng-controller="DrugController">
         <h3>Enter Drug</h2>
 		<alert></alert>
-        
+
 		<form name="drugForm">
 			<p>Fill out form to create a new drug</p>
 			<div class="form-group row">

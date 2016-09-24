@@ -27,6 +27,8 @@
     <script src="{{ url_for('static', filename='js/QuadrantController.js') }}"></script>
     <script src="{{ url_for('static', filename='js/AnalysisController.js') }}"></script>
     <script src="{{ url_for('static', filename='js/OverviewController.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/MultipleController.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/EditControllers.js') }}"></script>
 
     {% endblock %}
 </head>
@@ -48,6 +50,7 @@
                 {% set nav_bar = [
                     ('/', 'index', 'Home'),
                     ('/manage', 'manage', 'Manage'),
+                    ('/edit', 'edit', 'Edit'),
                     ('/enter_assay', 'enter_assay', 'Enter Assay'),
                     ('/overview', 'overview', 'Overview')] -%}
 

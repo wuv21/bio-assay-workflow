@@ -1,8 +1,8 @@
 <div class="quadrant">
     <h3>Quadrant {a $id - 2 a}
         <small>
-            <p ng-class="!quads[$id].disabled ? 'btn-primary' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = false">Enabled</p>
-            <p ng-class="quads[$id].disabled ? 'btn-danger' : 'btn-default'" class="btn btn-sm" ng-click="quads[$id].disabled = true">Disabled</p>
+            <p ng-class="!quads[$id].disabled ? 'btn-primary' : 'btn-default'" class="btn btn-sm" ng-disabled="!quads[$id].disabled" ng-click="quads[$id].disabled = false">Enabled</p>
+            <p ng-class="quads[$id].disabled ? 'btn-danger' : 'btn-default'" class="btn btn-sm" ng-disabled="quads[$id].disabled" ng-click="quads[$id].disabled = true">Disabled</p>
         </small>
     </h3>
 
@@ -12,22 +12,38 @@
             <div class="form-group row">
                 <label for="virusStockDateInp" class="control-label col-md-4">Filter by stock harvest date</label>
                 <div class="col-md-8">
-                    <input type="text" name="virusStockDateInp" id="virusStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">
+                    <input type="text" name="virusStockDateInp" id="virusStockDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="quads[$id].virusStockDate" ng-disabled="quads[$id].disabled">
                 </div>
             </div>
 
             <div class="form-group row">
-        		<label for="oldCloneSelect" class="control-label col-md-4">Select stock</label>
+                <label for="virusStockDateInp" class="control-label col-md-4">Or filter by amino acid changes</label>
+                <div class="col-md-8">
+                    <input type="text" name="virusStockAAInp" id="virusStockAAInp" placeholder="AA changes" class="form-control" ng-model="quads[$id].aaChanges" ng-disabled="quads[$id].disabled">
+                </div>
+            </div>
+
+            <div class="form-group row">
+        		<label for="oldCloneSelect" class="control-label col-md-4">Select stock (grouped by harvest date)</label>
         		<div class="col-md-8">
-        		    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control"
+        		    <select name="oldCloneSelect" id="oldCloneSelect" class="form-control user-select"
         					ng-change="updateStockDate(quads[$id].selectedClone)"
-        					ng-options="c.name + ' | ' + c.aa_changes + ' | purified on ' + c.purify_date group by c.harvest_date for c in stockClones
-        					 | filter: {harvest_date: quads[$id].virusStockDate}
-        					 | orderBy: 'harvest_date'" ng-model="quads[$id].selectedClone"
-                            ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">
+        					ng-options="formatCloneSelect(c) group by c.Virus_Stock_harvest_date for c in stockClones
+        					 | filter: {Clone_aa_changes: quads[$id].aaChanges}
+                             | filter: {Virus_Stock_harvest_date: quads[$id].virusStockDate}
+        					 | orderBy: 'Virus_Stock_harvest_date'" ng-model="quads[$id].selectedClone"
+                            ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled"
+                            size="6">
         			</select>
         		</div>
         	</div>
+
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-8">
+                    <p class="btn btn-warning btn-sm" ng-disabled="quads[$id].disabled" ng-click="resetFilters()">Reset filters</p>
+                </div>
+            </div>
 
         	<h4>Quadrant layout info</h4>
 
@@ -44,7 +60,7 @@
         	<div class="form-group row">
         		<label class="control-label col-md-4"># of control rows</label>
         		<div class="col-md-8">
-        			<input type="number" min=1 max=12 name="" placeholder="Enter # of control rows" class="form-control" ng-model="quads[$id].numControls" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">
+        			<input type="number" min=1 max=10 name="" placeholder="Enter # of control rows" size="2" class="form-control" ng-model="quads[$id].numControls" ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled">
         		</div>
         	</div>
 
@@ -57,7 +73,7 @@
         		</div>
         	</div>
 
-            <span><p class="btn btn-info btn-sm" ng-click="serialFill()">Serially fill in dilutions</p> (After inputting minimum concentration in row 1)</span>
+            <span><p class="btn btn-info btn-sm" ng-disabled="quads[$id].disabled" ng-click="serialFill()">Serially fill in dilutions</p> (After inputting minimum concentration in row 1)</span>
         </div>
 
         <div class="col-xs-3">

@@ -3,3 +3,4 @@
 /venv/
 __pycache__
 .cache
+sql/hiv2_drug_assay.db

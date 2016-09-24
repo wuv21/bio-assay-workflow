@@ -12,8 +12,7 @@
     </div>
 
 	<div class="container" ng-controller="QuadrantController">
-		<p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
-			{a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i>
+		<alert></alert>
 
 		<form name="plateForm">
 			<div class="row">
@@ -28,9 +27,12 @@
                 </div>
 
 				<label for="plateDateInp" class="col-xs-1">Read Date</label>
-				<div class="col-xs-3">
-					<input type="text" name="plateDateInp" id="plateDateInp" class="form-control" placeholder="MM/DD/YYYY (01/02/2016)" ng-model="plate.date" check-date required>
+				<div class="col-xs-2">
+					<input type="text" name="plateDateInp" id="plateDateInp" class="form-control" placeholder="MM/DD/YYYY" ng-model="plate.date" check-date required>
 				</div>
+                <div class="col-xs-1">
+                    <p class="btn btn-sm btn-default" ng-click="todayDate()">Today</p>
+                </div>
 			</div>
 
             <div class="row">
@@ -62,6 +64,15 @@
 			</span>
 
 		</form>
-
 	</div>
+
+    <br>
+
+    <!-- todo work on modal controller -->
+    <div class="container" ng-controller="StockController">
+        <button class="btn btn-info" ng-click='toggleModal()'>Create new stock</button>
+        <modal-dialog show='modalShown' width='750px' height='60%'>
+            <h3>Enter new clone</h3>
+        </modal-dialog>
+    </div>
 {% endblock %}
