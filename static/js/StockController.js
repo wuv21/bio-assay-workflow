@@ -1,4 +1,4 @@
-angular.module('bioApp').controller('StockController', ['$scope', '$http', '$filter', 'baseAddress', function($scope, $http, $filter, baseAddress) {
+angular.module('bioApp').controller('StockController', ['$scope', '$http', 'baseAddress', function($scope, $http, baseAddress) {
     $scope.toggleMenus = {
         newStockOldClone: true,
         newStockNewClone: false,
@@ -90,12 +90,12 @@ angular.module('bioApp').controller('StockController', ['$scope', '$http', '$fil
         if (data.stockDate && data.stockFFU) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
-                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.showAlert(resp.msg, warning=false);
                     $scope.stockData = {};
                     $scope.newNewForm.$setPristine();
                 })
                 .error(function(resp) {
-                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=true);
+                    $scope.showAlert(resp.msg, warning=true);
                 });
         } else {
             $scope.showAlert('Error in creating clone and stock - please ensure data is inputted correctly', warning=true);
@@ -115,12 +115,12 @@ angular.module('bioApp').controller('StockController', ['$scope', '$http', '$fil
         if (data.stockDate && data.stockFFU) {
             $http.post(baseAddress + '/create_clone_and_stock', data)
                 .success(function(resp) {
-                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=false);
+                    $scope.showAlert(resp.msg, warning=false);
                     $scope.stockData = {};
                     $scope.newIsolateForm.$setPristine();
                 })
                 .error(function(resp) {
-                    $scope.showAlert($filter('htmlToText')(resp.msg), warning=true);
+                    $scope.showAlert(resp.msg, warning=true);
                 });
         } else {
             $scope.showAlert('Error in creating isolate and stock - please ensure data is inputted correctly', warning=true);

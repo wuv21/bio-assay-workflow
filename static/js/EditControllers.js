@@ -6,9 +6,22 @@ angular.module('bioApp').controller('EditCloneController', ['$scope', '$http', '
         .success(function(resp) {
             $scope.clone = resp;
 
-            console.log(resp);  
+            console.log(resp);
         })
         .error(function(resp) {
             $scope.showAlert(resp.msg, warning=true);
         })
+
+    $scope.updateClone = function() {
+        var data = $scope.clone;
+        console.log(data);
+
+        $http.post(baseAddress + '/update_clone', data)
+            .success(function(resp) {
+                $scope.showAlert(resp.msg, warning=false);
+            })
+            .error(function(resp) {
+                $scope.showAlert(resp.msg, warning=true);
+            })
+    };
 }]);

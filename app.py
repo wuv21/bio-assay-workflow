@@ -99,19 +99,37 @@ def insert_db(query, args=()):
     conn.commit()
 
 
+# updates db by executing given query and optional args
+def update_db(query, args=()):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(query, args)
+    conn.commit()
+    
+
 # adds a clone into the Clone table if not exists, given arguments
-def add_clone(args):
+def add_clone(args, edit=False):
     try:
-        check = query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
-        if len(check) > 0:
-            return False
+        if not edit:
+            check = query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)
+            if len(check) > 0:
+                return False
 
-        insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
+            insert_db("INSERT INTO Clone(name, aa_changes, type, purify_date) VALUES(?, ?, ?, ?)", args=args)
 
-        return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)[0][0]
+            return query_db("SELECT id FROM Clone WHERE name=? AND aa_changes=? AND type=? AND purify_date=?", args=args)[0][0]
+        else:
+            update_db("UPDATE Clone SET name=?, aa_changes=?, type=?, purify_date=? WHERE id=?", args=args)
 
-    except:
-        raise BadRequest("OH NO...I'm in add_clone")
+            print('here 1')
+            print(query_db("SELECT * FROM Clone WHERE id=34"))
+
+            return True
+
+    except Exception as e:
+        print(e)
+        raise BadRequest(e)
 
 
 # adds a virus stock into the Virus stock if not exists, given arguments
@@ -252,6 +270,7 @@ def edit():
 def edit_clone(clone_id):
     return render_template('edit_clone.html')
 
+
 # GET request to get all plates
 @app.route('/get_all_plates', methods=['GET'])
 def get_all_plates():
@@ -356,6 +375,20 @@ def create_drug():
         return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
+# POST request to update clone
+@app.route('/update_clone', methods=['POST'])
+def udpate_clone():
+    try:
+        data = request.get_json(force=True)
+        clone = [data["name"], data["aa_changes"], data["type"], format_date(data["purify_date"]), data["id"]]
+
+        add_clone(clone, edit=True)
+        return json.dumps({'success': True, 'msg': "Clone ID #" + str(data["id"]) + " updated."}), 200, {'ContentType': 'application/json'}
+
+    except Exception as e:
+        return json.dumps({'success': False, 'msg': str(e)}), 404, {'ContentType': 'application/json'}
+
+
 # POST request to enter a new plate reading
 @app.route('/create_plate', methods=['POST'])
 def create_plate():
@@ -427,6 +460,7 @@ def create_plate():
     else:
         return json.dumps({'success': False,
                            'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
+
 
 # GET request to get all stocks
 @app.route('/get_all_stocks', methods=["GET"])
