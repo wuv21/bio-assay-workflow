@@ -8,9 +8,6 @@ BARS is an open-source and full-stack tool for workflow management with single-c
 - Compare different dose response curves across different experiments
 
 ## Screenshots
-Index page
-![Manage page](screenshots/test.png)
-
 Overview pages
 ![Overview page 1](screenshots/overview_1.png)
 
