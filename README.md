@@ -22,4 +22,4 @@ Analysis pages
 ![Analysis page 2](screenshots/analysis_2.png)
 
 Manage page
-![Manage page](screenshots/test.png)
+![Manage page](screenshots/manage.png)
