@@ -106,7 +106,7 @@ def update_db(query, args=()):
 
     cur.execute(query, args)
     conn.commit()
-    
+
 
 # adds a clone into the Clone table if not exists, given arguments
 def add_clone(args, edit=False):
@@ -427,7 +427,7 @@ def create_plate():
                 for x in raw_conc_range:
                     conc_range.append(x['step'])
 
-                info_picked = [info['selectedClone']['id'],
+                info_picked = [info['selectedClone']['Virus_Stock_id'],
                                info['drug']['id'],
                                pickle.dumps(conc_range),
                                info['numControls'],
