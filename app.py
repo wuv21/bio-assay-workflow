@@ -37,6 +37,7 @@ def get_db():
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = sqlite3.connect(DATABASE)
+        db.isolation_level = None
 
     return db
 
@@ -108,6 +109,10 @@ def update_db(query, args=()):
     conn.commit()
 
 
+def transaction():
+    pass
+
+
 # adds a clone into the Clone table if not exists, given arguments
 def add_clone(args, edit=False):
     try:
@@ -122,13 +127,10 @@ def add_clone(args, edit=False):
         else:
             update_db("UPDATE Clone SET name=?, aa_changes=?, type=?, purify_date=? WHERE id=?", args=args)
 
-            print('here 1')
-            print(query_db("SELECT * FROM Clone WHERE id=34"))
-
             return True
 
     except Exception as e:
-        print(e)
+        print("Error: ", e)
         raise BadRequest(e)
 
 
@@ -158,32 +160,31 @@ def add_drug(args):
 
         return "success"
 
-    except:
-        raise BadRequest("OH NO")
+    except Exception as e:
+        print(e)
+        raise BadRequest(e)
 
 
 # adds a quadrant into the Quadrant table, given arguments
-def add_quadrant(args):
+def add_quadrant(cur, args):
     try:
-        insert_db("INSERT INTO Quadrant(virus_stock, drug, concentration_range, num_controls, q_abs)"
-                  " VALUES(?, ?, ?, ?, ?)", args=args)
+        cur.execute("INSERT INTO Quadrant(virus_stock, drug, concentration_range, num_controls, q_abs)"
+                  " VALUES(?, ?, ?, ?, ?)", args)
 
-        print("entering into quadrant", query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0])
+        print("Entering into quadrant", query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0])
 
         return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
-
 
     except Exception as e:
         raise BadRequest("OH NO...I'm in add_quadrant")
 
 
 # adds a row into the Plate to Quadrant table, given arguments
-def add_plate(args):
+def add_plate(cur, args):
     try:
-        insert_db("INSERT INTO Plate_Reading(name, read_date, letter) VALUES(?, ?, ?)",
-                  args=args)
+        cur.execute("INSERT INTO Plate_Reading(name, read_date, letter) VALUES(?, ?, ?)", args)
 
-        print("entering into plate_reading", query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0])
+        print("Entering into plate_reading", query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0])
 
         return query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0]
 
@@ -194,27 +195,38 @@ def add_plate(args):
 # adds a plate into the Plate_reading table if does not already exist, given arguments
 def add_plate_and_quadrants(plate, quads):
     try:
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("BEGIN")
+
         ids = []
         for q in quads:
             if q:
-                ids.append(add_quadrant(q))
+                ids.append(add_quadrant(cur, q))
             else:
                 ids.append(-1)
 
-        check = query_db("SELECT id FROM Plate_Reading WHERE name=? AND read_date=? AND letter=?", args=plate)
+        check = query_db("SELECT id FROM Plate_Reading WHERE name=? AND read_date=? AND letter=?", plate)
         if len(check) > 0:
             return False
 
-        plate_id = add_plate(plate)
+        plate_id = add_plate(cur, plate)
         for i in range(0, len(ids)):
-            insert_db("INSERT INTO Plate_to_Quadrant(plate_id, quad_location, quad) "
-                      " VALUES(?, ?, ?)", args=[plate_id, i, ids[i]])
-
-        return plate_id
+            cur.execute("INSERT INTO Plate_to_Quadrant(plate_id, quad_location, quad) "
+                      " VALUES(?, ?, ?)", [plate_id, i, ids[i]])
 
     except Exception as e:
-        print(e)
+        cur.execute("ROLLBACK")
+        conn.rollback()
+        print("Rolling back...")
+        print("Error: ", e)
         raise BadRequest(e)
+
+    else:
+        cur.execute("COMMIT")
+        conn.commit()
+        return plate_id
 
 
 # converts date from datetime into MM/DD/YYYY format
@@ -331,7 +343,7 @@ def create_stock():
         return json.dumps({'success': True, 'msg': "Stock created successfully"}), 200, {'ContentType': 'application/json'}
 
     except Exception as e:
-        print(e)
+        print("Error in create_stock(): ", e)
         return json.dumps({'success': False, 'msg': e}), 404, {'ContentType': 'application/json'}
 
 
@@ -394,7 +406,6 @@ def udpate_clone():
 def create_plate():
     data = request.get_json(force=True)
 
-    pp.pprint(data)
     if data:
         try:
             file = data['file'].replace('\r', '').split('\n')
@@ -438,25 +449,29 @@ def create_plate():
 
             except TypeError as e:
                 quadrants.append(None)
-                print(i, e)
-            except KeyError as e :
+                print("Quadrant " + str(i) + " not appended because ", e)
+            except KeyError as e:
                 quadrants.append(None)
-                print(i, e)
+                print("Quadrant " + str(i) + " not appended because ", e)
 
         plate = [data['name'],
                  format_date(data['date']),
                  data['letter']]
 
-        add_result = add_plate_and_quadrants(plate, quadrants)
-        if not add_result:
+        try:
+            add_result = add_plate_and_quadrants(plate, quadrants)
+            if not add_result:
+                return json.dumps({'success': False,
+                                   'msg': "Plate already exists"}), 404, {'ContentType': 'application/json'}
+
+            return json.dumps({'success': True,
+                               'msg': "Successful plate creation",
+                               'next_url': url_for('analysis', plate_id=add_result)}), 200, {'ContentType': 'application/json'}
+        except Exception as e:
+            print("ERROR: ", e)
             return json.dumps({'success': False,
-                               'msg': "Plate already exists"}), 404, {'ContentType': 'application/json'}
+                               'msg': "Error creating plate: " + str(e)}), 404, {'ContentType': 'application/json'}
 
-        # todo fix error handling here
-
-        return json.dumps({'success': True,
-                           'msg': "Successful plate creation",
-                           'next_url': url_for('analysis', plate_id=add_result)}), 200, {'ContentType': 'application/json'}
     else:
         return json.dumps({'success': False,
                            'msg': "Error creating plate"}), 404, {'ContentType': 'application/json'}
@@ -521,8 +536,6 @@ def get_plate(plate_id):
 
             quad = quadrant.Quadrant(*q_data)
 
-            print(quad.calc_c_range())
-
             q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
             q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
             q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
@@ -549,8 +562,6 @@ def get_clone(clone_id):
             raise IndexError()
 
         data_parsed = format_resp(data_raw, ['Clone'])[0]
-
-        print(data_parsed)
         data_parsed['purify_date'] = convert_date(data_parsed['purify_date'])
 
         return json.dumps(data_parsed)
