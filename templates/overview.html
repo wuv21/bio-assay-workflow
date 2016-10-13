@@ -36,7 +36,7 @@
                 <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control" ng-change="showQuadrants(selectedExp)" ng-model="selectedExp"
                 ng-options="exp.name + ' (' + exp.letter + ') assayed on ' + exp.read_date for exp in plates
                 | filter: {read_date: selectedExpDate}
-                | orderBy: 'name'" required></select>
+                | orderBy: 'name'"></select>
 
             </div>
 
@@ -47,6 +47,7 @@
                  multiple></select>
 
                 <button class='btn btn-primary btn-sm' ng-click="addQuads()">Add</button>
+                <button class='btn btn-primary btn-sm' ng-click="addAllQuads()">Add all</button>
             </div>
 
             <div class="col-md-4">
@@ -55,6 +56,7 @@
                 <select name="" id="" class="form-control user-select" size="4" ng-model="addedQuads"  ng-options="q.Clone_aa_changes + ' (' + q.Clone_type + ') - ' + q.Virus_Stock_harvest_date + ' - ' + q.Drug_abbreviation for q in stagedQuads" multiple></select>
 
                 <button class='btn btn-danger btn-sm' ng-click="removeQuads()">Remove</button>
+                <button class='btn btn-danger btn-sm' ng-click="removeAllQuads()">Remove all</button>
             </div>
         </div>
 
