@@ -6,7 +6,6 @@ import datetime
 import quadrant
 from werkzeug.exceptions import BadRequest
 import pickle
-import webbrowser
 
 
 app = Flask(__name__)
