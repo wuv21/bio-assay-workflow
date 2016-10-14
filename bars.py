@@ -15,15 +15,15 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
 # constants
-DATABASE = os.path.join(os.path.curdir, 'sql', 'hiv2_drug_assay.db')
-
+# DATABASE = os.path.join(os.path.curdir, 'sql', 'hiv2_drug_assay.db')
+app.config['DATABASE'] = os.path.join(os.path.curdir, 'sql', 'hiv2_drug_assay.db')
 
 # creates database
 def create_db():
     with open(os.path.join(os.path.curdir, 'sql', 'create_tables.sql'), 'r') as file:
         queries = file.read()
 
-        conn = sqlite3.connect(DATABASE)
+        conn = sqlite3.connect(app.config['DATABASE'])
         cur = conn.cursor()
 
         cur.executescript(queries)
@@ -36,7 +36,7 @@ def create_db():
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(app.config['DATABASE'])
         db.isolation_level = None
 
     return db
