@@ -6,6 +6,7 @@ import datetime
 import quadrant
 from werkzeug.exceptions import BadRequest
 import pickle
+import webbrowser
 
 
 app = Flask(__name__)
@@ -107,10 +108,6 @@ def update_db(query, args=()):
 
     cur.execute(query, args)
     conn.commit()
-
-
-def transaction():
-    pass
 
 
 # adds a clone into the Clone table if not exists, given arguments
