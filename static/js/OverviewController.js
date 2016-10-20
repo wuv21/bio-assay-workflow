@@ -74,7 +74,15 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
         $scope.selectedQuads.forEach(function(x) {$scope.stagedQuads.push(x)});
     };
 
+    $scope.addAllQuads = function() {
+        $scope.availableQuads.forEach(function(x) {$scope.stagedQuads.push(x)});
+    };
+
     $scope.removeQuads = function() {
         _.pullAll($scope.stagedQuads, $scope.addedQuads);
+    };
+
+    $scope.removeAllQuads = function() {
+        $scope.stagedQuads = [];
     };
 }]);
