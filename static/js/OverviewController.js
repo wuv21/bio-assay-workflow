@@ -34,15 +34,21 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
 
     $scope.selectedCharts = {};
     $scope.selectedData = [];
+    $scope.graphVisible = false;
 
     $scope.absData = {id: 0, datasets:[]};
     $scope.stageCharts = function(quad) {
         $scope.selectedCharts[quad.Quadrant_id] = !$scope.selectedCharts[quad.Quadrant_id];
 
         if ($scope.selectedCharts[quad.Quadrant_id]) {
+            $scope.graphVisible = true;
             $scope.selectedData.push(quad);
         } else {
             _.pull($scope.selectedData, quad);
+            if ($scope.selectedData.length == 0) {
+                $scope.selectedData = [];
+                $scope.graphVisible = false;
+            }
         }
 
         $scope.absData = {id: Math.random()*13337, datasets:[]};
@@ -70,6 +76,7 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
     };
 
     $scope.stagedQuads = [];
+
     $scope.addQuads = function() {
         $scope.selectedQuads.forEach(function(x) {$scope.stagedQuads.push(x)});
     };
