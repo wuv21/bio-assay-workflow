@@ -2,7 +2,7 @@ angular.module('bioApp').controller('AnalysisController', ['$scope', '$http', 'b
     var currentURL = window.location.href.split('/')
     var plateID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
 
-    $scope.selQuad = 0;
+    // $scope.selQuad = 0;
     $scope.absData = {
         id: 0,
         datasets: []
@@ -36,10 +36,13 @@ angular.module('bioApp').controller('AnalysisController', ['$scope', '$http', 'b
     $http.get(baseAddress + '/get_plate/' + plateID)
         .success(function(resp) {
             $scope.plate = _.pickBy(resp[0], function(value, key) {return key[0] == "P"});
-            console.log(resp)
-            $scope.quads = _.orderBy(resp, 'Quadrant_id');
 
-            console.log($scope.quads)
+            $scope.quads = [false, false, false, false];
+            _.forEach(resp, function(i) {
+                $scope.quads[i.Quadrant_id] = i;
+            });
+
+            $scope.selQuad = resp[0] ? resp[0].Quadrant_id : 0;
 
             var parsedVals = $scope.quads[$scope.selQuad].Quadrant_q_abs;
 

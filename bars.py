@@ -535,20 +535,19 @@ def get_plate(plate_id):
             q['Clone_purify_date'] = convert_date(q['Clone_purify_date'])
             q['Plate_Reading_read_date'] = convert_date(q['Plate_Reading_read_date'])
             q['Virus_Stock_harvest_date'] = convert_date(q['Virus_Stock_harvest_date'])
-
-            # todo catch zerodevisionerror...aka when user selects wrong quadrant.
             q['Quadrant_q_abs'] = quad.parse_vals()
             q['Quadrant_concentration_range'] = quad.calc_c_range()
             q['regression'] = quad.sigmoidal_regression()
 
-        # todo fix query problems
+        # TODO fix query problems
         return json.dumps(data_parsed)
 
     except ValueError as e:
         return json.dumps(data_parsed)
     except IndexError as e:
         return json.dumps({'success': False, 'msg': "Plate does not exist"}), 404, {'ContentType': 'application/json'}
-
+    except ZeroDivisionError as e:
+        return json.dumps({'success': False, 'msg': "Zero division error in parsing absorbance values. Ensure correct quadrant was selected."}), 404, {'ContentType': 'application/json'}
 
 # GET request to get specific clone
 @app.route('/get_clone/<int:clone_id>', methods=["GET"])
