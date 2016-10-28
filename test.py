@@ -9,6 +9,7 @@ class BARSTestCase(unittest.TestCase):
         self.db_fd, bars.app.config['DATABASE'] = tempfile.mkstemp()
         bars.app.config['TESTING'] = True
         self.app = bars.app.test_client()
+        
         with bars.app.app_context():
             bars.create_db()
 
@@ -46,7 +47,7 @@ class BARSTestCase(unittest.TestCase):
         clone_data = ["TestClone", "WT", "pROD9", bars.format_date('12/03/2016')]
         stock_data = [bars.format_date('12/14/2016'), 1, 50000]
 
-        with bars.app.app_context():
+        with bars.app.app_context() as c:
             bars.add_clone(clone_data)
             bars.add_stock(stock_data)
 

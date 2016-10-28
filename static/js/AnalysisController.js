@@ -39,10 +39,10 @@ angular.module('bioApp').controller('AnalysisController', ['$scope', '$http', 'b
 
             $scope.quads = [false, false, false, false];
             _.forEach(resp, function(i) {
-                $scope.quads[i.Quadrant_id] = i;
+                $scope.quads[i.Plate_to_Quadrant_quad_location] = i;
             });
 
-            $scope.selQuad = resp[0] ? resp[0].Quadrant_id : 0;
+            $scope.selQuad = resp[0] ? resp[0].Plate_to_Quadrant_quad_location : 0;
 
             var parsedVals = $scope.quads[$scope.selQuad].Quadrant_q_abs;
 

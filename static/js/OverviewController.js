@@ -51,6 +51,7 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
             }
         }
 
+        // TODO fix graph redraw...so it doesn't redraw graph every time if existing data remains.
         $scope.absData = {id: Math.random()*13337, datasets:[]};
         $scope.selectedData.forEach(function(d) {
             var parsedVals = d.Quadrant_q_abs;
