@@ -31,13 +31,13 @@
                     <td>{a c.name a}</td>
                     <td>{a c.aa_changes a}</td>
                     <td>{a c.type a}</td>
-                    <td>{a c.purify_date | isolateDate a}</td>
+                    <td>{a c.purify_date == "01/01/0001" ? "-" : c.purify_date | isolateDate a}</td>
                     <td><a ng-href="{a redirect.clone + c.id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
                 </tr>
             </table>
         </div>
 
-        <!-- <div>
+        <div>
             <h3>Stocks</h3>
             <table class="table table-condensed table-hover">
                 <tr>
@@ -56,7 +56,7 @@
                     <td><a ng-href="{a redirect.stock + s.Virus_Stock_id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
                 </tr>
             </table>
-        </div> -->
+        </div>
 
     </div>
 

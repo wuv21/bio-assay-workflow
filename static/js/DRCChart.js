@@ -27,10 +27,6 @@ function DRCChart() {
             var yScale = d3.scale.linear().domain([d3.min(_.concat(regr, [0])) * 1.5, d3.max(_.concat(y, regr)) * 1.05]).range([height - margin.top - margin.bottom, margin.top]);
             var colors = d3.scale.category10();
 
-            // var superscript = "⁰¹²³⁴⁵⁶⁷⁸⁹";
-            //
-            // var formatPower = function(d) { return (d + "").split("").map(function(c) { return superscript[c]; }).join(""); };
-
             var svg = d3.select(this)
                 .selectAll('.DRCChart')
                 .data(data, function(d) {return d.id});
@@ -91,10 +87,23 @@ function DRCChart() {
                 .duration(500)
                 .style('fill', '#404040');
 
+            var superscripts = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+
             function setAxes() {
                 var xAxis = d3.svg.axis().scale(xScale)
                     .orient('bottom')
-                    // .ticks(10, function(d) { return 10 + formatPower(Math.round(Math.log(d) / Math.LN10)); });
+                    .ticks(10, function(d) {
+                        var exponent = Math.round(Math.log(d) / Math.LN10);
+
+                        if (exponent == 0) {
+                            return 1;
+                        } else if (exponent < 0) {
+                            return 10 + "^⁻" + superscripts[Math.abs(exponent)];
+                        } else {
+                            return 10 + "^" + superscripts[exponent];
+                        }
+                    });
+
                 var yAxis = d3.svg.axis().scale(yScale).orient('left');
 
                 xAxisLabel.transition().duration(500).call(xAxis);
@@ -151,7 +160,8 @@ function DRCChart() {
                 })
                 .attr('class', 'line')
                 .attr('d', line)
-                .style('fill', 'none');
+                .style('fill', 'none')
+                .style('stroke', function(d, i) {return colors(i)});
 
 
             var ec50_point = seriesEnter.append('circle')
