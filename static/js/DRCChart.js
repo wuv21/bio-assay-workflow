@@ -98,9 +98,9 @@ function DRCChart() {
                         if (exponent == 0) {
                             return 1;
                         } else if (exponent < 0) {
-                            return 10 + "^⁻" + superscripts[Math.abs(exponent)];
+                            return 10 + "⁻" + superscripts[Math.abs(exponent)];
                         } else {
-                            return 10 + "^" + superscripts[exponent];
+                            return 10 + superscripts[exponent];
                         }
                     });
 
