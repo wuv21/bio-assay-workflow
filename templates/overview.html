@@ -29,7 +29,7 @@
             <div class="col-md-4">
                 <h3>Filter experiments</h3>
                 <p class="caption">Filter by date and select experiment</p>
-                <form>
+                <form name="PlateFilterForm">
                     <input type="text" name="plateReadDateInp" id="plateReadDateInp" placeholder="MM/DD/YYYY (01/02/2016)" class="form-control" ng-model="selectedExpDate" check-date>
                 </form>
                 <br>
@@ -38,6 +38,7 @@
                 | filter: {read_date: selectedExpDate}
                 | orderBy: 'name'"></select>
 
+                <button class='btn btn-primary btn-sm' ng-disabled="PlateFilterForm.$invalid" ng-click="addAllFromDate()">Add all from read date</button>
             </div>
 
             <div class="col-md-4">

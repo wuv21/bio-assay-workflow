@@ -15,18 +15,20 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
 
     $http.get(baseAddress + '/get_all_plate_quadrants')
         .success(function(resp) {
-            $scope.quadrants = resp;
+            var max_plate_id = resp[resp.length - 1].Plate_Reading_id;
+            $scope.quadrants = Array.apply(null, Array(max_plate_id + 1)).map(function () {return []});
+
+            resp.forEach(function(r) {
+                $scope.quadrants[r.Plate_Reading_id].push(r);
+            });
+
             $scope.loadingDisplay = false;
         });
 
     $scope.showQuadrants = function(option) {
         $scope.availableQuads = [];
         if (option && $scope.quadrants) {
-            $scope.quadrants.forEach(function(q) {
-                if (q.Plate_Reading_id == option.id) {
-                    $scope.availableQuads.push(q);
-                }
-            });
+            $scope.availableQuads = $scope.quadrants[option.id]
         }
     };
 
@@ -77,6 +79,15 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
     };
 
     $scope.stagedQuads = [];
+
+    $scope.addAllFromDate = function() {
+        $scope.plates.forEach(function(p) {
+            if (p.read_date == $scope.selectedExpDate) {
+                console.log($scope.quadrants[p.id]);
+                $scope.stagedQuads = $scope.stagedQuads.concat($scope.quadrants[p.id]);
+            }
+        });
+    }
 
     $scope.addQuads = function() {
         $scope.selectedQuads.forEach(function(x) {$scope.stagedQuads.push(x)});
