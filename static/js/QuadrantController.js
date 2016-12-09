@@ -14,6 +14,12 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
         $scope.quadrantVisible[q] = true;
     };
 
+    $scope.orderDate = function(c) {
+        var splitDate = c.Virus_Stock_harvest_date.split('/');
+        
+        return splitDate[2] + splitDate[0] + splitDate[1];
+    }
+
     $scope.getAllData = function() {
         $http.get(baseAddress + '/get_all_stocks')
             .success(function(resp) {
