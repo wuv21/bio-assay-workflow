@@ -48,3 +48,47 @@ CREATE TABLE IF NOT EXISTS Quadrant (
   FOREIGN KEY (virus_stock) REFERENCES Virus_Stock(id),
   FOREIGN KEY (drug) REFERENCES Drug(id)
 );
+
+CREATE TABLE IF NOT EXISTS History (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    affected_table TEXT NOT NULL,
+    type TEXT NOT NULL,
+    affected_id INTEGER NOT NULL,
+    date_entered DATE NOT NULL
+);
+
+CREATE TRIGGER IF NOT EXISTS insert_clone AFTER INSERT ON Clone
+    BEGIN
+    INSERT INTO History (affected_table, type, affected_id, date_entered)
+    values ("Clone",'INSERT',new.id,DATETIME('NOW'));
+END;
+
+CREATE TRIGGER IF NOT EXISTS update_clone AFTER UPDATE ON Clone
+    BEGIN
+    INSERT INTO History (affected_table, type, affected_id, date_entered)
+    values ("Clone",'UPDATE',new.id,DATETIME('NOW'));
+END;
+
+CREATE TRIGGER IF NOT EXISTS insert_clone AFTER INSERT ON Virus_Stock
+    BEGIN
+    INSERT INTO History (affected_table, type, affected_id, date_entered)
+    values ("Virus_Stock",'INSERT',new.id,DATETIME('NOW'));
+END;
+
+CREATE TRIGGER IF NOT EXISTS update_clone AFTER UPDATE ON Virus_Stock
+    BEGIN
+    INSERT INTO History (affected_table, type, affected_id, date_entered)
+    values ("Virus_Stock",'UPDATE',new.id,DATETIME('NOW'));
+END;
+
+CREATE TRIGGER IF NOT EXISTS insert_clone AFTER INSERT ON Quadrant
+    BEGIN
+    INSERT INTO History (affected_table, type, affected_id, date_entered)
+    values ("Quadrant",'INSERT',new.id,DATETIME('NOW'));
+END;
+
+CREATE TRIGGER IF NOT EXISTS update_clone AFTER UPDATE ON Quadrant
+    BEGIN
+    INSERT INTO History (affected_table, type, affected_id, date_entered)
+    values ("Quadrant",'UPDATE',new.id,DATETIME('NOW'));
+END;
