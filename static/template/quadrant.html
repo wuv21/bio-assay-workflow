@@ -31,7 +31,7 @@
         					ng-options="formatCloneSelect(c) group by c.Virus_Stock_harvest_date for c in stockClones
         					 | filter: {Clone_aa_changes: quads[$id].aaChanges}
                              | filter: {Virus_Stock_harvest_date: quads[$id].virusStockDate}
-        					 | orderBy: 'Virus_Stock_harvest_date'" ng-model="quads[$id].selectedClone"
+        					 | orderBy: orderDate : true" ng-model="quads[$id].selectedClone"
                             ng-disabled="quads[$id].disabled" ng-required="!quads[$id].disabled"
                             size="6">
         			</select>
