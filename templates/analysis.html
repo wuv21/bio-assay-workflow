@@ -38,7 +38,7 @@
 				<dl>
   				  <dt>Clone/Isolate: </dt>
 				  <dd>{a quads[selQuad].Clone_aa_changes a}
-                      {a quads[selQuad].Clone_type a} ({a quads[selQuad].Clone_name a})
+                      {a quads[selQuad].Clone_purify_date == "11/11/1111" ? quads[selQuad].Clone_name + " (" + quads[selQuad].Clone_type + ")" : quads[selQuad].Clone_type + " (" + quads[selQuad].Clone_name + ")" a}
                       {a quads[selQuad].Clone_purify_date == "11/11/1111" ? '' : 'purified on ' + quads[selQuad].Clone_purify_date a}
                   </dd>
 

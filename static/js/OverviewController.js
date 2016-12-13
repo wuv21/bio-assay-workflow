@@ -83,7 +83,6 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
     $scope.addAllFromDate = function() {
         $scope.plates.forEach(function(p) {
             if (p.read_date == $scope.selectedExpDate) {
-                console.log($scope.quadrants[p.id]);
                 $scope.stagedQuads = $scope.stagedQuads.concat($scope.quadrants[p.id]);
             }
         });

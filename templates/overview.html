@@ -44,20 +44,22 @@
             <div class="col-md-4">
                 <h3>Add quadrant(s)</h3>
                 <p class="caption">Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to add multiple quadrants.</p>
-                <select name="" id="" class="form-control user-select" size="4" ng-model="selectedQuads" ng-options="q.Clone_aa_changes + ' (' + q.Clone_type + ') - ' + q.Virus_Stock_harvest_date + ' - ' + q.Drug_abbreviation for q in availableQuads"
+                <select name="" id="" class="form-control user-select" size="4" ng-model="selectedQuads"
+                ng-options="q.Clone_aa_changes + ' - ' + (q.Clone_name != 'N/A' ? q.Clone_name : '') + ' (' + q.Clone_type + ') - ' + q.Virus_Stock_harvest_date + ' - ' + q.Drug_abbreviation for q in availableQuads"
                  multiple></select>
 
-                <button class='btn btn-primary btn-sm' ng-click="addQuads()">Add</button>
-                <button class='btn btn-primary btn-sm' ng-click="addAllQuads()">Add all</button>
+                <button class='btn btn-primary btn-sm' ng-disabled="!selectedQuads" ng-click="addQuads()">Add</button>
+                <button class='btn btn-primary btn-sm' ng-disabled="!availableQuads" ng-click="addAllQuads()">Add all</button>
             </div>
 
             <div class="col-md-4">
                 <h3>Chosen quadrant(s)</h3>
                 <p class="caption">Hold <kbd>ctrl</kbd> or <kbd>cmd</kbd> to remove multiple quadrants.</p>
-                <select name="" id="" class="form-control user-select" size="4" ng-model="addedQuads"  ng-options="q.Clone_aa_changes + ' (' + q.Clone_type + ') - ' + q.Virus_Stock_harvest_date + ' - ' + q.Drug_abbreviation for q in stagedQuads" multiple></select>
+                <select name="" id="" class="form-control user-select" size="4" ng-model="addedQuads"
+                ng-options="q.Clone_aa_changes + ' - ' + (q.Clone_name != 'N/A' ? q.Clone_name : '') + ' (' + q.Clone_type + ') - ' + q.Virus_Stock_harvest_date + ' - ' + q.Drug_abbreviation for q in stagedQuads" multiple></select>
 
-                <button class='btn btn-danger btn-sm' ng-click="removeQuads()">Remove</button>
-                <button class='btn btn-danger btn-sm' ng-click="removeAllQuads()">Remove all</button>
+                <button class='btn btn-danger btn-sm' ng-disabled="!addedQuads" ng-click="removeQuads()">Remove</button>
+                <button class='btn btn-danger btn-sm' ng-disabled="stagedQuads.length == 0" ng-click="removeAllQuads()">Remove all</button>
             </div>
         </div>
 
@@ -82,7 +84,7 @@
                     </th>
                     <th>
                         <a href="#" ng-click="sortSettings.type = 'Clone_name'; sortSettings.reverse = !sortSettings.reverse">
-                            Clone name
+                            Clone/Isolate name
                             <i ng-show="sortSettings.type == 'Clone_name' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
                             <i ng-show="sortSettings.type == 'Clone_name' && sortSettings.reverse" class="fa fa-caret-up"></i>
                         </a>
@@ -96,7 +98,7 @@
                     </th>
                     <th>
                         <a href="#" ng-click="sortSettings.type = 'Clone_type'; sortSettings.reverse = !sortSettings.reverse">
-                            Plasmid
+                            Plasmid/type
                             <i ng-show="sortSettings.type == 'Clone_type' && !sortSettings.reverse" class="fa fa-caret-down" aria-hidden="true"></i>
                             <i ng-show="sortSettings.type == 'Clone_type' && sortSettings.reverse" class="fa fa-caret-up"></i>
                         </a>

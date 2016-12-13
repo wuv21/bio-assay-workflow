@@ -156,7 +156,7 @@ bioApp.directive('quadrant', function() {
                     });
 
                 } else {
-                    scope.showAlert('Make sure number of controls, minimum concentration, and increment is filled out', true);
+                    scope.showAlert('Make sure number of controls, minimum concentration, and increment are filled out', true);
                 }
             };
         }
