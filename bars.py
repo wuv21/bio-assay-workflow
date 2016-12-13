@@ -351,13 +351,16 @@ def create_clone_and_stock():
     clone_id = add_clone([data["cName"], data["cAA"], data["cType"], format_date(data["cDate"])])
     isolate_toggle = format_date(data["cDate"]) == datetime.date(1111, 11, 11)
 
-    if not clone_id:
-        if isolate_toggle:
-            return json.dumps({'success': False, 'msg': "Isolate already exists"}), 404, {'ContentType': 'application/json'}
-        else:
-            return json.dumps({'success': False, 'msg': "Clone already exists"}), 404, {'ContentType': 'application/json'}
+    if not clone_id and not isolate_toggle:
+        return json.dumps({'success': False, 'msg': "Clone already exists"}), 404, {'ContentType': 'application/json'}
 
-    stock = add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
+    elif not clone_id and isolate_toggle:
+        clone_id = query_db("SELECT id FROM Clone WHERE name=? AND purify_date=?", args=[data["cName"], format_date(data["cDate"])])[0][0]
+
+        stock = add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
+    else:
+        stock = add_stock([format_date(data['stockDate']), clone_id, data['stockFFU']])
+
     if not stock:
         return json.dumps({'success': False, 'msg': "Stock already exists"}), 404, {'ContentType': 'application/json'}
 
