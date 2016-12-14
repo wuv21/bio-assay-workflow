@@ -103,4 +103,34 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
     $scope.removeAllQuads = function() {
         $scope.stagedQuads = [];
     };
+
+    $scope.selectedRow = [];
+    $scope.groupCalc = {
+        sumEC50: 0,
+        stdEC50: 0,
+        n: 0
+    };
+
+    var roundToFour = function(num) {
+        return +(Math.round(num + "e+4")  + "e-4");
+    }
+
+    $scope.toggleRow = function() {
+        if ($scope.selectedRow[this.$index] == 'selected-row') {
+            $scope.selectedRow[this.$index] = '';
+            $scope.groupCalc.n--;
+
+            if ($scope.groupCalc.n == 0) {
+                $scope.groupCalc.sumEC50 = 0;
+            } else {
+                $scope.groupCalc.sumEC50 -= roundToFour(this.q.regression[2]);
+            }
+        } else {
+            $scope.selectedRow[this.$index] = 'selected-row';
+            $scope.groupCalc.n++;
+            $scope.groupCalc.sumEC50 += roundToFour(this.q.regression[2]);
+        }
+
+        console.log($scope.groupCalc.sumEC50);
+    }
 }]);
