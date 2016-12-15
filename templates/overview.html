@@ -124,7 +124,7 @@
             </thead>
 
             <tbody>
-                <tr ng-repeat="q in stagedQuads | orderBy:sortSettings.type : sortSettings.reverse track by $index">
+                <tr ng-repeat="q in stagedQuads | orderBy:sortSettings.type : sortSettings.reverse track by $index" ng-class="selectedRow[$index]" ng-click="toggleRow()">
                     <td><a ng-href="{a experimentRedirect + q.Plate_Reading_id a}" target="_blank">{a q.Plate_Reading_name + ' (' + q.Plate_Reading_letter + ')' a} </a></td>
                     <td>{a q.Plate_Reading_read_date a}</td>
                     <td>{a q.Clone_name == "N/A" ? "-" : q.Clone_name a}</td>

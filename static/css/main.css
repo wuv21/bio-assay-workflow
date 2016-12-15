@@ -167,6 +167,10 @@ form .ng-dirty.ng-valid {
   font-family: 'arial', 'sans-serif';
 }
 
+.selected-row {
+    background-color: #DDD;    
+}
+
 @media print {
     body * {
         visibility: hidden;
