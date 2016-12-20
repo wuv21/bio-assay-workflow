@@ -116,21 +116,21 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
     }
 
     $scope.toggleRow = function() {
-        if ($scope.selectedRow[this.$index] == 'selected-row') {
-            $scope.selectedRow[this.$index] = '';
-            $scope.groupCalc.n--;
-
-            if ($scope.groupCalc.n == 0) {
-                $scope.groupCalc.sumEC50 = 0;
-            } else {
-                $scope.groupCalc.sumEC50 -= roundToFour(this.q.regression[2]);
-            }
-        } else {
-            $scope.selectedRow[this.$index] = 'selected-row';
-            $scope.groupCalc.n++;
-            $scope.groupCalc.sumEC50 += roundToFour(this.q.regression[2]);
-        }
-
-        console.log($scope.groupCalc.sumEC50);
+        // if ($scope.selectedRow[this.$index] == 'selected-row') {
+        //     $scope.selectedRow[this.$index] = '';
+        //     $scope.groupCalc.n--;
+        //
+        //     if ($scope.groupCalc.n == 0) {
+        //         $scope.groupCalc.sumEC50 = 0;
+        //     } else {
+        //         $scope.groupCalc.sumEC50 -= roundToFour(this.q.regression[2]);
+        //     }
+        // } else {
+        //     $scope.selectedRow[this.$index] = 'selected-row';
+        //     $scope.groupCalc.n++;
+        //     $scope.groupCalc.sumEC50 += roundToFour(this.q.regression[2]);
+        // }
+        //
+        // console.log($scope.groupCalc.sumEC50);
     }
 }]);

@@ -105,8 +105,8 @@ CREATE TRIGGER IF NOT EXISTS update_q AFTER UPDATE ON Quadrant
     values ("Quadrant",'UPDATE',new.id,DATETIME('NOW'));
 END;
 
-CREATE TRIGGER IF NOT EXISTS delete_q AFTER DELETE ON Quadrant
-    BEGIN
-    INSERT INTO History (affected_table, type, affected_id, date_entered)
-    values ("Quadrant",'DELETE',new.id,DATETIME('NOW'));
-END;
+-- CREATE TRIGGER IF NOT EXISTS delete_q AFTER DELETE ON Quadrant
+--     BEGIN
+--     INSERT INTO History (affected_table, type, affected_id, date_entered)
+--     values ("Quadrant",'DELETE',old.id,DATETIME('NOW'));
+-- END;

@@ -34,8 +34,11 @@ y = np.array(y0 + y1, dtype='float')
 
 # log the x values to run regression
 popt, pcov = scipy.optimize.curve_fit(sigmoid, np.log10(x), y)
+perr = np.sqrt(np.diag(pcov))
 
-print(popt)
+print(np.diag(pcov))
+print(pcov)
+print(perr)
 
 x_curve = np.linspace(0.0001, 100000, 1000000)
 y_curve = sigmoid(np.log10(x_curve), *popt)
