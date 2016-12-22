@@ -7,14 +7,32 @@
     <div class="container-fluid heading">
         <div class="container">
             <h2>Edit</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Edit existing data. Click on the buttons below to see previously entered data and click edit icon to update fields.</p>
         </div>
     </div>
     <div class="container" ng-controller="MultipleController">
         <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
         {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
 
-        <div>
+        <div class="row text-center">
+            <div class="col-xs-3">
+                <p class="btn" ng-class="displaySections.clones ? 'btn-primary' : 'btn-default'" ng-click="displaySections.clones = !displaySections.clones">Clones/Isolates</p>
+            </div>
+
+            <div class="col-xs-3">
+                <p class="btn" ng-class="displaySections.stocks ? 'btn-primary' : 'btn-default'" ng-click="displaySections.stocks = !displaySections.stocks">Stocks</p>
+            </div>
+
+            <div class="col-xs-3">
+                <p class="btn btn-default disabled">Quadrants</p>
+            </div>
+
+            <div class="col-xs-3">
+                <p class="btn btn-default disabled">Plate readings</p>
+            </div>
+        </div>
+
+        <div ng-show="displaySections.clones">
             <h3>Clones</h3>
             <table class="table table-condensed table-hover">
                 <tr>
@@ -37,7 +55,7 @@
             </table>
         </div>
 
-        <div>
+        <div ng-show="displaySections.stocks">
             <h3>Stocks</h3>
             <table class="table table-condensed table-hover">
                 <tr>

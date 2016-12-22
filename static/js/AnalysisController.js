@@ -18,7 +18,7 @@ angular.module('bioApp').controller('AnalysisController', ['$scope', '$http', 'b
                 bottom: $scope.quads[$scope.selQuad].regression[1],
                 top: $scope.quads[$scope.selQuad].regression[0],
                 ec: $scope.quads[$scope.selQuad].regression[2],
-                name: $scope.quads[$scope.selQuad].Clone_aa_changes + '(' + $scope.quads[$scope.selQuad].Clone_type + ')'
+                name: $scope.quads[$scope.selQuad].Clone_aa_changes + ' (' + $scope.quads[$scope.selQuad].Clone_type + ')'
             };
 
             for (var i=0; i<parsedVals.length; i++) {

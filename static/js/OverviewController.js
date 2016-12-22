@@ -63,7 +63,7 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
                 bottom: d.regression[1],
                 top: d.regression[0],
                 ec: d.regression[2],
-                name: d.Clone_aa_changes + ' (' + d.Clone_type + ')'
+                name: d.Clone_name + ' ' + d.Clone_aa_changes + ' (' + d.Clone_type + ')'
             };
 
             for (var i=0; i<parsedVals.length; i++) {

@@ -126,7 +126,6 @@ def add_clone(args, edit=False):
             return True
 
     except Exception as e:
-        print("Error: ", e)
         raise BadRequest(e)
 
 
@@ -162,7 +161,6 @@ def add_drug(args):
         return "success"
 
     except Exception as e:
-        print(e)
         raise BadRequest(e)
 
 
@@ -177,7 +175,7 @@ def add_quadrant(cur, args):
         return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
 
     except Exception as e:
-        raise BadRequest("OH NO...I'm in add_quadrant")
+        raise BadRequest(e)
 
 
 # adds a row into the Plate to Quadrant table, given arguments
@@ -190,7 +188,7 @@ def add_plate(cur, args):
         return query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0]
 
     except Exception as e:
-        raise BadRequest("OH NO...I'm in add_plate")
+        raise BadRequest(e)
 
 
 # adds a plate into the Plate_reading table if does not already exist, given arguments
@@ -566,6 +564,8 @@ def get_plate(plate_id):
             q['Quadrant_q_abs'] = quad.parse_vals()
             q['Quadrant_concentration_range'] = quad.calc_c_range()
             q['regression'] = quad.sigmoidal_regression()
+
+            quad.calc_r_sq()
 
         # TODO fix query problems
         return json.dumps(data_parsed)
