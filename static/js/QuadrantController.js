@@ -20,15 +20,21 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
                     $scope.plate.date = resp[0].Plate_Reading_read_date;
                     $scope.plate.letter = resp[0].Plate_Reading_letter;
 
-                    resp.forEach(function(q, index) {
-                        q_id = q.Plate_to_Quadrant_quad_location + 2;
+                    console.log(resp);
 
-                        console.log(q_id);
+                    $scope.$evalAsync(function() {
+                        resp.forEach(function(q, index) {
+                            console.log($scope.quads);
+                            var q_id = (q.Plate_to_Quadrant_quad_location + 3).toString();
 
-                        // TODO run this code AFTER quadrant directive has loaded
-                        // $scope.quads[q_id].disabled = false;
+                            $scope.quads[q_id].disabled = false;
+                            // $scope.quads[q_id].inc = false; TODO recognize settings
+                            $scope.quads[q_id].numControls = q.Quadrant_num_controls;
+                            // $scope.quads[q_id].concRange = q.Quadrant_concentration_range;
 
-                    })
+
+                        });
+                    });
                 }
             });
     }
