@@ -1,4 +1,7 @@
 angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'baseAddress', function($scope, $http, baseAddress) {
+    var currentURL = window.location.href.split('/')
+    var plateID = !isNaN(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
+
     $scope.plate = {
         name: "",
         date: "",
@@ -8,6 +11,27 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
 
     // quadrant visibility
     $scope.quadrantVisible = [true, false, false, false];
+
+    if (plateID >= 1) {
+        $http.get(baseAddress + '/get_plate/' + plateID)
+            .success(function(resp) {
+                if (resp.length > 0) {
+                    $scope.plate.name = resp[0].Plate_Reading_name;
+                    $scope.plate.date = resp[0].Plate_Reading_read_date;
+                    $scope.plate.letter = resp[0].Plate_Reading_letter;
+
+                    resp.forEach(function(q, index) {
+                        q_id = q.Plate_to_Quadrant_quad_location + 2;
+
+                        console.log(q_id);
+
+                        // TODO run this code AFTER quadrant directive has loaded
+                        // $scope.quads[q_id].disabled = false;
+
+                    })
+                }
+            });
+    }
 
     $scope.selectQuadrant = function(q) {
         $scope.quadrantVisible = [false, false, false, false];

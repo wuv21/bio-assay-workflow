@@ -1,6 +1,6 @@
 angular.module('bioApp').controller('EditCloneController', ['$scope', '$http', 'baseAddress', function($scope, $http, baseAddress) {
     var currentURL = window.location.href.split('/')
-    var cloneID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
+    var cloneID = !isNaN(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
 
     $http.get(baseAddress + '/get_clone/' + cloneID)
         .success(function(resp) {
@@ -28,7 +28,7 @@ angular.module('bioApp').controller('EditCloneController', ['$scope', '$http', '
 
 angular.module('bioApp').controller('EditStockController', ['$scope', '$http', 'baseAddress', function($scope, $http, baseAddress) {
     var currentURL = window.location.href.split('/')
-    var stockID = _.isNumber(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
+    var stockID = !isNaN(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
 
     $http.get(baseAddress + '/get_stock/' + stockID)
         .success(function(resp) {

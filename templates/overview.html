@@ -34,7 +34,7 @@
                 </form>
                 <br>
                 <select name="oldCloneSelect_newStock" id="oldCloneSelect_newStock" class="form-control" ng-change="showQuadrants(selectedExp)" ng-model="selectedExp"
-                ng-options="exp.name + ' (' + exp.letter + ') assayed on ' + exp.read_date for exp in plates
+                ng-options="'Plate ' + exp.letter + ' read on ' + exp.read_date group by exp.name for exp in plates
                 | filter: {read_date: selectedExpDate}
                 | orderBy: 'name'"></select>
 

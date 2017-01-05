@@ -249,8 +249,11 @@ def manage():
 
 # enter_assay.html
 # form to enter 96 well assay results
-@app.route('/enter_assay')
-def enter_assay():
+@app.route('/enter_assay', defaults={'plate_id': None})
+@app.route('/enter_assay/<int:plate_id>')
+def enter_assay(plate_id):
+    # TODO fetch plate data and parse it into easy JSON format for angular to use
+    
     return render_template('enter_assay.html')
 
 
@@ -564,8 +567,6 @@ def get_plate(plate_id):
             q['Quadrant_q_abs'] = quad.parse_vals()
             q['Quadrant_concentration_range'] = quad.calc_c_range()
             q['regression'] = quad.sigmoidal_regression()
-
-            quad.calc_r_sq()
 
         # TODO fix query problems
         return json.dumps(data_parsed)
