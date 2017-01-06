@@ -14,6 +14,10 @@
 	<div class="container" ng-controller="QuadrantController">
 		<alert></alert>
 
+        <p class='alert alert-info' ng-show="editToggle">
+            Note: Currently in edit mode for this plate.
+        </p>
+
 		<form name="plateForm">
 			<div class="row">
 				<label for="plateNameInp" class="col-xs-1">Experiment name</label>

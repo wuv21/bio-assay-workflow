@@ -1,6 +1,10 @@
 angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'baseAddress', function($scope, $http, baseAddress) {
     var currentURL = window.location.href.split('/')
     var plateID = !isNaN(Number(currentURL[currentURL.length - 1])) ? currentURL[currentURL.length - 1] : -1;
+    $scope.editToggle = plateID >= 1;
+    console.log($scope.editToggle);
+
+    $scope.test = true;
 
     $scope.plate = {
         name: "",
@@ -62,7 +66,7 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
         return lastDigit == 4;
     };
 
-    if (plateID >= 1) {
+    if ($scope.editToggle) {
         $http.get(baseAddress + '/get_plate/' + plateID)
             .success(function(resp) {
                 if (resp.length > 0) {

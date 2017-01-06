@@ -15,20 +15,16 @@
         {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
 
         <div class="row text-center">
-            <div class="col-xs-3">
+            <div class="col-xs-4">
                 <p class="btn" ng-class="displaySections.clones ? 'btn-primary' : 'btn-default'" ng-click="displaySections.clones = !displaySections.clones">Clones/Isolates</p>
             </div>
 
-            <div class="col-xs-3">
+            <div class="col-xs-4">
                 <p class="btn" ng-class="displaySections.stocks ? 'btn-primary' : 'btn-default'" ng-click="displaySections.stocks = !displaySections.stocks">Stocks</p>
             </div>
 
-            <div class="col-xs-3">
-                <p class="btn btn-default disabled">Quadrants</p>
-            </div>
-
-            <div class="col-xs-3">
-                <p class="btn btn-default disabled">Plate readings</p>
+            <div class="col-xs-4">
+                <p class="btn" ng-class="displaySections.plates ? 'btn-primary' : 'btn-default'" ng-click="displaySections.plates = !displaySections.plates">Plate Readings</p>
             </div>
         </div>
 
@@ -72,6 +68,27 @@
                     <td>{a s.Clone_name + " | " + s.Clone_aa_changes + " | " + s.Clone_type a}</td>
                     <td>{a s.Virus_Stock_ffu_per_ml a}</td>
                     <td><a ng-href="{a redirect.stock + s.Virus_Stock_id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+                </tr>
+            </table>
+        </div>
+
+        <div ng-show="displaySections.plates">
+            <h3>Plate readings</h3>
+            <table class="table table-condensed table-hover">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Letter</th>
+                    <th>Read date</th>
+                    <th>Edit</th>
+                </tr>
+
+                <tr ng-repeat="p in plates">
+                    <td>{a p.id a}</td>
+                    <td>{a p.name a}</td>
+                    <td>{a p.letter a}</td>
+                    <td>{a p.read_date a}</td>
+                    <td><a ng-href="{a redirect.plate + p.id a}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
                 </tr>
             </table>
         </div>

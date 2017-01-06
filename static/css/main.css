@@ -74,7 +74,7 @@ form .ng-dirty.ng-valid {
     padding-right: 1em;
 }
 
-.alert i {
+.user-alert i {
     float: right;
     cursor: pointer;
 }
@@ -168,7 +168,7 @@ form .ng-dirty.ng-valid {
 }
 
 .selected-row {
-    background-color: #DDD;    
+    background-color: #DDD;
 }
 
 @media print {
