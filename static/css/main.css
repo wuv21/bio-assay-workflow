@@ -74,7 +74,7 @@ form .ng-dirty.ng-valid {
     padding-right: 1em;
 }
 
-.user-alert i {
+.alert i {
     float: right;
     cursor: pointer;
 }
