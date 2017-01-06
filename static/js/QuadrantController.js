@@ -12,6 +12,49 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
     // quadrant visibility
     $scope.quadrantVisible = [true, false, false, false];
 
+    $scope.selectQuadrant = function(q) {
+        $scope.quadrantVisible = [false, false, false, false];
+        $scope.quadrantVisible[q] = true;
+    };
+
+    $scope.orderDate = function(c) {
+        var splitDate = c.Virus_Stock_harvest_date.split('/');
+
+        return splitDate[2] + splitDate[0] + splitDate[1];
+    }
+
+    $scope.getAllData = function() {
+        $http.get(baseAddress + '/get_all_stocks')
+            .success(function(resp) {
+                $scope.stockClones = resp;
+                $scope.stockIndex = [];
+                $scope.stockClones.forEach(function(e, i) {
+                    $scope.stockIndex[e.Virus_Stock_id] = i;
+                });
+        });
+
+        // $http.get(baseAddress + '/get_all_clones')
+        //     .success(function(resp) {
+        //         $scope.clones = resp;
+        //     });
+
+        $http.get(baseAddress + '/get_all_drugs')
+            .success(function(resp) {
+                $scope.allDrugs = resp;
+                $scope.drugIndex = [];
+                $scope.allDrugs.forEach(function(e, i) {
+                    $scope.drugIndex[e.id] = i;
+                });
+            });
+    };
+
+    $scope.refreshData = function() {
+        $scope.getAllData();
+        $scope.showAlert('Virus stocks and drugs updated', warning=false);
+    };
+
+    $scope.getAllData();
+
     var checkHalfLog = function(n) {
         var nString = n.toString();
         var lastDigit = parseInt(nString[nString.length - 1]);
@@ -31,7 +74,6 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
 
                     $scope.$evalAsync(function() {
                         resp.forEach(function(q, index) {
-                            console.log($scope.quads);
                             var q_id = (q.Plate_to_Quadrant_quad_location + 3).toString();
 
                             $scope.quads[q_id].disabled = false;
@@ -44,47 +86,15 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
                                 $scope.quads[q_id].concRange[i].step = c;
                             });
 
-
+                            $scope.quads[q_id].selectedClone = $scope.stockClones[$scope.stockIndex[q.Virus_Stock_id]];
+                            $scope.quads[q_id].drug = $scope.allDrugs[$scope.drugIndex[q.Drug_id]];
                         });
                     });
+
+                    console.log($scope.stockClones);
                 }
             });
     }
-
-    $scope.selectQuadrant = function(q) {
-        $scope.quadrantVisible = [false, false, false, false];
-        $scope.quadrantVisible[q] = true;
-    };
-
-    $scope.orderDate = function(c) {
-        var splitDate = c.Virus_Stock_harvest_date.split('/');
-
-        return splitDate[2] + splitDate[0] + splitDate[1];
-    }
-
-    $scope.getAllData = function() {
-        $http.get(baseAddress + '/get_all_stocks')
-            .success(function(resp) {
-                $scope.stockClones = resp;
-        });
-
-        $http.get(baseAddress + '/get_all_clones')
-            .success(function(resp) {
-                $scope.clones = resp;
-            });
-
-        $http.get(baseAddress + '/get_all_drugs')
-            .success(function(resp) {
-                $scope.allDrugs = resp;
-            });
-    };
-
-    $scope.refreshData = function() {
-        $scope.getAllData();
-        $scope.showAlert('Virus stocks and drugs updated', warning=false);
-    };
-
-    $scope.getAllData();
 
     $scope.todayDate = function() {
         var date = new Date();
