@@ -1,6 +1,7 @@
 import numpy as np
 # import matplotlib.pyplot as plt
 import scipy.optimize
+import scipy.stats
 
 def sigmoid(x, top, bottom, ec):
 	# todo check param ordering...
@@ -41,7 +42,7 @@ popt, pcov = scipy.optimize.curve_fit(sigmoid, np.log10(x), y)
 perr = np.sqrt(np.diag(pcov))
 
 print(popt)
-print(np.diag(pcov))
+print(perr)
 print(pcov)
 
 x_curve = np.linspace(0.0001, 100000, 1000000)
@@ -55,6 +56,7 @@ sse = np.sum(np.power(y - y_pre, 2))
 ssto = np.sum(np.power(y - y_mean, 2))
 
 print("ssr/ssto:", ssr/ssto)
+
 
 # Plot the results
 # plt.plot(conc, y_mean, '.', x_curve, y_curve, '-')

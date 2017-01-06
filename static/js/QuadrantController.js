@@ -12,6 +12,13 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
     // quadrant visibility
     $scope.quadrantVisible = [true, false, false, false];
 
+    var checkHalfLog = function(n) {
+        var nString = n.toString();
+        var lastDigit = parseInt(nString[nString.length - 1]);
+
+        return lastDigit == 4;
+    };
+
     if (plateID >= 1) {
         $http.get(baseAddress + '/get_plate/' + plateID)
             .success(function(resp) {
@@ -28,9 +35,14 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
                             var q_id = (q.Plate_to_Quadrant_quad_location + 3).toString();
 
                             $scope.quads[q_id].disabled = false;
-                            // $scope.quads[q_id].inc = false; TODO recognize settings
+
+                            $scope.quads[q_id].inc = checkHalfLog(q.Quadrant_concentration_range[0]) || checkHalfLog(q.Quadrant_concentration_range[1]) ? 'halfLog10' : 'log10';
+
                             $scope.quads[q_id].numControls = q.Quadrant_num_controls;
-                            // $scope.quads[q_id].concRange = q.Quadrant_concentration_range;
+
+                            q.Quadrant_concentration_range.forEach(function(c, i) {
+                                $scope.quads[q_id].concRange[i].step = c;
+                            });
 
 
                         });
