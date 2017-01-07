@@ -116,6 +116,7 @@ angular.module('bioApp').controller('QuadrantController', ['$scope', '$http', 'b
     $scope.submitPlate = function() {
         $scope.plate.quads = $scope.quads;
         console.log($scope.plate);
+        $scope.plate.edit = $scope.editToggle;
 
         $http.post(baseAddress + '/create_plate', $scope.plate)
             .success(function(resp) {
