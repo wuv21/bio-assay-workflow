@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %} - Edit stock {% endblock %}
+{% set active_page = "edit" %}
+
+{% block content %}
+    <div class="container-fluid heading">
+        <div class="container">
+            <h2>Edit stock</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+    </div>
+
+	<div class="container" ng-controller="EditStockController">
+        <alert></alert>
+
+        <form name="editStockForm">
+            <div class="form-group row">
+                <label for="cloneNameInp" class="control-label col-md-3">Clone/Isolate id*</label>
+                <div class="col-md-9">
+                    <input type="number" min=0 name="cloneNameInp" id="cloneNameInp" placeholder="Enter clone/isolate ID" class="form-control" ng-model="stock.clone" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="newFFUInp" class="control-label col-md-3">Stock FFU/ml*</label>
+                <div class="col-md-9">
+                    <input type="number" min=0 name="newFFUInp" id="newFFUInp" placeholder="Enter FFU/ml" class="form-control" ng-model="stock.ffu_per_ml" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cloneAAInp" class="control-label col-md-3">Harvest date*</label>
+                <div class="col-md-9">
+                    <input type="text" name="cloneAAInp" id="cloneAAInp" placeholder="MM/DD/YYYY" class="form-control" ng-model="stock.harvest_date" checkDate required>
+                </div>
+            </div>
+
+            <p>* required</p>
+            <p class="btn btn-primary" ng-disabled="editStockForm.$invalid" ng-click="updateStock()">Update stock</button>
+        </form>
+    </div>
+{% endblock %}

@@ -168,7 +168,7 @@ form .ng-dirty.ng-valid {
 }
 
 .selected-row {
-    background-color: #DDD;    
+    background-color: #DDD;
 }
 
 @media print {

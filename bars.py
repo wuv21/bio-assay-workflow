@@ -126,20 +126,24 @@ def add_clone(args, edit=False):
             return True
 
     except Exception as e:
-        print("Error: ", e)
         raise BadRequest(e)
 
 
 # adds a virus stock into the Virus stock if not exists, given arguments
-def add_stock(args):
+def add_stock(args, edit=False):
     try:
-        check = query_db("SELECT id FROM Virus_Stock WHERE harvest_date=? AND clone=?", args=args[0:len(args) - 1])
-        if len(check) > 0:
-            return False
+        if not edit:
+            check = query_db("SELECT id FROM Virus_Stock WHERE harvest_date=? AND clone=?", args=args[0:len(args) - 1])
+            if len(check) > 0:
+                return False
 
-        insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
+            insert_db("INSERT INTO Virus_Stock(harvest_date, clone, ffu_per_ml) VALUES(?, ?, ?)", args=args)
 
-        return "success"
+            return True
+        else:
+            update_db("UPDATE Virus_Stock SET harvest_date=?, clone=?, ffu_per_ml=? WHERE id=?", args=args)
+
+            return True
 
     except:
         raise BadRequest("OH NO")
@@ -157,7 +161,6 @@ def add_drug(args):
         return "success"
 
     except Exception as e:
-        print(e)
         raise BadRequest(e)
 
 
@@ -172,7 +175,7 @@ def add_quadrant(cur, args):
         return query_db("SELECT id FROM Quadrant ORDER BY id DESC LIMIT 1;")[0][0]
 
     except Exception as e:
-        raise BadRequest("OH NO...I'm in add_quadrant")
+        raise BadRequest(e)
 
 
 # adds a row into the Plate to Quadrant table, given arguments
@@ -185,7 +188,7 @@ def add_plate(cur, args):
         return query_db("SELECT id FROM Plate_Reading ORDER BY id DESC LIMIT 1;")[0][0]
 
     except Exception as e:
-        raise BadRequest("OH NO...I'm in add_plate")
+        raise BadRequest(e)
 
 
 # adds a plate into the Plate_reading table if does not already exist, given arguments
@@ -246,8 +249,11 @@ def manage():
 
 # enter_assay.html
 # form to enter 96 well assay results
-@app.route('/enter_assay')
-def enter_assay():
+@app.route('/enter_assay', defaults={'plate_id': None})
+@app.route('/enter_assay/<int:plate_id>')
+def enter_assay(plate_id):
+    # TODO fetch plate data and parse it into easy JSON format for angular to use
+    
     return render_template('enter_assay.html')
 
 
@@ -277,6 +283,12 @@ def edit():
 @app.route('/edit_clone/<int:clone_id>')
 def edit_clone(clone_id):
     return render_template('edit_clone.html')
+
+
+# edit_clone.html
+@app.route('/edit_stock/<int:stock_id>')
+def edit_stock(stock_id):
+    return render_template('edit_stock.html')
 
 
 # GET request to get all plates
@@ -395,6 +407,20 @@ def udpate_clone():
 
         add_clone(clone, edit=True)
         return json.dumps({'success': True, 'msg': "Clone ID #" + str(data["id"]) + " updated."}), 200, {'ContentType': 'application/json'}
+
+    except Exception as e:
+        return json.dumps({'success': False, 'msg': str(e)}), 404, {'ContentType': 'application/json'}
+
+
+# POST request to update clone
+@app.route('/update_stock', methods=['POST'])
+def update_stock():
+    try:
+        data = request.get_json(force=True)
+        stock = [format_date(data["harvest_date"]), data["clone"], data["ffu_per_ml"], data["id"]]
+
+        add_stock(stock, edit=True)
+        return json.dumps({'success': True, 'msg': "Stock ID #" + str(data["id"]) + " updated."}), 200, {'ContentType': 'application/json'}
 
     except Exception as e:
         return json.dumps({'success': False, 'msg': str(e)}), 404, {'ContentType': 'application/json'}
@@ -570,6 +596,26 @@ def get_clone(clone_id):
         return json.dumps(data_parsed)
     except IndexError as e:
         return json.dumps({'success': False, 'msg': "Clone does not exist"}), 404, {'ContentType': 'application/json'}
+
+
+# GET request to get specific stock
+@app.route('/get_stock/<int:stock_id>', methods=["GET"])
+def get_stock(stock_id):
+    try:
+        data_raw = query_db("SELECT * FROM Virus_Stock WHERE id=?", args=[stock_id])
+
+        if len(data_raw) == 0:
+            raise IndexError()
+
+        data_parsed = format_resp(data_raw, ['Virus_Stock'])[0]
+        data_parsed['harvest_date'] = convert_date(data_parsed['harvest_date'])
+
+        return json.dumps(data_parsed)
+
+    except ValueError as e:
+        return json.dumps(data_parsed)
+    except IndexError as e:
+        return json.dumps({'success': False, 'msg': "Virus stock does not exist"}), 404, {'ContentType': 'application/json'}
 
 # initializes app
 if __name__ == "__main__":

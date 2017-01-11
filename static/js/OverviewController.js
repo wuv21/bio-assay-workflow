@@ -63,7 +63,7 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
                 bottom: d.regression[1],
                 top: d.regression[0],
                 ec: d.regression[2],
-                name: d.Clone_aa_changes + ' (' + d.Clone_type + ')'
+                name: d.Clone_name + ' ' + d.Clone_aa_changes + ' (' + d.Clone_type + ')'
             };
 
             for (var i=0; i<parsedVals.length; i++) {
@@ -116,21 +116,21 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
     }
 
     $scope.toggleRow = function() {
-        if ($scope.selectedRow[this.$index] == 'selected-row') {
-            $scope.selectedRow[this.$index] = '';
-            $scope.groupCalc.n--;
-
-            if ($scope.groupCalc.n == 0) {
-                $scope.groupCalc.sumEC50 = 0;
-            } else {
-                $scope.groupCalc.sumEC50 -= roundToFour(this.q.regression[2]);
-            }
-        } else {
-            $scope.selectedRow[this.$index] = 'selected-row';
-            $scope.groupCalc.n++;
-            $scope.groupCalc.sumEC50 += roundToFour(this.q.regression[2]);
-        }
-
-        console.log($scope.groupCalc.sumEC50);
+        // if ($scope.selectedRow[this.$index] == 'selected-row') {
+        //     $scope.selectedRow[this.$index] = '';
+        //     $scope.groupCalc.n--;
+        //
+        //     if ($scope.groupCalc.n == 0) {
+        //         $scope.groupCalc.sumEC50 = 0;
+        //     } else {
+        //         $scope.groupCalc.sumEC50 -= roundToFour(this.q.regression[2]);
+        //     }
+        // } else {
+        //     $scope.selectedRow[this.$index] = 'selected-row';
+        //     $scope.groupCalc.n++;
+        //     $scope.groupCalc.sumEC50 += roundToFour(this.q.regression[2]);
+        // }
+        //
+        // console.log($scope.groupCalc.sumEC50);
     }
 }]);

@@ -64,7 +64,7 @@ function DRCChart() {
                 .append('g')
                 .attr('class', 'legend')
                 .attr('transform', function(d, i) {
-                    return 'translate(' + (width - 6 * margin.right) + ',' + (margin.top + (i) * 20) + ')';
+                    return 'translate(' + (width - 10 * margin.right) + ',' + (margin.top + (i) * 20) + ')';
                 });
 
             legendG.append('rect')
@@ -120,7 +120,7 @@ function DRCChart() {
                 .x(function(i) {return i.x})
                 .y(function(i) {return i.y});
 
-            var series = svgEnter.selectAll('.series').data(data[0].datasets, function(d) {return d.id});
+            var series = svgEnter.selectAll('.series').data(data[0].datasets, function(d) {console.log(d); return d.id});
 
             var seriesEnter = series.enter()
                 .append('g')

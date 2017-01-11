@@ -69,11 +69,11 @@ CREATE TRIGGER IF NOT EXISTS update_clone AFTER UPDATE ON Clone
     values ("Clone",'UPDATE',new.id,DATETIME('NOW'));
 END;
 
-CREATE TRIGGER IF NOT EXISTS delete_clone AFTER DELETE ON Clone
-    BEGIN
-    INSERT INTO History (affected_table, type, affected_id, date_entered)
-    values ("Clone",'DELETE',new.id,DATETIME('NOW'));
-END;
+-- CREATE TRIGGER IF NOT EXISTS delete_clone AFTER DELETE ON Clone
+--     BEGIN
+--     INSERT INTO History (affected_table, type, affected_id, date_entered)
+--     values ("Clone",'DELETE',new.id,DATETIME('NOW'));
+-- END;
 
 CREATE TRIGGER IF NOT EXISTS insert_vs AFTER INSERT ON Virus_Stock
     BEGIN
@@ -87,11 +87,11 @@ CREATE TRIGGER IF NOT EXISTS update_vs AFTER UPDATE ON Virus_Stock
     values ("Virus_Stock",'UPDATE',new.id,DATETIME('NOW'));
 END;
 
-CREATE TRIGGER IF NOT EXISTS delete_vs AFTER DELETE ON Virus_Stock
-    BEGIN
-    INSERT INTO History (affected_table, type, affected_id, date_entered)
-    values ("Virus_Stock",'DELETE',new.id,DATETIME('NOW'));
-END;
+-- CREATE TRIGGER IF NOT EXISTS delete_vs AFTER DELETE ON Virus_Stock
+--     BEGIN
+--     INSERT INTO History (affected_table, type, affected_id, date_entered)
+--     values ("Virus_Stock",'DELETE',new.id,DATETIME('NOW'));
+-- END;
 
 CREATE TRIGGER IF NOT EXISTS insert_q AFTER INSERT ON Quadrant
     BEGIN
@@ -105,8 +105,8 @@ CREATE TRIGGER IF NOT EXISTS update_q AFTER UPDATE ON Quadrant
     values ("Quadrant",'UPDATE',new.id,DATETIME('NOW'));
 END;
 
-CREATE TRIGGER IF NOT EXISTS delete_q AFTER DELETE ON Quadrant
-    BEGIN
-    INSERT INTO History (affected_table, type, affected_id, date_entered)
-    values ("Quadrant",'DELETE',new.id,DATETIME('NOW'));
-END;
+-- CREATE TRIGGER IF NOT EXISTS delete_q AFTER DELETE ON Quadrant
+--     BEGIN
+--     INSERT INTO History (affected_table, type, affected_id, date_entered)
+--     values ("Quadrant",'DELETE',old.id,DATETIME('NOW'));
+-- END;

@@ -14,7 +14,7 @@
 	<div class="container" ng-controller="EditCloneController">
         <alert></alert>
 
-        <form name="editIsolateForm">
+        <form name="editCloneForm">
             <div class="form-group row">
                 <label for="cloneNameInp" class="control-label col-md-3">Clone/Isolate identification*</label>
                 <div class="col-md-9">
@@ -46,7 +46,7 @@
             </div>
 
             <p>* required</p>
-            <p class="btn btn-primary" ng-disabled="editIsolateForm.$invalid" ng-click="updateClone()">Update clone/isolate</button>
+            <p class="btn btn-primary" ng-disabled="editCloneForm.$invalid" ng-click="updateClone()">Update clone/isolate</button>
         </form>
     </div>
 {% endblock %}

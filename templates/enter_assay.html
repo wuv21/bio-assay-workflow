@@ -14,6 +14,10 @@
 	<div class="container" ng-controller="QuadrantController">
 		<alert></alert>
 
+        <p class='alert alert-info' ng-show="editToggle">
+            Note: Currently in edit mode for this plate. Absorbance file (.csv) must still be uploaded for any updates even if the file has not changed.
+        </p>
+
 		<form name="plateForm">
 			<div class="row">
 				<label for="plateNameInp" class="col-xs-1">Experiment name</label>
@@ -60,9 +64,10 @@
 
 			<span>
 				<button type="reset" class="btn btn-danger">Reset</button>
-				<button class="btn btn-primary" ng-click="submitPlate()" ng-disabled="plateForm.$invalid">Submit</button>
-			</span>
+                <button class="btn btn-info" ng-disabled="plateForm.$invalid || !editToggle">Update</button>
+				<button class="btn btn-primary" ng-click="submitPlate()" ng-disabled="plateForm.$invalid || editToggle">Submit</button>
 
+			</span>
 		</form>
 	</div>
 

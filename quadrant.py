@@ -13,6 +13,8 @@ class Quadrant(object):
         self.num_ctrl = num_ctrl
         self.abs_val = abs_val
 
+        self.popt = []
+
     def calc_c_range(self):
         # minimum = int(round(math.log(self.min_c, 10)))
         # if self.inc == 'log10':
@@ -99,4 +101,25 @@ class Quadrant(object):
 
         popt, pcov = scipy.optimize.curve_fit(self.sigmoid, np.log10(x), y)
 
+        self.popt = popt.tolist()
         return popt.tolist()
+
+    def calc_r_sq(self):
+        values = self.parse_vals()
+        y0 = [y[0] for y in values]
+        y1 = [y[1] for y in values]
+        y_act = np.array(y0 + y1, dtype='float')
+
+        conc = self.calc_c_range()
+        conc = np.array(conc + conc, dtype='float')
+
+        y_pre = self.sigmoid(conc, *self.popt)
+        y_mean = np.mean(y_act)
+
+        print(y_pre)
+        ssr = np.sum(np.power(y_pre - y_mean, 2))
+        sse = np.sum(np.power(y_act - y_pre, 2))
+        ssto = np.sum(np.power(y_act - y_mean, 2))
+
+        print([ssr, sse, ssto])
+        print(ssr/ssto)

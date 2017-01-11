@@ -87,6 +87,8 @@ bioApp.directive('quadrant', function() {
                 disabled: true
             };
 
+            // TODO refactor and fix naming of selectedClone...
+
             // selection filter code
             scope.updateStockDate = function(option) {
                 if (option) {
