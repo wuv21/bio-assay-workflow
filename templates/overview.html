@@ -118,6 +118,9 @@
                         </a>
                     </th>
                     <th>
+                        R<sup>2</sup>
+                    </th>
+                    <th>
                         <i class="fa fa-check-square-o" aria-hidden="true"></i>
                     </th>
                 </tr>
@@ -132,6 +135,7 @@
                     <td>{a q.Clone_type a}</td>
                     <td>{a q.Drug_abbreviation a}</td>
                     <td>{a q.regression[2] | number: 4 a}</td>
+                    <td>{a q.r_sq | number: 4 a}</td>
                     <td><input type="checkbox" name="{a 'selected_' + q.Quadrant_id a}" ng-click="stageCharts(q)"></td>
                 </tr>
             </tbody>
