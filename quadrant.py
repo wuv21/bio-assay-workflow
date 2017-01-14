@@ -113,13 +113,18 @@ class Quadrant(object):
         conc = self.calc_c_range()
         conc = np.array(conc + conc, dtype='float')
 
-        y_pre = self.sigmoid(conc, *self.popt)
+        y_pre = self.sigmoid(np.log10(conc), *self.popt)
         y_mean = np.mean(y_act)
 
-        print(y_pre)
         ssr = np.sum(np.power(y_pre - y_mean, 2))
         sse = np.sum(np.power(y_act - y_pre, 2))
         ssto = np.sum(np.power(y_act - y_mean, 2))
 
-        print([ssr, sse, ssto])
-        print(ssr/ssto)
+        # print(values)
+        # print(y_pre)
+        # print(conc)
+        # print(y_act)
+        # print([ssr, sse, ssto])
+        # print(ssr/ssto)
+
+        return ssr/ssto

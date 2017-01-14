@@ -253,7 +253,7 @@ def manage():
 @app.route('/enter_assay/<int:plate_id>')
 def enter_assay(plate_id):
     # TODO fetch plate data and parse it into easy JSON format for angular to use
-    
+
     return render_template('enter_assay.html')
 
 
@@ -330,6 +330,7 @@ def get_all_plate_quadrants():
         q['Quadrant_q_abs'] = quad.parse_vals()
         q['Quadrant_concentration_range'] = quad.calc_c_range()
         q['regression'] = quad.sigmoidal_regression()
+        q['r_sq'] = quad.calc_r_sq()
 
     return json.dumps(data_parsed)
 
@@ -484,6 +485,7 @@ def create_plate():
                  data['letter']]
 
         try:
+            # TODO update plate with this section here...
             add_result = add_plate_and_quadrants(plate, quadrants)
             if not add_result:
                 return json.dumps({'success': False,
@@ -567,6 +569,7 @@ def get_plate(plate_id):
             q['Quadrant_q_abs'] = quad.parse_vals()
             q['Quadrant_concentration_range'] = quad.calc_c_range()
             q['regression'] = quad.sigmoidal_regression()
+            q['r_sq'] = quad.calc_r_sq()
 
         # TODO fix query problems
         return json.dumps(data_parsed)

@@ -73,7 +73,6 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
                     y1: parsedVals[i][1]
                 });
             }
-
             $scope.absData.datasets.push(sample);
         });
     };
