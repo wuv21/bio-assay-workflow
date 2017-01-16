@@ -38,6 +38,7 @@
                 | filter: {read_date: selectedExpDate}
                 | orderBy: 'name'"></select>
 
+                <button class='btn btn-info btn-sm' ng-disabled="false" ng-click="addAllPlates()">Add all</button>
                 <button class='btn btn-primary btn-sm' ng-disabled="PlateFilterForm.$invalid" ng-click="addAllFromDate()">Add all from read date</button>
             </div>
 
