@@ -87,6 +87,12 @@ angular.module('bioApp').controller('OverviewController', ['$scope', '$http', '$
         });
     }
 
+    $scope.addAllPlates = function() {
+        $scope.plates.forEach(function(p) {
+            $scope.stagedQuads = $scope.stagedQuads.concat($scope.quadrants[p.id]);
+        });
+    }
+
     $scope.addQuads = function() {
         $scope.selectedQuads.forEach(function(x) {$scope.stagedQuads.push(x)});
     };
