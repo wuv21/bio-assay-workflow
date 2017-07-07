@@ -5,3 +5,4 @@ __pycache__
 .cache
 sql/hiv2_drug_assay.db
 sql/hiv2_drug_assay.db.orig
+nohup.out
