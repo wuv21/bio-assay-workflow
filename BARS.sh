@@ -1,4 +1,6 @@
 source venv/bin/activate
+
+pip install -r requirements-osx.txt
 nohup python bars.py &
 
 echo "Loading BARS and opening up your browser..."
@@ -13,10 +15,12 @@ while true; do
             export BARSPROCESS=$(ps -A | grep ' python bars.py$' | awk '{print $1}'); \
             kill $BARSPROCESS; \
             deactivate; \
-            echo "Quitting BARS now. See you later!"
+            echo "Quitting BARS now. See you later!";
             break;;
 
         [Nn]* ) echo "Okay, BARS will stay open.";;
         * ) echo "Please type 'y' or 'n'";;
     esac
 done
+
+printf "\n"
