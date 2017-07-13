@@ -9,7 +9,7 @@ class BARSTestCase(unittest.TestCase):
         self.db_fd, bars.app.config['DATABASE'] = tempfile.mkstemp()
         bars.app.config['TESTING'] = True
         self.app = bars.app.test_client()
-        
+
         with bars.app.app_context():
             bars.create_db()
 

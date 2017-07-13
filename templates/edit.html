@@ -8,9 +8,13 @@
         <div class="container">
             <h2>Edit</h2>
             <p>Edit existing data. Click on the buttons below to see previously entered data and click edit icon to update fields.</p>
+            <p class='alert alert-info'>
+                Edit functionality is still in beta mode. Advise to use sqlite3 data browser to edit.
+            </p>
         </div>
     </div>
     <div class="container" ng-controller="MultipleController">
+
         <p class="alert" ng-class="alertSettings.warning ? 'alert-danger' : 'alert-success'" ng-show="alertSettings.visible">
         {a alertSettings.message a}<i class="fa fa-times" aria-hidden="true" ng-click="closeAlert()"></i></p>
 
