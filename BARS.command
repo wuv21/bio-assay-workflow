@@ -21,8 +21,6 @@ while true; do
     read -p "Do you wish to quit BARS? (y or n) - " yn
     case $yn in
         [Yy]* ) \
-            # export BARSPROCESS=$(ps -A | grep ' python bars.py$' | awk '{print $1}'); \
-            # kill $BARSPROCESS; \
             kill `cat save_pid.txt`; \
             rm save_pid.txt; \
             deactivate; \
